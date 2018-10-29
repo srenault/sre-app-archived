@@ -9,6 +9,7 @@ import org.http4s.client.blaze._
 import scala.concurrent.ExecutionContext
 
 import transport.train.TrainClient
+import transport.subway.SubwayClient
 
 object HelloWorldServer extends IOApp {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,15 +25,20 @@ object ServerStream {
   def trainService[F[_]: Effect](trainClient: TrainClient[F], settings: Settings) =
     new TrainService[F](trainClient, settings).service
 
+  def subwayService[F[_]: Effect](subwayClient: SubwayClient[F], settings: Settings) =
+    new SubwayService[F](subwayClient, settings).service
+
   def stream[F[_]: ConcurrentEffect](implicit ec: ExecutionContext) = {
     Settings.load() match {
       case Right(settings) =>
         for {
           httpClient <- Http1Client.stream[F]()
           trainClient <- TrainClient.stream[F](httpClient, settings)
+          subwayClient = SubwayClient[F](trainClient)
           R <- BlazeBuilder[F].bindHttp(8080, "0.0.0.0")
                               .mountService(helloWorldService, "/")
-                              .mountService(trainService(trainClient, settings), "/api/transport/")
+                              .mountService(trainService(trainClient, settings), "/api/transport/train")
+                              .mountService(subwayService(subwayClient, settings), "/api/transport/subway")
                               .serve
         } yield R
 

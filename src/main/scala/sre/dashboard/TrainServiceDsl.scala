@@ -8,6 +8,12 @@ import cats.implicits._
 
 trait TrainServiceDsl[F[_]] extends Http4sDsl[F] {
 
+  object LatitudeQueryParamMatcher extends QueryParamDecoderMatcher[Double]("latitude")
+
+  object LongitudeQueryParamMatcher extends QueryParamDecoderMatcher[Double]("longitude")
+
+  object DistanceQueryParamMatcher extends QueryParamDecoderMatcher[Int]("distance")
+
   implicit val dateQueryParamDecoder: QueryParamDecoder[Option[ZonedDateTime]] =
     QueryParamDecoder[String].map { dateStr =>
       scala.util.Try {

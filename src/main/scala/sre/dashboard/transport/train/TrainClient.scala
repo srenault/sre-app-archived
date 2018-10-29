@@ -18,22 +18,7 @@ import fs2.Stream
 
 import sre.dashboard.Settings
 
-class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, authInfoRef: Ref[F, Option[Deferred[F, AuthResponse]]])(implicit F: Sync[F]) extends TrainClientDsl[F] {
-
-  def authenticate(): F[AuthResponse] = {
-    val body = json"""
-      {
-        "anonymousUser": true,
-        "deviceIdentifier": "10e7b74c-13b9-44a0-9695-929f15f47532",
-        "devicePlatform": "xena",
-        "deviceType": "ANDROID",
-        "login": "10e7b74c-13b9-44a0-9695-929f15f47532",
-        "password": "59f2c132-cb07-425f-b105-9ca391929080"
-      }"""
-
-    val request = POST(endpoint / "authenticate", body)
-    httpClient.expect[AuthResponse](request)
-  }
+case class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, authInfoRef: Ref[F, Option[Deferred[F, AuthResponse]]])(implicit F: Sync[F]) extends TrainClientDsl[F] {
 
   def searchStations(term: String): F[List[Station]] = withAuthInfo { authInfo =>
     val uri = (endpoint / "autocomplete" / "stations").withQueryParam("q", term)
@@ -59,6 +44,21 @@ class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, 
       }
     }
   }
+
+  def nearestStops(latitude: Double, longitude: Double, distance: Int): F[List[NearestStop]] =
+    withAuthInfo { authInfo =>
+      val uri = (endpoint / "aroundme" / "stops").withQueryParam("latitude", latitude)
+        .withQueryParam("longitude", longitude)
+        .withQueryParam("maxDistance", distance)
+
+      val request = AuthenticatedGET(uri, authInfo)
+      httpClient.expect[Json](request).map { response =>
+        response.hcursor.downField("stopLocations").as[List[NearestStop]] match {
+          case Left(e) => throw e
+          case Right(nearestStops) => nearestStops
+        }
+      }
+    }
 
   def searchItineraries(stationA: Station, stationB: Station, date: ZonedDateTime): F[List[Itinerary]] =
     withAuthInfo { authInfo =>
@@ -88,30 +88,6 @@ class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, 
         }
       }
     }
-
-  def refreshAuthInfo(): F[AuthResponse] = {
-    for {
-      d <- Deferred[F, AuthResponse]
-      _ <- authInfoRef.set(Some(d))
-      authInfo <- authenticate()
-      _ <- d.complete(authInfo)
-    } yield authInfo
-  }
-
-  def withAuthInfo[A](f: AuthResponse => F[A]): F[A] = {
-    (for {
-      maybeAuthInfo <- authInfoRef.get
-      authInfo <- maybeAuthInfo match {
-        case Some(deferredAuthInfo) =>
-          deferredAuthInfo.get
-        case None => refreshAuthInfo()
-      }
-      res <- f(authInfo).recoverWith {
-        case UnexpectedStatus(status) if status == 401 =>
-          refreshAuthInfo().flatMap(f)
-      }
-    } yield res)
-  }
 }
 
 object TrainClient {
@@ -121,7 +97,7 @@ object TrainClient {
       d <- Deferred[F, AuthResponse]
       authInfoRef <- Ref.of[F, Option[Deferred[F, AuthResponse]]](None)
     } yield {
-      new TrainClient[F](httpClient, settings.transport.train.endpoint, authInfoRef)
+      TrainClient[F](httpClient, settings.transport.train.endpoint, authInfoRef)
     }
     Stream.eval(client)
   }

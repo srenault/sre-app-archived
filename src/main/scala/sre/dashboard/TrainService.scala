@@ -38,6 +38,11 @@ class TrainService[F[_]: Effect](trainClient: TrainClient[F], settings: Settings
 
           case _ => BadRequest()
         }
+
+      case GET -> Root / "near" / "stops" :? LatitudeQueryParamMatcher(latitude) +& LongitudeQueryParamMatcher(longitude) +& DistanceQueryParamMatcher(distance) =>
+        trainClient.nearestStops(latitude, longitude, distance).flatMap { nearestStops =>
+          Ok(nearestStops)
+        }
     }
   }
 }

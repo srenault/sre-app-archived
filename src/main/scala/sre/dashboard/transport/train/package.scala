@@ -106,5 +106,37 @@ package object train {
 
   case class LineDisruption(`type`: String, description: String)
 
+  case class NearestStop(
+    types: List[String],
+    longitude: Double,
+    latitude: Double,
+    ratpStopId: Option[String],
+    label: String,
+    metadata: Option[NearestStopMeta]
+  )
 
+  object NearestStop {
+
+    import io.circe.generic.auto._
+
+    implicit val NearestStopEncoder: Encoder[NearestStop] = deriveEncoder[NearestStop]
+
+    implicit val NearestStopsDecoder: Decoder[NearestStop] = deriveDecoder[NearestStop]
+
+    implicit def stationEncoder[F[_]: Effect]: EntityEncoder[F, NearestStop] = jsonEncoderOf[F, NearestStop]
+
+    implicit def stationsEncoder[F[_]: Effect]: EntityEncoder[F, List[NearestStop]] = jsonEncoderOf[F, List[NearestStop]]
+
+    implicit def stationDecoder[F[_]: Effect]: EntityDecoder[F, NearestStop] = jsonOf[F, NearestStop]
+  }
+
+  case class NearestStopMeta(transporters: List[NearestStopTransporter])
+
+  case class NearestStopTransporter(
+    gtfsRouteId: Option[String],
+    isTerminus: Option[Boolean],
+    direction: Option[String],
+    line: Option[String],
+    `type`: String
+  )
 }

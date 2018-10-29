@@ -3,6 +3,7 @@ package sre.dashboard.transport.train
 import cats._
 import cats.effect._
 import cats.implicits._
+import cats.effect.concurrent.{ Ref, Deferred }
 import io.circe._
 import io.circe.literal._
 import io.circe.syntax._
@@ -11,16 +12,62 @@ import org.http4s.headers._
 import org.http4s.dsl.io._
 import org.http4s.client._
 import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.circe._
 import sre.dashboard.Settings
 import sre.dashboard.utils.Security
 
 trait TrainClientDsl[F[_]] extends Http4sClientDsl[F] {
+
+  def httpClient: Client[F]
+
+  def endpoint: Uri
+
+  def authInfoRef: Ref[F, Option[Deferred[F, AuthResponse]]]
 
   val USER_AGENT_HEADER = Header("User-Agent", "SncfFusion Android")
 
   val CONTENT_TYPE_HEADER = Header("Content-Type", "application/json")
 
   val DEFAULT_HEADERS = USER_AGENT_HEADER :: CONTENT_TYPE_HEADER :: Nil
+
+  def authenticate()(implicit F: Effect[F]): F[AuthResponse] = {
+    val body = json"""
+      {
+        "anonymousUser": true,
+        "deviceIdentifier": "10e7b74c-13b9-44a0-9695-929f15f47532",
+        "devicePlatform": "xena",
+        "deviceType": "ANDROID",
+        "login": "10e7b74c-13b9-44a0-9695-929f15f47532",
+        "password": "59f2c132-cb07-425f-b105-9ca391929080"
+      }"""
+
+    val request = POST(endpoint / "authenticate", body)
+    httpClient.expect[AuthResponse](request)
+  }
+
+  def refreshAuthInfo()(implicit F: ConcurrentEffect[F]): F[AuthResponse] = {
+    for {
+      d <- Deferred[F, AuthResponse]
+      _ <- authInfoRef.set(Some(d))
+      authInfo <- authenticate()
+      _ <- d.complete(authInfo)
+    } yield authInfo
+  }
+
+  def withAuthInfo[A](f: AuthResponse => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
+    (for {
+      maybeAuthInfo <- authInfoRef.get
+      authInfo <- maybeAuthInfo match {
+        case Some(deferredAuthInfo) =>
+          deferredAuthInfo.get
+        case None => refreshAuthInfo()
+      }
+      res <- f(authInfo).recoverWith {
+        case UnexpectedStatus(status) if status == 401 =>
+          refreshAuthInfo().flatMap(f)
+      }
+    } yield res)
+  }
 
   def AuthenticatedPOST[A](uri: Uri, body: A, authInfo: AuthResponse, headers: Header*)(implicit F: Monad[F], jsonEncoder: Encoder[A], w: EntityEncoder[F, A]): F[Request[F]] = {
     val bodyAsString = body.asJson.noSpaces
