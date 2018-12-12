@@ -4,7 +4,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
-import cats.implicits._
 
 trait TrainServiceDsl[F[_]] extends Http4sDsl[F] {
 

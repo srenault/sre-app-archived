@@ -2,9 +2,7 @@ package sre.dashboard
 
 import cats.effect._
 import cats.implicits._
-import cats.syntax.parallel._
 import org.http4s.HttpService
-import org.http4s.dsl.Http4sDsl
 import java.time.ZonedDateTime
 
 import transport.train._

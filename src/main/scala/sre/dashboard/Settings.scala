@@ -1,7 +1,6 @@
 package sre.dashboard
 
 import org.http4s.Uri
-import com.typesafe.config._
 import io.circe._
 import io.circe.generic.auto._
 import io.circe.config.syntax._
@@ -10,7 +9,9 @@ case class TrainSettings(endpoint: Uri)
 
 case class TransportSettings(train: TrainSettings)
 
-case class Settings(transport: TransportSettings)
+case class FinanceSettings(db: String)
+
+case class Settings(transport: TransportSettings, finance: FinanceSettings)
 
 object Settings {
 
@@ -22,8 +23,9 @@ object Settings {
   def load(): Either[Error, Settings] = {
     for {
       trainSettings <- AppConfig.as[TrainSettings]("transport.train")
+      financeSettings <- AppConfig.as[FinanceSettings]("finance")
       transportSettings = TransportSettings(trainSettings)
-    } yield Settings(transportSettings)
+    } yield Settings(transportSettings, financeSettings)
   }
 
   implicit val UriDecoder: Decoder[Uri] = new Decoder[Uri] {

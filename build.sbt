@@ -3,6 +3,10 @@ val Specs2Version = "4.1.0"
 val LogbackVersion = "1.2.3"
 val CirceVersion = "0.10.0"
 val CirceConfigVersion = "0.5.0"
+val AnormVersion = "2.6.2"
+val SqliteJdbcVersion = "3.23.1"
+val ScalaXmlVersion = "1.1.1"
+val Ofx4jVersion = "1.14"
 
 lazy val root = (project in file("."))
   .settings(
@@ -20,9 +24,16 @@ lazy val root = (project in file("."))
       "io.circe"        %% "circe-parser"        % CirceVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
       "io.circe"        %% "circe-literal"       % CirceVersion,
-      "io.circe"        %% "circe-config"        % CirceConfigVersion
+      "io.circe"        %% "circe-config"        % CirceConfigVersion,
+      "org.xerial"      % "sqlite-jdbc"          % SqliteJdbcVersion,
+      "org.playframework.anorm" %% "anorm"       % AnormVersion,
+      "org.scala-lang.modules" %% "scala-xml"    % ScalaXmlVersion,
+      "com.webcohesion.ofx4j" % "ofx4j"          % Ofx4jVersion
     ),
     addCompilerPlugin("org.spire-math" %% "kind-projector"     % "0.9.6"),
     addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4")
   )
 
+scalacOptions ++= Seq(
+  "-Xlint"
+)
