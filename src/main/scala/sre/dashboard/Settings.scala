@@ -1,5 +1,6 @@
 package sre.dashboard
 
+import java.io.File
 import org.http4s.Uri
 import io.circe._
 import io.circe.generic.auto._
@@ -9,7 +10,7 @@ case class TrainSettings(endpoint: Uri)
 
 case class TransportSettings(train: TrainSettings)
 
-case class FinanceSettings(db: String)
+case class FinanceSettings(db: String, ofxDirectory: File, categories: Map[String, List[String]])
 
 case class Settings(transport: TransportSettings, finance: FinanceSettings)
 
@@ -33,6 +34,16 @@ object Settings {
       c.as[String].right.flatMap { s =>
         Uri.fromString(s).left.map { error =>
           DecodingFailure(error.message, c.history)
+        }
+      }
+  }
+
+  implicit val FileDecoder: Decoder[File] = new Decoder[File] {
+    final def apply(c: HCursor): Decoder.Result[File] =
+      c.as[String].right.flatMap { s =>
+        val f = new File(s)
+        if (f.exists) Right(f) else Left {
+          DecodingFailure(s"$s doesn't exists", c.history)
         }
       }
   }
