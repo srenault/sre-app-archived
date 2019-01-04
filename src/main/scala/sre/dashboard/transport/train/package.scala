@@ -7,7 +7,6 @@ import io.circe.literal._
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.semiauto._
 import org.http4s.circe._
-import org.http4s.dsl.io._
 
 package object train {
 

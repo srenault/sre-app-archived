@@ -1,6 +1,5 @@
 package sre.dashboard.transport.train
 
-import java.time.format.DateTimeFormatter
 import java.time.ZonedDateTime
 import cats.effect._
 import cats.effect.concurrent.{ Ref, Deferred }
@@ -8,17 +7,13 @@ import cats.implicits._
 import io.circe._
 import io.circe.literal._
 import org.http4s._
-import org.http4s.dsl.io._
 import org.http4s.circe._
 import org.http4s.client._
-import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.headers._
-import org.http4s.MediaType._
 import fs2.Stream
 
 import sre.dashboard.Settings
 
-case class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, authInfoRef: Ref[F, Option[Deferred[F, AuthResponse]]])(implicit F: Sync[F]) extends TrainClientDsl[F] {
+case class TrainClient[F[_]: ConcurrentEffect](httpClient: Client[F], endpoint: Uri, authInfoRef: Ref[F, Option[Deferred[F, AuthResponse]]]) extends TrainClientDsl[F] {
 
   def searchStations(term: String): F[List[Station]] = withAuthInfo { authInfo =>
     val uri = (endpoint / "autocomplete" / "stations").withQueryParam("q", term)
