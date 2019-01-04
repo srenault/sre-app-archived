@@ -8,15 +8,13 @@ import transport.train.TrainClient
 import transport.subway.SubwayClient
 import finance.IComptaClient
 
-object HelloWorldServer extends IOApp {
+object DashboardServer extends IOApp {
 
   def run(args: List[String]) =
     ServerStream.stream[IO].compile.drain.as(ExitCode.Success)
 }
 
 object ServerStream {
-
-  def helloWorldService[F[_]: Effect] = new HelloWorldService[F].service
 
   def trainService[F[_]: Effect](trainClient: TrainClient[F], settings: Settings) =
     new TrainService[F](trainClient, settings).service
@@ -36,7 +34,6 @@ object ServerStream {
           subwayClient = SubwayClient[F](trainClient)
           icomptaClient <- IComptaClient.stream[F](settings)
           R <- BlazeBuilder[F].bindHttp(8080, "0.0.0.0")
-                              .mountService(helloWorldService, "/")
                               .mountService(trainService(trainClient, settings), "/api/transport/train")
                               .mountService(subwayService(subwayClient, settings), "/api/transport/subway")
                               .mountService(financeService(icomptaClient, settings), "/api/finance")
