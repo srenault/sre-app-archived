@@ -1,32 +1,37 @@
 package sre.dashboard.finance
 
 import cats.effect._
+import cats.implicits._
 import fs2.Stream
 import java.sql.{ DriverManager, Connection }
 import anorm._
 import sre.dashboard.Settings
 
-case class IComptaClient[F[_]: ConcurrentEffect](implicit connection: Connection) {
+case class IComptaClient[F[_]: Effect](implicit connection: Connection) {
 
-  def selectRules() = {
-    SQL"SELECT * FROM LARule".as(RuleRecord.parser.*)
-  }
+  def selectRules()(implicit F: Effect[F]): F[List[RuleRecord]] =
+    F.pure {
+      SQL"SELECT * FROM LARule".as(RuleRecord.parser.*)
+    }
 
-  def selectConditions() = {
-    SQL"SELECT * FROM LACondition".as(ConditionRecord.parser.*)
-  }
+  def selectConditions()(implicit F: Effect[F]): F[List[ConditionRecord]] =
+    F.pure {
+      SQL"SELECT * FROM LACondition".as(ConditionRecord.parser.*)
+    }
 
-  def selectParameters() = {
-    SQL"SELECT * FROM LAParameter".as(ParameterRecord.parser.*)
-  }
+  def selectParameters()(implicit F: Effect[F]): F[List[ParameterRecord]] =
+    F.pure {
+      SQL"SELECT * FROM LAParameter".as(ParameterRecord.parser.*)
+    }
 
-  def selectAll() = {
-    val rules = selectRules()
-    val conditions = selectConditions()
-    val parameters = selectParameters()
-
-    Records(rules, conditions, parameters)
-  }
+  def selectAll(): F[Records] =
+    for {
+      rules <- selectRules()
+      conditions <- selectConditions()
+      parameters <- selectParameters()
+    } yield {    
+      Records(rules, conditions, parameters)
+    }
 }
 
 object IComptaClient {

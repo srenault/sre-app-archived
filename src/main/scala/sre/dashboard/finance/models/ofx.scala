@@ -1,5 +1,8 @@
 package sre.dashboard.finance
 
+import cats.effect._
+import cats.data.OptionT
+import cats.implicits._
 import java.time.format.{ DateTimeFormatter, DateTimeFormatterBuilder }
 import java.time.temporal.ChronoField
 import java.time.LocalDate
@@ -60,51 +63,55 @@ object OfxStmTrn {
     }
   }
 
-  def load(ofxDirectory: File, date: LocalDate): Option[List[OfxStmTrn]] = {
-    val dateNow = LocalDate.now().withDayOfMonth(1)
-    ofxDirectory.listFiles.collectFirst {
-      case file@OfxFile(date) if date == dateNow => 
-        loadFile(file)
+  def load[F[_]: Effect](ofxDirectory: File, date: LocalDate): OptionT[F, List[OfxStmTrn]] = {
+    val maybeOfxFile = ofxDirectory.listFiles.find {
+        case file@OfxFile(d) => d == date
+    }
+
+    maybeOfxFile match {
+      case Some(ofxFile) => OptionT.liftF(loadFile(ofxFile))
+      case None => OptionT.none
     }
   }
 
-  def loadFile(f: File): List[OfxStmTrn] = {
-    import com.webcohesion.ofx4j.io.DefaultHandler
-    import com.webcohesion.ofx4j.io.nanoxml.NanoXMLOFXReader
-    import java.io.FileInputStream
-    import scala.collection.mutable.Stack
+  def loadFile[F[_]](f: File)(implicit F: Effect[F]): F[List[OfxStmTrn]] =
+    F.pure {
+      import com.webcohesion.ofx4j.io.DefaultHandler
+      import com.webcohesion.ofx4j.io.nanoxml.NanoXMLOFXReader
+      import java.io.FileInputStream
+      import scala.collection.mutable.Stack
 
-    val ofxReader = new NanoXMLOFXReader()
-    val file = new FileInputStream(f);
-    val stack = Stack.empty[List[String]]
+      val ofxReader = new NanoXMLOFXReader()
+      val file = new FileInputStream(f)
+      val stack = Stack.empty[List[String]]
 
-    ofxReader.setContentHandler(new DefaultHandler() {
+      ofxReader.setContentHandler(new DefaultHandler() {
 
-      override def onElement(name: String, value: String) {
-        if (List("TRNTYPE", "DTPOSTED", "DTUSER", "TRNAMT", "NAME").exists(_ == name)) {
-          val updated = stack.pop() :+ value
-          stack.push(updated)
+        override def onElement(name: String, value: String) {
+          if (List("TRNTYPE", "DTPOSTED", "DTUSER", "TRNAMT", "NAME").exists(_ == name)) {
+            val updated = stack.pop() :+ value
+            stack.push(updated)
+          }
         }
-      }
 
-      override def startAggregate(aggregateName: String) {
-        if (aggregateName == "STMTTRN") {
-          stack.push(Nil)
+        override def startAggregate(aggregateName: String) {
+          if (aggregateName == "STMTTRN") {
+            stack.push(Nil)
+          }
         }
-      }
-    });
+      })
 
-    ofxReader.parse(file)
+      ofxReader.parse(file)
 
-    stack.map {
-      case typStr :: postedStr :: userStr :: amountStr :: name :: Nil =>
-        val typ = OfxStrTrnType(typStr)
-        val posted = LocalDate.parse(postedStr, DateTimeFormatter.BASIC_ISO_DATE)
-        val user = LocalDate.parse(userStr, DateTimeFormatter.BASIC_ISO_DATE)
-        OfxStmTrn(typ, posted, user, amountStr.toFloat, name)
+      stack.map {
+        case typStr :: postedStr :: userStr :: amountStr :: name :: Nil =>
+          val typ = OfxStrTrnType(typStr)
+          val posted = LocalDate.parse(postedStr, DateTimeFormatter.BASIC_ISO_DATE)
+          val user = LocalDate.parse(userStr, DateTimeFormatter.BASIC_ISO_DATE)
+          OfxStmTrn(typ, posted, user, amountStr.toFloat, name)
 
-      case x =>
-        sys.error(s"Unable to parse OfxStmTrn from $x")
-    }.toList
-  }
+        case x =>
+          sys.error(s"Unable to parse OfxStmTrn from $x")
+      }.toList
+    }
 }
