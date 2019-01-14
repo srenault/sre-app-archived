@@ -12,7 +12,31 @@ case class TransportSettings(train: TrainSettings)
 
 case class FinanceSettings(db: String, ofxDirectory: File, categories: Map[String, List[String]])
 
-case class Settings(transport: TransportSettings, finance: FinanceSettings)
+case class DomoticzDeviceSettings(idx: Int)
+
+case class DomoticzSettings(endpoint: Uri, username: String, password: String, teleinfo: DomoticzDeviceSettings)
+
+case class ElectricityRatioSettings(
+  hp: Float,
+  hc: Float,
+  taxeCommunale: Float,
+  taxeDepartementale: Float,
+  cspe: Float,
+  tvaReduite: Float,
+  tva: Float,
+  cta: Float
+)
+
+case class ElectricitySettings(ratio: ElectricityRatioSettings, monthlySubscription: Float, monthlyCta: Float)
+
+case class EnergySettings(electricity: ElectricitySettings)
+
+case class Settings(
+  transport: TransportSettings,
+  finance: FinanceSettings,
+  domoticz: DomoticzSettings,
+  energy: EnergySettings
+)
 
 object Settings {
 
@@ -24,9 +48,11 @@ object Settings {
   def load(): Either[Error, Settings] = {
     for {
       trainSettings <- AppConfig.as[TrainSettings]("transport.train")
-      financeSettings <- AppConfig.as[FinanceSettings]("finance")
       transportSettings = TransportSettings(trainSettings)
-    } yield Settings(transportSettings, financeSettings)
+      financeSettings <- AppConfig.as[FinanceSettings]("finance")
+      domoticzSettings <- AppConfig.as[DomoticzSettings]("domoticz")
+      energySettings <- AppConfig.as[EnergySettings]("energy")
+    } yield Settings(transportSettings, financeSettings, domoticzSettings, energySettings)
   }
 
   implicit val UriDecoder: Decoder[Uri] = new Decoder[Uri] {

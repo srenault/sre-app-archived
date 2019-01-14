@@ -7,6 +7,7 @@ import org.http4s.client.blaze._
 import transport.train.TrainClient
 import transport.subway.SubwayClient
 import finance.IComptaClient
+import domoticz.DomoticzClient
 
 object DashboardServer extends IOApp {
 
@@ -25,6 +26,9 @@ object ServerStream {
   def financeService[F[_]: Effect](icomptaClient: IComptaClient[F], settings: Settings) =
     new FinanceService[F](icomptaClient, settings).service
 
+  def energyService[F[_]: Effect](domoticzClient: DomoticzClient[F], settings: Settings) =
+    new EnergyService[F](domoticzClient, settings).service
+
   def stream[F[_]: ConcurrentEffect] = {
     Settings.load() match {
       case Right(settings) =>
@@ -33,10 +37,12 @@ object ServerStream {
           trainClient <- TrainClient.stream[F](httpClient, settings)
           subwayClient = SubwayClient[F](trainClient)
           icomptaClient <- IComptaClient.stream[F](settings)
+          domoticzClient = DomoticzClient[F](httpClient, settings.domoticz)
           R <- BlazeBuilder[F].bindHttp(8080, "0.0.0.0")
                               .mountService(trainService(trainClient, settings), "/api/transport/train")
                               .mountService(subwayService(subwayClient, settings), "/api/transport/subway")
                               .mountService(financeService(icomptaClient, settings), "/api/finance")
+                              .mountService(energyService(domoticzClient, settings), "/api/energy")
                               .serve
         } yield R
 
