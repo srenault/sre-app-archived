@@ -13,7 +13,7 @@ object Security {
     val hmacsha256 = Mac.getInstance("HmacSHA256")
     hmacsha256.init(secretKeySpec)
     val signed = hmacsha256.doFinal(value.getBytes("UTF-8"))
-    Base64.getEncoder().encodeToString(signed);
+    Base64.getEncoder().encodeToString(signed)
   }
   
   def sha1(value: String): String = {

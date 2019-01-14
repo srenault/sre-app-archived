@@ -18,7 +18,6 @@ package object train {
     implicit val AuthResponseDecoder: Decoder[AuthResponse] = deriveDecoder[AuthResponse]
 
     implicit def authResponseEncoder[F[_]: Effect]: EntityEncoder[F, AuthResponse] = jsonEncoderOf[F, AuthResponse]
-
     implicit def authResponseDecoder[F[_]: Effect]: EntityDecoder[F, AuthResponse] = jsonOf[F, AuthResponse]
   }
 
@@ -50,8 +49,6 @@ package object train {
     implicit def stationEncoder[F[_]: Effect]: EntityEncoder[F, Station] = jsonEncoderOf[F, Station]
 
     implicit def stationsEncoder[F[_]: Effect]: EntityEncoder[F, List[Station]] = jsonEncoderOf[F, List[Station]]
-
-    implicit def stationDecoder[F[_]: Effect]: EntityDecoder[F, Station] = jsonOf[F, Station]
   }
 
   case class Itinerary(itinerarySteps: List[ItineraryStep])
@@ -65,8 +62,6 @@ package object train {
     implicit def stationEncoder[F[_]: Effect]: EntityEncoder[F, Itinerary] = jsonEncoderOf[F, Itinerary]
 
     implicit def stationsEncoder[F[_]: Effect]: EntityEncoder[F, List[Itinerary]] = jsonEncoderOf[F, List[Itinerary]]
-
-    implicit def stationDecoder[F[_]: Effect]: EntityDecoder[F, Itinerary] = jsonOf[F, Itinerary]
   }
 
   case class ItineraryStep(arrivalDate: String, departureDate: String, duration: Int, stops: List[Stop], cancelled: Boolean, disruptionsList: List[StopDisruption])
@@ -90,8 +85,6 @@ package object train {
     implicit def stationEncoder[F[_]: Effect]: EntityEncoder[F, NextDepartures] = jsonEncoderOf[F, NextDepartures]
 
     implicit def stationsEncoder[F[_]: Effect]: EntityEncoder[F, List[NextDepartures]] = jsonEncoderOf[F, List[NextDepartures]]
-
-    implicit def stationDecoder[F[_]: Effect]: EntityDecoder[F, NextDepartures] = jsonOf[F, NextDepartures]
   }
 
   case class NextDeparture(

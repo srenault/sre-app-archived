@@ -24,6 +24,4 @@ package object subway {
   implicit def nextDepartureEncoder[F[_]: Effect]: EntityEncoder[F, NextDeparture] = jsonEncoderOf[F, NextDeparture]
 
   implicit def nextDeparturesEncoder[F[_]: Effect]: EntityEncoder[F, List[NextDeparture]] = jsonEncoderOf[F, List[NextDeparture]]
-
-  implicit def nextDepartureDecoder[F[_]: Effect]: EntityDecoder[F, NextDeparture] = jsonOf[F, NextDeparture]
 }
