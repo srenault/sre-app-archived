@@ -6,7 +6,6 @@ import cats.effect._
 import cats.implicits._
 import org.http4s.client._
 import org.http4s.circe._
-import org.http4s.client._
 import io.circe._
 import sre.dashboard.DomoticzSettings
 
@@ -22,7 +21,6 @@ case class DomoticzClient[F[_]: ConcurrentEffect](httpClient: Client[F], setting
     val request = AuthenticatedGET(uri)
 
     httpClient.expect[Json](request).map { response =>
-      println(response)
       response.hcursor.downField("result").as[List[A]] match {
         case Left(e) => throw e
         case Right(result) => result

@@ -31,11 +31,14 @@ case class ElectricitySettings(ratio: ElectricityRatioSettings, monthlySubscript
 
 case class EnergySettings(electricity: ElectricitySettings)
 
+case class WeatherSettings(endpoint: Uri)
+
 case class Settings(
   transport: TransportSettings,
   finance: FinanceSettings,
   domoticz: DomoticzSettings,
-  energy: EnergySettings
+  energy: EnergySettings,
+  weather: WeatherSettings
 )
 
 object Settings {
@@ -52,7 +55,8 @@ object Settings {
       financeSettings <- AppConfig.as[FinanceSettings]("finance")
       domoticzSettings <- AppConfig.as[DomoticzSettings]("domoticz")
       energySettings <- AppConfig.as[EnergySettings]("energy")
-    } yield Settings(transportSettings, financeSettings, domoticzSettings, energySettings)
+      weatherSettings <- AppConfig.as[WeatherSettings]("weather")
+    } yield Settings(transportSettings, financeSettings, domoticzSettings, energySettings, weatherSettings)
   }
 
   implicit val UriDecoder: Decoder[Uri] = new Decoder[Uri] {

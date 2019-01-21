@@ -1,11 +1,10 @@
 package sre.dashboard.energy
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import cats.effect._
 import io.circe._
-import org.http4s.{ EntityEncoder }
-import io.circe.{ Decoder }
+import org.http4s.EntityEncoder
+import io.circe.Decoder
 import io.circe.generic.semiauto._
 import org.http4s.circe._
 
