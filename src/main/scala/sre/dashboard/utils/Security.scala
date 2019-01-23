@@ -21,4 +21,10 @@ object Security {
     messageDigest.update(value.getBytes("UTF-8"))
     Base64.getEncoder().encodeToString(messageDigest.digest())
   }
+
+  def md5(value: String): String = {
+    val messageDigest = MessageDigest.getInstance("MD5")
+    val digest = messageDigest.digest(value.getBytes("UTF-8"))
+    Base64.getEncoder().encodeToString(digest)
+  }
 }
