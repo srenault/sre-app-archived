@@ -46,7 +46,6 @@ case class WeatherClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings
     val request = AuthenticatedGET(uri, path)
 
     httpClient.expect[Json](request).map { response =>
-      println(response);
       response.hcursor.downField("DATA").as[List[City]] match {
         case Left(e) => throw e
         case Right(result) => result
@@ -62,7 +61,6 @@ case class WeatherClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings
     val request = AuthenticatedGET(uri, path)
 
     httpClient.expect[Json](request).map { response =>
-      println(response);
       response.hcursor.downField("DATA").as[Forecast] match {
         case Left(e) => throw e
         case Right(result) => result
