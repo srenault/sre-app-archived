@@ -1,0 +1,8 @@
+#!/bin/bash
+
+BOLD=`tput bold`
+GREEN=`tput setaf 2`
+CYAN=`tput setaf 6`
+RESET=`tput sgr0`
+
+watchexec -d 200 -w www/ --exts js 'cordova build; echo "'${BOLD}${CYAN}'run '${RESET}'cordova build'${RESET}${GREEN}' [OK]'${RESET}'"'
