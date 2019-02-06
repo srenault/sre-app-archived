@@ -1,4 +1,7 @@
 import styles from '../css/main.css';
+import Config from './config';
+
+console.log(Config);
 
 const app = {
   // Application Constructor
@@ -26,5 +29,5 @@ const app = {
     console.log('Received Event: ' + id);
   }
 };
-console.log('here!!!');
+
 app.initialize();
