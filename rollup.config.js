@@ -12,25 +12,36 @@ const production = !target === 'prod';
 const config = require(`./env/${target}.js`);
 
 export default {
-  input: 'src/js/main.js',
+  input: 'src/index.js',
   output: {
     file: 'www/js/bundle.js',
     format: 'iife',
     sourcemap: true,
+    globals: {
+      react: "React"
+    },
   },
   plugins: [
     postcss({
       minimize: production,
     }),
     resolve(),
-    commonjs(),
+    babel({
+      exclude: 'node_modules/**',
+    }),
+    commonjs({
+      namedExports: {
+        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement'],
+        'node_modules/react-dom/index.js': ['render'],
+      },
+    }),
     replace({
-      include: 'src/js/config.js',
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+    replace({
+      include: 'src/Config.js',
       delimiters: ['<@', '@>'],
       ...config,
-    }),
-    babel({
-      exclude: 'node_modules/**'
     }),
     production && uglify(),
   ]

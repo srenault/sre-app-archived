@@ -3,3 +3,4 @@ plugins/
 platforms/
 www/js
 env/prod.js
+.DS_Store
