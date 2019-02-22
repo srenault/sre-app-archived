@@ -6,7 +6,7 @@ import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.client.blaze._
 import transport.train.TrainClient
 import transport.subway.SubwayClient
-import finance.IComptaClient
+import finance.{ IComptaClient, CMClient }
 import domoticz.DomoticzClient
 import weather.WeatherClient
 
@@ -24,8 +24,8 @@ object ServerStream {
   def subwayService[F[_]: Effect](subwayClient: SubwayClient[F], settings: Settings) =
     new SubwayService[F](subwayClient, settings).service
 
-  def financeService[F[_]: Effect](icomptaClient: IComptaClient[F], settings: Settings) =
-    new FinanceService[F](icomptaClient, settings).service
+  def financeService[F[_]: Effect](icomptaClient: IComptaClient[F], cmClient: CMClient[F], settings: Settings) =
+    new FinanceService[F](icomptaClient, cmClient, settings).service
 
   def energyService[F[_]: Effect](domoticzClient: DomoticzClient[F], settings: Settings) =
     new EnergyService[F](domoticzClient, settings).service
@@ -41,12 +41,13 @@ object ServerStream {
           trainClient <- TrainClient.stream[F](httpClient, settings)
           subwayClient = SubwayClient[F](trainClient)
           icomptaClient <- IComptaClient.stream[F](settings)
+          cmClient <- CMClient.stream[F](httpClient, settings)
           domoticzClient = DomoticzClient[F](httpClient, settings.domoticz)
           weatherClient = WeatherClient[F](httpClient, settings.weather)
           R <- BlazeBuilder[F].bindHttp(8080, "0.0.0.0")
                               .mountService(trainService(trainClient, settings), "/api/transport/train")
                               .mountService(subwayService(subwayClient, settings), "/api/transport/subway")
-                              .mountService(financeService(icomptaClient, settings), "/api/finance")
+                              .mountService(financeService(icomptaClient, cmClient, settings), "/api/finance")
                               .mountService(energyService(domoticzClient, settings), "/api/energy")
                               .mountService(weatherService(weatherClient, settings), "/api/weather")
                               .serve
