@@ -11,24 +11,27 @@ import org.http4s.dsl.io._
 import org.http4s.client._
 import sre.dashboard.{ Settings, CMSettings }
 
-case class CMClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings: CMSettings, sessionRef: Ref[F, Option[Deferred[F, CMSession]]]) extends CMClientDsl[F] {
+case class CMClient[F[_]](
+  httpClient: Client[F],
+  settings: CMSettings,
+  sessionRef: Ref[F, Option[Deferred[F, CMSession]]],
+  formCache: CMDownloadFormCache,
+  balancesCache: CMBalancesCache,
+  ofxCache: CMOfxExportCache,
+  csvCache: CMCsvExportCache
+)(implicit F: ConcurrentEffect[F]) extends CMClientDsl[F] {
 
   private val FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   def fetchDownloadForm(): F[CMDownloadForm] =
-    CMDownloadFormCache.cached {
-      withSession { session =>
-        val uri  = settings.endpoint / "fr" / "banque" / "compte" / "telechargement.cgi"
-        val request = AuthenticatedGET(uri, session)
-        httpClient.expect[String](request).map { html =>
-          val doc = org.jsoup.Jsoup.parse(html)
-          CMDownloadForm.parseOrFail(doc)
-        }
+    formCache.cached {
+      doAuthenticatedGET(settings.downloadUri) { response =>
+        response.as[String].map(CMDownloadForm.parseOrFail)
       }
     }
 
   def fetchBalance(accountId: String): F[Float] =
-    CMBalanceCache.cached(accountId) {
+    balancesCache.cached(accountId) {
       exportAsCSV(accountId).map { lines =>
         lines.lastOption.map(_.balance).getOrElse {
           sys.error(s"Unable to get balance for $accountId")
@@ -46,10 +49,10 @@ case class CMClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings: CMS
     }
   }
 
-  def exportAsOfx(accountId: String, maybeStartDate: Option[LocalDate] = None, maybeEndDate: Option[LocalDate] = None): F[List[OfxStmTrn]] =
-    withSession { session =>
+  def exportAsOfx(accountId: String, maybeStartDate: Option[LocalDate] = None, maybeEndDate: Option[LocalDate] = None, retries: Int = 1): F[List[OfxStmTrn]] =
+    ofxCache.cached(accountId, maybeStartDate, maybeEndDate) {
       fetchDownloadForm().flatMap { downloadForm =>
-        val action = settings.endpoint.withPath(downloadForm.action)
+        val action = settings.baseUri.withPath(downloadForm.action)
         val input = downloadForm.inputs.find(_.id == accountId) getOrElse {
           sys.error(s"Unknown account $accountId")
         }
@@ -68,16 +71,29 @@ case class CMClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings: CMS
           "_FID_DoDownload.y" -> "0"
         )
 
-        val request = AuthenticatedPOST(action, data, session)
-
-        httpClient.expect[String](request).flatMap(OfxStmTrn.load(_))
+        doAuthenticatedPOST(action, data) { response =>
+          response.as[String].flatMap { body =>
+            CMDownloadForm.parse(body) match {
+              case Left(_) =>
+                OfxStmTrn.load(body)
+              case Right(form) =>
+                formCache.set(form)
+                if (retries > 0) {
+                  exportAsOfx(accountId, maybeStartDate, maybeEndDate, retries - 1)
+                } else {
+                  sys.error("Unable to export ofx")
+                }
+            }
+          }
+        }
       }
     }
 
-  def exportAsCSV(accountId: String, maybeStartDate: Option[LocalDate] = None, maybeEndDate: Option[LocalDate] = None): F[List[CMCsvRecord]] =
-    withSession { session =>
+  def exportAsCSV(accountId: String, maybeStartDate: Option[LocalDate] = None, maybeEndDate: Option[LocalDate] = None, retries: Int = 1): F[List[CMCsvRecord]] =
+    csvCache.cached(accountId, maybeStartDate, maybeEndDate) {
       fetchDownloadForm().flatMap { downloadForm =>
-        val action = settings.endpoint.withPath(downloadForm.action)
+        val action = settings.baseUri.withPath(downloadForm.action)
+
         val input = downloadForm.inputs.find(_.id == accountId) getOrElse {
           sys.error(s"Unknown account $accountId")
         }
@@ -99,12 +115,24 @@ case class CMClient[F[_]: ConcurrentEffect](httpClient: Client[F], settings: CMS
           "_FID_DoDownload.y" -> "0"
         )
 
-        val request = AuthenticatedPOST(action, data, session)
+        doAuthenticatedPOST(action, data) { response =>
+          response.as[String].flatMap { body =>
+            CMDownloadForm.parse(body) match {
+              case Left(_) =>
+                val lines = body.split("\n").toList
+                F.pure { lines.tail.map(CMcsvLine.parseOrFail) }
 
-        httpClient.expect[String](request).map { response =>
-          println(response)
-          val lines = response.split("\n").toList
-          lines.tail.map(CMcsvLine.parseOrFail)
+              case Right(form) =>
+                formCache.set(form).flatMap { _ =>
+                  if (retries > 0) {
+                    exportAsCSV(accountId, maybeStartDate, maybeEndDate, retries - 1)
+                  } else {
+                    sys.error("Unable to export csv")
+                  }
+                }
+            }
+
+          }
         }
       }
     }
@@ -117,7 +145,11 @@ object CMClient {
       d <- Deferred[F, CMSession]
       sessionRef <- Ref.of[F, Option[Deferred[F, CMSession]]](None)
     } yield {
-      CMClient[F](httpClient, settings.finance.cm, sessionRef)
+      val formCache = CMDownloadFormCache(settings.finance.cm.cache.form)
+      val balancesCache = CMBalancesCache(settings.finance.cm.cache.balances)
+      val ofxCache = CMOfxExportCache(settings.finance.cm.cache.ofx)
+      val csvCache = CMCsvExportCache(settings.finance.cm.cache.csv)
+      CMClient[F](httpClient, settings.finance.cm, sessionRef, formCache, balancesCache, ofxCache, csvCache)
     }
     Stream.eval(client)
   }

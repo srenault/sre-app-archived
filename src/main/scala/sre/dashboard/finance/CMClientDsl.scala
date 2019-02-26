@@ -18,21 +18,18 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
 
   def sessionRef: Ref[F, Option[Deferred[F, CMSession]]]
 
-  def login()(implicit F: Effect[F]): F[CMSession] = {
-    val endpoint = settings.endpoint / "fr" / "authentification.html"
-
+  def login()(implicit F: ConcurrentEffect[F]): F[CMSession] = {
     val body = UrlForm(
       "_cm_user" -> settings.username,
       "_cm_pwd" -> settings.password,
       "flag" -> "password"
     )
 
-    val request = POST(endpoint, body)
+    val request = POST(settings.authenticationUri, body)
 
     httpClient.fetch(request) { response =>
       val cookie = response.cookies.find(_.name == "IdSes") getOrElse sys.error("Unable to get cm session")
       val location = response.headers.get(headers.Location) getOrElse sys.error("Unable to get login")
-      println(location)
       val redirectUri = GET(location.uri, CMSession(cookie).toRequestCookie)
 
       httpClient.fetch(redirectUri) { response =>
@@ -50,6 +47,27 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
     } yield session
   }
 
+  def authenticatedFetch[A](request: Request[F], retries: Int = 1)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] =
+    withSession { session =>
+      httpClient.fetch(request.putHeaders(session.toRequestCookie)) { response =>
+        val isUnauthorized = response.headers.get(headers.Location).exists { location =>
+          location.value == settings.authenticationUri.toString
+        }
+
+        if (isUnauthorized && retries > 0) {
+          refreshSession().flatMap { session =>
+            authenticatedFetch(request, retries - 1)(f)
+          }
+        } else if (isUnauthorized) {
+          sys.error("Unable to refresh cm session")
+        } else if (response.status == Status.Ok){
+          f(response)
+        } else {
+          sys.error(s"An error occured while performing $request\n:$response")
+        }
+      }
+    }
+
   def withSession[A](f: CMSession => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
     for {
       maybeSession <- sessionRef.get
@@ -57,10 +75,7 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
         case Some(deferredSession) => deferredSession.get
         case None => refreshSession()
       }
-      res <- f(session).recoverWith { //TODO
-        case UnexpectedStatus(Status.Found) =>
-          refreshSession().flatMap(f)
-      }
+      res <- f(session)
     } yield res
   }
 
@@ -70,5 +85,17 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
 
   def AuthenticatedPOST(uri: Uri, data: UrlForm, session: CMSession)(implicit F: Monad[F]): F[Request[F]] = {
     POST(uri, data, session.toRequestCookie)
+  }
+
+  def doAuthenticatedGET[A](uri: Uri)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
+    GET(uri).flatMap { request =>
+      authenticatedFetch(request)(f)
+    }
+  }
+
+  def doAuthenticatedPOST[A](uri: Uri, data: UrlForm)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
+    POST(uri, data).flatMap { request =>
+      authenticatedFetch(request)(f)
+    }
   }
 }

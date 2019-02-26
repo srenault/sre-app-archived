@@ -1,5 +1,6 @@
 package sre.dashboard.finance
 
+import cats.implicits._
 import java.time.LocalDate
 import org.http4s._
 import org.http4s.headers._
@@ -15,11 +16,46 @@ case class CMDownloadForm(action: String, inputs: List[CMAccountInput])
 
 object CMDownloadForm {
 
+  def parse(html: String): Either[String, CMDownloadForm] = {
+    Either.catchNonFatal {
+      val doc = org.jsoup.Jsoup.parse(html)
+      parse(doc)
+    }.left.map(_.getMessage).flatten
+  }
+
+  def parse(doc: org.jsoup.nodes.Document): Either[String, CMDownloadForm] = {
+
+    val formOrError: Either[String, org.jsoup.nodes.Element] =
+      doc.select("""[id="P:F"]""").asScala.headOption match {
+        case Some(el) => Right(el)
+        case None => Left("Unable to get download form")
+      }
+
+    val actionOrError: org.jsoup.nodes.Element => Either[String, String] =
+      (form) => {
+        Option(form.attributes.get("action")) match {
+          case Some(action) => Right(action)
+          case None => Left("Unable to get action")
+        }
+      }
+
+    for {
+      form <- formOrError.right
+      action <- actionOrError(form).right
+      inputs <- CMAccountInput.parse(doc).right
+    } yield CMDownloadForm(action, inputs)
+  }
+
+  def parseOrFail(html: String): CMDownloadForm = {
+    val doc = org.jsoup.Jsoup.parse(html)
+    parseOrFail(doc)
+  }
+
   def parseOrFail(doc: org.jsoup.nodes.Document): CMDownloadForm = {
-    val form = doc.select("""[id="P:F"]""").asScala.headOption getOrElse sys.error("Unable to get download form")
-    val action = Option(form.attributes.get("action")) getOrElse sys.error("Unable to get action")
-    val inputs = CMAccountInput.parseOrFail(doc)
-    CMDownloadForm(action, inputs)
+    parse(doc) match {
+      case Left(error) => sys.error(s"Unable to parse cm form: $doc")
+      case Right(form) => form
+    }
   }
 }
 
@@ -27,16 +63,43 @@ case class CMAccountInput(id: String, label: String, checkId: String, checkName:
 
 object CMAccountInput {
 
-  def parseOrFail(doc: org.jsoup.nodes.Document): List[CMAccountInput] = {
+  def parse(doc: org.jsoup.nodes.Document): Either[String, List[CMAccountInput]] = {
     doc.select("#account-table label").asScala.map { domLabel =>
       val label = domLabel.text
       val id = label.split(" ").take(3).mkString("")
-      val checkId = Option(domLabel.attributes.get("for")) getOrElse sys.error("Unable to get checkId")
-      val check = doc.select(s"""[id="$checkId"]""").asScala.headOption getOrElse sys.error(s"Unable to get check $checkId")
-      val checkName = Option(check.attributes.get("name")) getOrElse sys.error("Unable to get checkName")
-      CMAccountInput(id, label, checkId, checkName)
-    }.toList
+
+      val checkIdOrError = Option(domLabel.attributes.get("for")) match {
+        case Some(checkId) => Right(checkId)
+        case None => Left("Unable to get checkId")
+      }
+
+      val checkOrError = (checkId: String) => {
+        doc.select(s"""[id="$checkId"]""").asScala.headOption match {
+          case Some(checkName) => Right(checkName)
+          case None => Left(s"Unable to get check $checkId")
+        }
+      }
+
+      val checkNameOrError = (check: org.jsoup.nodes.Element) => {
+        Option(check.attributes.get("name")) match {
+          case Some(checkName) => Right(checkName)
+          case None => Left("Unable to get checkName")
+        }
+      }
+
+      for {
+        checkId <- checkIdOrError.right
+        check <- checkOrError(checkId).right
+        checkName <- checkNameOrError(check).right
+      } yield CMAccountInput(id, label, checkId, checkName)
+    }.toList.sequence
   }
+
+  def parseOrFail(doc: org.jsoup.nodes.Document): List[CMAccountInput] =
+    parse(doc) match {
+      case Left(error) => sys.error(s"Unable to parse $doc as CMAccountInput: $error")
+      case Right(inputs) => inputs
+    }
 }
 
 case class CMAccount(id: String, label: String, balance: Float)

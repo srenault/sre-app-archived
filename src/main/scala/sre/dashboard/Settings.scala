@@ -1,6 +1,7 @@
 package sre.dashboard
 
 import java.io.File
+import scala.concurrent.duration.FiniteDuration
 import org.http4s.Uri
 import io.circe._
 import io.circe.generic.auto._
@@ -15,7 +16,20 @@ case class IComptaSettings(db: String, accountId: String, categories: Map[String
 
 case class CMTasksSettings(balances: CronExpr, expenses: CronExpr)
 
-case class CMSettings(endpoint: Uri, username: String, password: String, tasks: CMTasksSettings)
+case class CMCacheSettings(form: FiniteDuration, balances: FiniteDuration, ofx: FiniteDuration, csv: FiniteDuration)
+
+case class CMSettings(
+  baseUri: Uri,
+  authenticationPath: String,
+  downloadPath: String,
+  username: String,
+  password: String,
+  tasks: CMTasksSettings,
+  cache: CMCacheSettings
+) {
+  def authenticationUri: Uri = baseUri.withPath(authenticationPath)
+  def downloadUri: Uri = baseUri.withPath(downloadPath)
+}
 
 case class FinanceSettings(icompta: IComptaSettings, cm: CMSettings)
 
@@ -41,6 +55,8 @@ case class EnergySettings(electricity: ElectricitySettings)
 case class WeatherSettings(endpoint: Uri)
 
 case class Settings(
+  httpPort: Int,
+  db: String,
   transport: TransportSettings,
   finance: FinanceSettings,
   domoticz: DomoticzSettings,
@@ -56,6 +72,8 @@ object Settings {
     com.typesafe.config.ConfigFactory.parseResources(CONFIG_FILE_NAME)
 
   def load(): Either[Error, Settings] = {
+    val httpPort = AppConfig.getInt("httpPort")
+    val db = AppConfig.getString("db")
     for {
       trainSettings <- AppConfig.as[TrainSettings]("transport.train")
       transportSettings = TransportSettings(trainSettings)
@@ -63,7 +81,8 @@ object Settings {
       domoticzSettings <- AppConfig.as[DomoticzSettings]("domoticz")
       energySettings <- AppConfig.as[EnergySettings]("energy")
       weatherSettings <- AppConfig.as[WeatherSettings]("weather")
-    } yield Settings(transportSettings, financeSettings, domoticzSettings, energySettings, weatherSettings)
+    } yield Settings(httpPort, db, transportSettings, financeSettings, domoticzSettings,
+      energySettings, weatherSettings)
   }
 
   implicit val UriDecoder: Decoder[Uri] = new Decoder[Uri] {

@@ -7,6 +7,7 @@ import org.http4s.client.blaze._
 import transport.train.TrainClient
 import transport.subway.SubwayClient
 import finance.{ IComptaClient, CMClient }
+import db.DatabaseClient
 import domoticz.DomoticzClient
 import weather.WeatherClient
 
@@ -33,7 +34,7 @@ object ServerStream {
   def weatherService[F[_]: Effect](weatherClient: WeatherClient[F], settings: Settings) =
     new WeatherService[F](weatherClient, settings).service
 
-  def stream[F[_]: ConcurrentEffect] = {
+  def stream[F[_]: ConcurrentEffect](implicit timer: Timer[F]) = {
     Settings.load() match {
       case Right(settings) =>
         for {
@@ -44,7 +45,7 @@ object ServerStream {
           cmClient <- CMClient.stream[F](httpClient, settings)
           domoticzClient = DomoticzClient[F](httpClient, settings.domoticz)
           weatherClient = WeatherClient[F](httpClient, settings.weather)
-          R <- BlazeBuilder[F].bindHttp(8080, "0.0.0.0")
+          R <- BlazeBuilder[F].bindHttp(settings.httpPort, "0.0.0.0")
                               .mountService(trainService(trainClient, settings), "/api/transport/train")
                               .mountService(subwayService(subwayClient, settings), "/api/transport/subway")
                               .mountService(financeService(icomptaClient, cmClient, settings), "/api/finance")

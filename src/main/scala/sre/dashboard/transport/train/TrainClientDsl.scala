@@ -61,7 +61,7 @@ trait TrainClientDsl[F[_]] extends Http4sClientDsl[F] {
         case None => refreshAuthInfo()
       }
       res <- f(authInfo).recoverWith {
-        case UnexpectedStatus(status) if status == 401 =>
+        case UnexpectedStatus(Status.Unauthorized) =>
           refreshAuthInfo().flatMap(f)
       }
     } yield res)
