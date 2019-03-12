@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 import Nav from "./Nav";
 import Header from "./Header";
@@ -8,12 +8,12 @@ import Footer from "./Footer";
 
 import './App.css';
 
-const AppRouter = () => (
+const AppRouter = ({ apiClient }) => (
   <Router>
     <div className="dashboard">
       <Header />
       <Nav />
-      <Main />
+      <Main apiClient={apiClient} />
       <Footer />
     </div>
   </Router>

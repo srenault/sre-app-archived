@@ -8,7 +8,7 @@ export default function Nav() {
     <aside className="dashboard-nav">
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/money">Money</Link></li>
+        <li><Link to="/finance">Finance</Link></li>
       </ul>
     </aside>
   );
