@@ -1,6 +1,5 @@
 package sre.dashboard.finance
 
-import cats._
 import cats.effect._
 import cats.implicits._
 import cats.effect.concurrent.{ Ref, Deferred }
@@ -9,8 +8,11 @@ import org.http4s.dsl.io._
 import org.http4s.client._
 import org.http4s.client.dsl.Http4sClientDsl
 import sre.dashboard.CMSettings
+import org.slf4j.Logger
 
 trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
+
+  val logger: Logger
 
   def httpClient: Client[F]
 
@@ -19,6 +21,8 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
   def sessionRef: Ref[F, Option[Deferred[F, CMSession]]]
 
   def login()(implicit F: ConcurrentEffect[F]): F[CMSession] = {
+    logger.info("Authenticating...")
+
     val body = UrlForm(
       "_cm_user" -> settings.username,
       "_cm_pwd" -> settings.password,
@@ -33,12 +37,14 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
       val redirectUri = GET(location.uri, CMSession(cookie).toRequestCookie)
 
       httpClient.fetch(redirectUri) { response =>
+        logger.info(s"Authentication OK")
         F.pure(CMSession(cookie))
       }
     }
   }
 
   def refreshSession()(implicit F: ConcurrentEffect[F]): F[CMSession] = {
+    logger.info("Refreshing session...")
     for {
       d <- Deferred[F, CMSession]
       _ <- sessionRef.set(Some(d))
@@ -47,7 +53,8 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
     } yield session
   }
 
-  def authenticatedFetch[A](request: Request[F], retries: Int = 1)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] =
+  def authenticatedFetch[A](request: Request[F], retries: Int = 1)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
+    logger.info(s"Performing request ${request.uri} with retries = $retries")
     withSession { session =>
       httpClient.fetch(request.putHeaders(session.toRequestCookie)) { response =>
         val isUnauthorized = response.headers.get(headers.Location).exists { location =>
@@ -61,12 +68,14 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
         } else if (isUnauthorized) {
           sys.error("Unable to refresh cm session")
         } else if (response.status == Status.Ok){
+          logger.info(s"Request ${request.uri} OK")
           f(response)
         } else {
           sys.error(s"An error occured while performing $request\n:$response")
         }
       }
     }
+  }
 
   def withSession[A](f: CMSession => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
     for {

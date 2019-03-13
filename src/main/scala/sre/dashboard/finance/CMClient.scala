@@ -7,9 +7,9 @@ import cats.implicits._
 import cats.effect._
 import cats.effect.concurrent.{ Ref, Deferred }
 import org.http4s._
-import org.http4s.dsl.io._
 import org.http4s.client._
 import sre.dashboard.{ Settings, CMSettings }
+import org.slf4j.{ LoggerFactory, Logger }
 
 case class CMClient[F[_]](
   httpClient: Client[F],
@@ -18,7 +18,8 @@ case class CMClient[F[_]](
   formCache: CMDownloadFormCache,
   balancesCache: CMBalancesCache,
   ofxCache: CMOfxExportCache,
-  csvCache: CMCsvExportCache
+  csvCache: CMCsvExportCache,
+  logger: Logger
 )(implicit F: ConcurrentEffect[F]) extends CMClientDsl[F] {
 
   private val FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -149,7 +150,8 @@ object CMClient {
       val balancesCache = CMBalancesCache(settings.finance.cm.cache.balances)
       val ofxCache = CMOfxExportCache(settings.finance.cm.cache.ofx)
       val csvCache = CMCsvExportCache(settings.finance.cm.cache.csv)
-      CMClient[F](httpClient, settings.finance.cm, sessionRef, formCache, balancesCache, ofxCache, csvCache)
+      val logger = LoggerFactory.getLogger("sre.dashboard.finance.CmClient")
+      CMClient[F](httpClient, settings.finance.cm, sessionRef, formCache, balancesCache, ofxCache, csvCache, logger)
     }
     Stream.eval(client)
   }
