@@ -31,7 +31,7 @@ case class CMClient[F[_]](
       }
     }
 
-  def fetchBalance(accountId: String): F[Float] =
+  def fetchBalance(accountId: String): F[Float] = {
     balancesCache.cached(accountId) {
       exportAsCSV(accountId).map { lines =>
         lines.lastOption.map(_.balance).getOrElse {
@@ -39,8 +39,9 @@ case class CMClient[F[_]](
         }
       }
     }
+  }
 
-  def listAccount(): F[List[CMAccount]] = {
+  def fetchAccounts(): F[List[CMAccount]] = {
     fetchDownloadForm().flatMap { downloadForm =>
       downloadForm.inputs.map { input =>
         fetchBalance(input.id).map { balance =>
@@ -141,7 +142,7 @@ case class CMClient[F[_]](
 
 object CMClient {
 
-  def stream[F[_]: ConcurrentEffect](httpClient: Client[F], settings: Settings)(implicit F: Effect[F]): Stream[F, CMClient[F]] = {
+  def stream[F[_]: ConcurrentEffect](httpClient: Client[F], settings: Settings): Stream[F, CMClient[F]] = {
     val client = for {
       d <- Deferred[F, CMSession]
       sessionRef <- Ref.of[F, Option[Deferred[F, CMSession]]](None)

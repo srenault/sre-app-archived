@@ -1,10 +1,15 @@
 package sre.dashboard.finance
 
-import cats.implicits._
 import java.time.LocalDate
-import org.http4s._
-import org.http4s.headers._
 import scala.collection.JavaConverters._
+import cats.implicits._
+import cats.effect._
+import org.http4s._
+import org.http4s.EntityEncoder
+import org.http4s.headers._
+import org.http4s.circe._
+import io.circe.Encoder
+import io.circe.generic.semiauto._
 
 case class CMSession(cookie: ResponseCookie) {
   def toRequestCookie: Cookie = {
@@ -103,10 +108,15 @@ object CMAccountInput {
 }
 
 case class CMAccount(id: String, label: String, balance: Float)
+
 object CMAccount {
 
   def apply(input: CMAccountInput, balance: Float): CMAccount =
-    CMAccount(input, balance)
+    CMAccount(input.id, input.label, balance)
+
+  implicit val encoder: Encoder[CMAccount] = deriveEncoder[CMAccount]
+  implicit def entityEncoder[F[_]: Effect]: EntityEncoder[F, CMAccount] = jsonEncoderOf[F, CMAccount]
+  implicit def entitiesEncoder[F[_]: Effect]: EntityEncoder[F, List[CMAccount]] = jsonEncoderOf[F, List[CMAccount]]
 }
 
 case class CMCsvRecord(

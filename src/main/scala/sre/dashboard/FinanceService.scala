@@ -41,10 +41,9 @@ class FinanceService[F[_]: Effect](icomptaClient: IComptaClient[F], cmClient: CM
             } yield res
         }
 
-      case GET -> Root / "cm" =>
-        cmClient.fetchBalance("3719100010480201").flatMap { result =>
-          println(result)
-          Ok()
+      case GET -> Root / "accounts" =>
+        cmClient.fetchAccounts().flatMap { accounts =>
+          Ok(accounts)
         }
     }
   }

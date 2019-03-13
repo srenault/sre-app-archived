@@ -45,12 +45,12 @@ case class CMOfxExportCache(ttl: FiniteDuration) {
   private val dateFormat = DateTimeFormatter.ISO_LOCAL_DATE
 
   private val cache: Cache[List[OfxStmTrn]] = {
-    val underlying = CacheBuilder.newBuilder().maximumSize(1L).build[String, Entry[List[OfxStmTrn]]]
+    val underlying = CacheBuilder.newBuilder().maximumSize(30L).build[String, Entry[List[OfxStmTrn]]]
     GuavaCache(underlying)
   }
 
   private def key(accountId: String, startDate: Option[LocalDate], endDate: Option[LocalDate]): String =
-    List(accountId, startDate.map(_.format(dateFormat)), endDate.map(_.format(dateFormat))).mkString("#")
+    List(Some(accountId), startDate.map(_.format(dateFormat)), endDate.map(_.format(dateFormat))).flatten.mkString("#")
 
   def cached[F[_]: ConcurrentEffect](accountId: String, startDate: Option[LocalDate], endDate: Option[LocalDate])(f: => F[List[OfxStmTrn]]): F[List[OfxStmTrn]] = {
     cache.cachingF(key(accountId, startDate, endDate))(ttl = Some(ttl))(f)
@@ -62,12 +62,12 @@ case class CMCsvExportCache(ttl: FiniteDuration) {
   private val dateFormat = DateTimeFormatter.ISO_LOCAL_DATE
 
   private val cache: Cache[List[CMCsvRecord]] = {
-    val underlying = CacheBuilder.newBuilder().maximumSize(1L).build[String, Entry[List[CMCsvRecord]]]
+    val underlying = CacheBuilder.newBuilder().maximumSize(30L).build[String, Entry[List[CMCsvRecord]]]
     GuavaCache(underlying)
   }
 
   private def key(accountId: String, startDate: Option[LocalDate], endDate: Option[LocalDate]): String =
-    List(accountId, startDate.map(_.format(dateFormat)), endDate.map(_.format(dateFormat))).mkString("#")
+    List(Some(accountId), startDate.map(_.format(dateFormat)), endDate.map(_.format(dateFormat))).flatten.mkString("#")
 
   def cached[F[_]: ConcurrentEffect](accountId: String, startDate: Option[LocalDate], endDate: Option[LocalDate])(f: => F[List[CMCsvRecord]]): F[List[CMCsvRecord]] = {
     cache.cachingF(key(accountId, startDate, endDate))(ttl = Some(ttl))(f)
