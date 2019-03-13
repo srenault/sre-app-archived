@@ -25,7 +25,7 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
       "flag" -> "password"
     )
 
-    val request = POST(settings.authenticationUri, body)
+    val request = POST(body, settings.authenticationUri)
 
     httpClient.fetch(request) { response =>
       val cookie = response.cookies.find(_.name == "IdSes") getOrElse sys.error("Unable to get cm session")
@@ -79,14 +79,6 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
     } yield res
   }
 
-  def AuthenticatedGET(uri: Uri, session: CMSession)(implicit F: Monad[F]): F[Request[F]] = {
-    GET(uri, session.toRequestCookie)
-  }
-
-  def AuthenticatedPOST(uri: Uri, data: UrlForm, session: CMSession)(implicit F: Monad[F]): F[Request[F]] = {
-    POST(uri, data, session.toRequestCookie)
-  }
-
   def doAuthenticatedGET[A](uri: Uri)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
     GET(uri).flatMap { request =>
       authenticatedFetch(request)(f)
@@ -94,7 +86,7 @@ trait CMClientDsl[F[_]] extends Http4sClientDsl[F] {
   }
 
   def doAuthenticatedPOST[A](uri: Uri, data: UrlForm)(f: Response[F] => F[A])(implicit F: ConcurrentEffect[F]): F[A] = {
-    POST(uri, data).flatMap { request =>
+    POST(data, uri).flatMap { request =>
       authenticatedFetch(request)(f)
     }
   }
