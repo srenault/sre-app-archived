@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+then
+    echo "Please specify endpoint"
+    exit 1;
+fi
+
+ENDPOINT=$1
+
+generate () {
+    REQUEST=$1
+    OUTPUT=$2
+
+    echo -n "export default " > $OUTPUT
+    echo -n $(curl -s $REQUEST | ./node_modules/json-to-js/index.js) >> $OUTPUT
+    echo -n ";" >> $OUTPUT
+}
+
+# FINANCE
+
+FINANCE_ENDPOINT=$ENDPOINT"/finance"
+FINANCE_OUTPUT_DIR="src/ApiClient/mock/dump/finance"
+
+# FINANCE - BALANCES
+if [ ! -d $FINANCE_OUTPUT_DIR ]; then
+  mkdir -p $FINANCE_OUTPUT_DIR;
+fi
+
+BALANCES_OUTPUT=$FINANCE_OUTPUT_DIR"/balances.js"
+generate $FINANCE_ENDPOINT"/accounts" $BALANCES_OUTPUT

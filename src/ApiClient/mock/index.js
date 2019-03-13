@@ -1,4 +1,4 @@
-import financeApi from './finance';
+import financeApi from './FinanceApi';
 
 export default {
   finance: financeApi,

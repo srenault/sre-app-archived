@@ -1,9 +1,9 @@
-import balances from './balances';
-import statements from './statements';
-import categorizedExpenses from './categorized_expenses';
-import balancesHistory from './balances_history';
+import balances from './dump/finance/balances';
+import statements from './dump/finance/statements';
+import categorizedExpenses from './dump/finance/categorized_expenses';
+import balancesHistory from './dump/finance/balances_history';
 
-import { delay } from '../common';
+import { delay } from './common';
 
 export default {
   fetchBalances() {
