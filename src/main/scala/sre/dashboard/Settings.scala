@@ -16,7 +16,14 @@ case class IComptaSettings(db: String, accountId: String, categories: Map[String
 
 case class CMTasksSettings(balances: CronExpr, expenses: CronExpr)
 
-case class CMCacheSettings(form: FiniteDuration, balances: FiniteDuration, ofx: FiniteDuration, csv: FiniteDuration)
+case class CMCacheSettings(size: Int, ttl: FiniteDuration)
+
+case class CMCachesSettings(
+  form: CMCacheSettings,
+  balances: CMCacheSettings,
+  ofx: CMCacheSettings,
+  csv: CMCacheSettings
+)
 
 case class CMSettings(
   baseUri: Uri,
@@ -25,7 +32,7 @@ case class CMSettings(
   username: String,
   password: String,
   tasks: CMTasksSettings,
-  cache: CMCacheSettings
+  cache: CMCachesSettings
 ) {
   def authenticationUri: Uri = baseUri.withPath(authenticationPath)
   def downloadUri: Uri = baseUri.withPath(downloadPath)
