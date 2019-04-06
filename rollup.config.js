@@ -5,6 +5,7 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
 import size from 'rollup-plugin-size';
+import reactSvg from "rollup-plugin-react-svg";
 
 const target = process.env.target || 'dev';
 
@@ -18,12 +19,16 @@ export default {
     file: 'www/js/bundle.js',
     format: 'iife',
     sourcemap: true,
-    globals: {
-      react: "React"
-    },
+  },
+  onwarn(message) {
+    if (message.code === 'CIRCULAR_DEPENDENCY') {
+      return;
+    }
+    console.error(message);
   },
   plugins: [
     size(),
+    reactSvg({}),
     postcss({
       minimize: production,
     }),
@@ -34,8 +39,9 @@ export default {
     }),
     commonjs({
       namedExports: {
-        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext'],
+        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext', 'Fragment'],
         'node_modules/react-dom/index.js': ['render'],
+        'node_modules/react-is/index.js': ['isValidElementType'],
       },
     }),
     replace({

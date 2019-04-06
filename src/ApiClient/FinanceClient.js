@@ -5,23 +5,23 @@ export default class FinanceClient {
     this.endpoint = endpoint;
   }
 
-  async fetchBalances() {
-    const response = await fetch(`${this.endpoint}/balances`);
+  async fetchAccountsOverview() {
+    const response = await fetch(`${this.endpoint}/accounts`);
     return await response.json();
   }
 
   async fetchStatements(accountId) {
-    const response = await fetch(`${this.endpoint}/statements/${accountId}`);
+    const response = await fetch(`${this.endpoint}/accounts/${accountId}/statements`);
     return await response.json();
   }
 
   async fetchCategorizedExpenses(accountId) {
-    const response = await fetch(`${this.endpoint}/expenses/${accountId}`);
+    const response = await fetch(`${this.endpoint}/accounts/${accountId}/expenses`);
     return await response.json();
   }
 
   async fetchHistoryBalances(day, nbMonths) {
-    const response = fetch(`${this.endpoint}/history/balances`);
+    const response = fetch(`${this.endpoint}/accounts/history/balances`);
     return await response.json();
   }
 }

@@ -6,7 +6,14 @@ then
     exit 1;
 fi
 
+if [ -z "$2" ]
+then
+    echo "Please specify main account id"
+    exit 1;
+fi
+
 ENDPOINT=$1
+MAIN_ACCOUNT=$2
 
 generate () {
     REQUEST=$1
@@ -27,5 +34,11 @@ if [ ! -d $FINANCE_OUTPUT_DIR ]; then
   mkdir -p $FINANCE_OUTPUT_DIR;
 fi
 
-BALANCES_OUTPUT=$FINANCE_OUTPUT_DIR"/balances.js"
-generate $FINANCE_ENDPOINT"/accounts" $BALANCES_OUTPUT
+ACCOUNTS_OUTPUT=$FINANCE_OUTPUT_DIR"/accounts.js"
+generate $FINANCE_ENDPOINT"/accounts" $ACCOUNTS_OUTPUT
+
+STATEMENTS_OUTPUT=$FINANCE_OUTPUT_DIR"/statements.js"
+generate $FINANCE_ENDPOINT"/accounts/"$MAIN_ACCOUNT"/statements" $STATEMENTS_OUTPUT
+
+EXPENSES_OUTPUT=$FINANCE_OUTPUT_DIR"/categorized_expenses.js"
+generate $FINANCE_ENDPOINT"/accounts/"$MAIN_ACCOUNT"/expenses" $EXPENSES_OUTPUT
