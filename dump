@@ -13,7 +13,7 @@ then
 fi
 
 ENDPOINT=$1
-MAIN_ACCOUNT=$2
+ACCOUNT_ID=$2
 
 generate () {
     REQUEST=$1
@@ -29,6 +29,8 @@ generate () {
 FINANCE_ENDPOINT=$ENDPOINT"/finance"
 FINANCE_OUTPUT_DIR="src/ApiClient/mock/dump/finance"
 
+rm -f $FINANCE_OUTPUT_DIR/*
+
 # FINANCE - BALANCES
 if [ ! -d $FINANCE_OUTPUT_DIR ]; then
   mkdir -p $FINANCE_OUTPUT_DIR;
@@ -37,8 +39,5 @@ fi
 ACCOUNTS_OUTPUT=$FINANCE_OUTPUT_DIR"/accounts.js"
 generate $FINANCE_ENDPOINT"/accounts" $ACCOUNTS_OUTPUT
 
-STATEMENTS_OUTPUT=$FINANCE_OUTPUT_DIR"/statements.js"
-generate $FINANCE_ENDPOINT"/accounts/"$MAIN_ACCOUNT"/statements" $STATEMENTS_OUTPUT
-
-EXPENSES_OUTPUT=$FINANCE_OUTPUT_DIR"/categorized_expenses.js"
-generate $FINANCE_ENDPOINT"/accounts/"$MAIN_ACCOUNT"/expenses" $EXPENSES_OUTPUT
+ACCOUNT_OUTPUT=$FINANCE_OUTPUT_DIR"/account.js"
+generate $FINANCE_ENDPOINT"/accounts/"$ACCOUNT_ID $ACCOUNT_OUTPUT

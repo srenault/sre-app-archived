@@ -8,13 +8,14 @@ import Account from './Account';
 
 function AccountView(apiClient, refreshSubscription) {
   return ({ match }) => {
-    const accountId = match.params.id;
+    const { id: accountId, startdate: startDate } = match.params;
     return (
       <Account
         accountId={accountId}
+        startDate={startDate}
         apiClient={apiClient}
         refreshSubscription={refreshSubscription}
-        />
+      />
     );
   };
 }
@@ -24,7 +25,7 @@ function Finance({ match, apiClient, refreshSubscription }) {
       <div className="finance">
         <Switch>
           <Route path={match.url} exact component={() => <AccountsOverview apiClient={apiClient} refreshSubscription={refreshSubscription} />} />
-          <Route path={`${match.url}/accounts/:id`} component={AccountView(apiClient, refreshSubscription)} />
+          <Route path={`${match.url}/accounts/:id/:startdate`} component={AccountView(apiClient, refreshSubscription)} />
         </Switch>
       </div>
   );

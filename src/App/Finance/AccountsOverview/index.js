@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useAsync } from "react-async";
 import { Link } from "react-router-dom";
 
-function renderAccount({ id, displayName, balance }) {
+function renderAccount(startPeriod, { id, displayName, balance }) {
   return (
-    <p key={id}><Link to={`/finance/accounts/${id}`}>{displayName} ~ {balance} €</Link></p>
+    <p key={id}><Link to={`/finance/accounts/${id}/${startPeriod}`}>{displayName} ~ {balance} €</Link></p>
   );
 }
 
@@ -31,13 +31,14 @@ export default function AccountsOverview({ apiClient, refreshSubscription }) {
     const currentAccounts = overview.accounts.filter((account) => account.type === 'current_account');
     const savingAccounts = overview.accounts.filter((account) => account.type === 'saving_account');
     const balance = Math.round(overview.credit + overview.debit);
+    const renderLink = renderAccount.bind(null, overview.startPeriod);
 
     return (
       <div className="accounts">
         <div>{ overview.startPeriod } - { balance } €</div>
-        {jointAccounts.map(renderAccount)}
-        {currentAccounts.map(renderAccount)}
-        {savingAccounts.map(renderAccount)}
+        {jointAccounts.map(renderLink)}
+        {currentAccounts.map(renderLink)}
+        {savingAccounts.map(renderLink)}
       </div>
     );
   }
