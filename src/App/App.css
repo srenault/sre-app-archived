@@ -2,20 +2,16 @@
 
 .dashboard {
     display: grid;
-    grid-template-columns: 80px 1fr;
-    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 80px 1fr;
     grid-template-areas:
-        "sidenav header"
-        "sidenav main";
+        "header"
+        "main";
     height: 100vh;
 }
 
 .dashboard-header {
     grid-area: header;
-}
-
-.dashboard-nav {
-    grid-area: sidenav;
 }
 
 .dashboard-main {

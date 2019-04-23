@@ -1,6 +1,15 @@
-.dashboard-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #394263;
+.bm-burger-button {
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    left: 36px;
+    top: 36px;
+}
+
+.bm-burger-bars {
+    background: #373a47;
+}
+
+.bm-menu {
+    background: black;
 }

@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from "react-router-dom";
+import Menu from 'react-burger-menu/lib/menus/slide';
 
 import './Nav.css';
-import HomeIcon from './baseline-home-24px.svg';
-import FinanceIcon from './baseline-account_balance-24px.svg';
 
-export default function Nav() {
+export default function Nav({ menuSubscription }) {
+  const [open, setOpen] = useState(false);
+
+  const closeMenu = useCallback(() => setOpen(false), []);
+
+  const toggleMenu = useCallback(() => setOpen(!open), []);
+
+  const handleStateChange = useCallback((state) => setOpen(state.isOpen));
+
+  useEffect(() => {
+    const subscription = menuSubscription.subscribe({
+      next: () => toggleMenu(),
+    });
+    return () => subscription.unsubscribe();
+  });
+
+  const styles = {
+    bmMenuWrap: {
+      transition: 'all 0.2s ease 0s',
+    }
+  };
+
   return (
-    <aside className="dashboard-nav">
-      <ul>
-      <li><Link to="/"><HomeIcon /></Link></li>
-        <li><Link to="/finance"><FinanceIcon /></Link></li>
-      </ul>
-    </aside>
+    <Menu styles={styles} isOpen={open} onStateChange={handleStateChange} customBurgerIcon={false} width={'30%'} pageWrapId={ "app-wrap" } outerContainerId={ "app" }>
+      <Link onClick={closeMenu} to="/">Home</Link>
+      <Link onClick={closeMenu} to="/finance">Finance</Link>
+    </Menu>
   );
 }

@@ -9,7 +9,7 @@ import apiClientMock from './ApiClient/mock';
 
 document.addEventListener('deviceready', () => {
 
-  const el = document.getElementById('root');
+  const el = document.getElementById('app');
 
   //const apiClient = new ApiClient({ endpoint: Config.endpoint });
 
