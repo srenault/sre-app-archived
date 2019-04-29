@@ -1,12 +1,18 @@
 import React from 'react';
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch } from 'react-router-dom';
 import { Subject } from 'rxjs';
 
-import Header from "./Header";
+import Main from '../Main';
+import Header from './Header';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
+import { withRoutes } from '../Routes';
 
-function AccountView(apiClient, refreshSubscription) {
+function mountAccountsOverview(apiClient) {
+  return () => <AccountsOverview apiClient={apiClient} />;
+}
+
+function mountAccount(apiClient) {
   return ({ match }) => {
     const { id: accountId, startdate: startDate } = match.params;
     return (
@@ -14,30 +20,22 @@ function AccountView(apiClient, refreshSubscription) {
         accountId={accountId}
         startDate={startDate}
         apiClient={apiClient}
-        refreshSubscription={refreshSubscription}
       />
     );
   };
 }
 
-function Finance({ match, apiClient, refreshSubscription }) {
+function Finance({ apiClient, routePaths }) {
   return (
+    <Main>
       <div className="finance">
         <Switch>
-          <Route path={match.url} exact component={() => <AccountsOverview apiClient={apiClient} refreshSubscription={refreshSubscription} />} />
-          <Route path={`${match.url}/accounts/:id/:startdate`} component={AccountView(apiClient, refreshSubscription)} />
+          <Route path={routePaths.finance.path} exact={routePaths.finance.exact} component={mountAccountsOverview(apiClient)} />
+          <Route path={routePaths.finance.children.account.path} exact={routePaths.finance.exact} component={mountAccount(apiClient)} />
         </Switch>
       </div>
+    </Main>
   );
 }
 
-export function createFinance({ Nav, Main }) {
-  const refreshSubscription = new Subject();
-  return {
-    nav: () => <Nav isFinance />,
-    header: () => <Header refreshSubscription={refreshSubscription} />,
-    main: (props) => (
-      <Main><Finance refreshSubscription={refreshSubscription} {...props} /></Main>
-    ),
-  };
-};
+export default withRoutes(Finance);

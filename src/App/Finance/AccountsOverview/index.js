@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAsync } from "react-async";
-import { Link } from "react-router-dom";
+import { useAsync } from 'react-async';
+import { Link } from 'react-router-dom';
+import { withRefreshSubject } from '../../Header';
 
 function renderAccount(startPeriod, { id, displayName, balance }) {
   return (
@@ -8,14 +9,14 @@ function renderAccount(startPeriod, { id, displayName, balance }) {
   );
 }
 
-export default function AccountsOverview({ apiClient, refreshSubscription }) {
+function AccountsOverview({ apiClient, refreshSubject }) {
 
   const promiseFn = apiClient.finance.fetchAccountsOverview;
 
   const { data: overview, error, isLoading, reload } = useAsync({ promiseFn });
 
   useEffect(() => {
-    const subscription = refreshSubscription.subscribe({
+    const subscription = refreshSubject.subscribe({
       next: () => reload(),
     });
 
@@ -43,3 +44,5 @@ export default function AccountsOverview({ apiClient, refreshSubscription }) {
     );
   }
 }
+
+export default withRefreshSubject(AccountsOverview);

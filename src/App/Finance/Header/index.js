@@ -1,12 +1,10 @@
 import React, { useCallback } from 'react';
 
 import Header from "../../Header";
+import Button from '@material-ui/core/Button';
 
-export default function FinanceHeader({ refreshSubscription }) {
-
-  const onRefresh = useCallback(() => refreshSubscription.next());
-
+export default function FinanceHeader() {
   return (
-    <Header>Finance <button onClick={onRefresh}>Refresh</button></Header>
+    <Header refresh>Finance</Header>
   );
 }

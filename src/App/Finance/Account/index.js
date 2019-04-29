@@ -2,15 +2,16 @@ import React, { useCallback, useEffect } from 'react';
 import { useAsync } from 'react-async';
 import Statements from './Statements';
 import Expenses from './Expenses';
+import { withRefreshSubject } from '../../Header';
 
-export default function Account({ accountId, startDate, apiClient, refreshSubscription }) {
+function Account({ accountId, startDate, apiClient, refreshSubject }) {
 
   const promiseFn = useCallback(() => apiClient.finance.fetchAccount(accountId), []);
 
   const { data, error, isLoading, reload } = useAsync({ promiseFn });
 
   useEffect(() => {
-    const subscription = refreshSubscription.subscribe({
+    const subscription = refreshSubject.subscribe({
       next: () => reload(),
     });
     return () => subscription.unsubscribe();
@@ -32,3 +33,5 @@ export default function Account({ accountId, startDate, apiClient, refreshSubscr
     );
   }
 }
+
+export default withRefreshSubject(Account);

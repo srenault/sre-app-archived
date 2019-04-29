@@ -1,57 +1,37 @@
 import React, { Fragment, useState } from 'react';
-import { HashRouter as Router, Route, Link, Switch } from "react-router-dom";
-import { Subject } from 'rxjs';
+import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-import Header from "./Header";
-import Main from "./Main";
-import Nav from "./Nav";
-import { createFinance } from "./Finance";
+import { withRoutes } from './Routes';
+import Nav from './Nav';
 
 import './App.css';
 
-const routes = [
-  {
-    path: "/",
-    exact: true,
-    component: {
-      header: (menuSubscription) => <Header menuSubscription={menuSubscription}>dashboard.sre</Header>,
-      main: () => <Main>Home</Main>,
-    },
-  },
-  {
-    path: "/finance",
-    component: createFinance({ Main }),
-  },
-];
-
-function mountComponent(component, apiClient, menuSubscription) {
+function mountComponent(component, apiClient) {
   return (props) => (
     <Fragment>
-      {component.header(menuSubscription)}
+      {component.header()}
       {component.main({ apiClient, ...props })}
     </Fragment>
   );
 }
 
-const AppRouter = ({ apiClient }) => {
-  const menuSubscription = new Subject();
-
+const AppRouter = ({ apiClient, routePaths, routeNavItems, routes }) => {
   return (
     <Router>
-    <Nav menuSubscription={menuSubscription} />
-    <main className="dashboard" id="app-wrap">
-    <Switch>
-    {routes.map((route, index) => (
-      <Route
-      key={index}
-          path={route.path}
-          exact={route.exact || false}
-          component={mountComponent(route.component, apiClient, menuSubscription)} />
-        ))}
-      </Switch>
-    </main>
+      <Nav routePaths={routePaths} routeNavItems={routeNavItems} />
+      <main className="dashboard">
+        <Switch>
+          {routes.map(({ key, path, exact, component }) => (
+            <Route
+              key={key}
+              path={path}
+              exact={exact || false}
+              component={mountComponent(component, apiClient)} />
+          ))}
+        </Switch>
+      </main>
     </Router>
   );
 };
 
-export default AppRouter;
+export default withRoutes(AppRouter);
