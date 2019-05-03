@@ -1,21 +1,28 @@
 import React, { useCallback, useState } from 'react';
-import ReactTable from "react-table";
-
-import 'react-table/react-table.css';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button';
 
 export default function Statements({ data: statements }) {
 
-  const [filter, setFilter] = useState({ credit: false, debit: false });
+  const [filter, setFilter] = useState({ credit: true, debit: true });
 
-  const onCreditButtonClick = useCallback(() => {
-    setFilter({ credit: true, debit: false });
+  const onToggleCredit = useCallback(() => {
+    if (filter.debit) {
+      setFilter({ credit: !filter.credit, debit: filter.debit });
+    }
   });
 
-  const onDebitButtonClick = useCallback(() => {
-    setFilter({ credit: false, debit: true });
+  const onToggleDebit = useCallback(() => {
+    if (filter.credit) {
+      setFilter({ credit: filter.credit, debit: !filter.debit });
+    }
   });
 
-  const data = statements.filter((statement) => {
+  const rows = statements.filter((statement) => {
     if (!filter.credit && !filter.debit) {
       return statement;
     } else {
@@ -25,34 +32,33 @@ export default function Statements({ data: statements }) {
     }
   });
 
-  const columns = [{
-    Header: 'Date',
-    accessor: 'date',
-  }, {
-    Header: 'Label',
-    accessor: 'label',
-    sortable: false,
-  }, {
-    Header: 'Amount',
-    accessor: 'amount',
-  }];
-
-  const defaultSorted = [{
-    id: 'date',
-    desc: true,
-  }];
+  const creditButtonStyles = { variant: filter.credit ? 'contained' :  'outlined' };
+  const debitButtonStyles = { variant: filter.debit ? 'contained' :  'outlined' };
 
   return (
     <div className="statements">
-      <button disabled={filter.credit} onClick={onCreditButtonClick}>Credit</button>
-      <button disabled={filter.debit} onClick={onDebitButtonClick}>Debit</button>
-      <ReactTable
-        data={data}
-        columns={columns}
-        showPageSizeOptions={false}
-        showPageJump={false}
-        defaultSorted={defaultSorted}
-        />
+      <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
+      <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Date</TableCell>
+            <TableCell>Label</TableCell>
+            <TableCell>Amount</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map(({date, label, amount}, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell>{date}</TableCell>
+                <TableCell>{label}</TableCell>
+                <TableCell>{amount}</TableCell>
+              </TableRow>
+            );
+           })}
+         </TableBody>
+      </Table>
     </div>
   );
 }
