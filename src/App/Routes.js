@@ -55,7 +55,6 @@ function buildRoutePaths() {
         const reversePath = (args) => {
           const params = path.match(/:([^\/]+)/g);
           return Object.entries(args).reduce((acc, [argKey, argValue]) => {
-            console.log('here');
             if (params.some((param) => param === `:${argKey}`)) {
               return acc.replace(`:${argKey}`, argValue);
             } else {

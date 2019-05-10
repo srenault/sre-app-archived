@@ -19,6 +19,7 @@ import format from 'date-fns/format';
 
 import { withRoutes } from '../../Routes';
 import { withRefreshSubject } from '../../Header';
+import withAsyncComponent from '../../../components/AsyncComponent';
 
 const AccountRow = withRouter(({ startPeriod, account, routePaths, history }) => {
 
@@ -37,86 +38,80 @@ const AccountRow = withRouter(({ startPeriod, account, routePaths, history }) =>
   );
 });
 
-function AccountsOverview({ classes, apiClient, refreshSubject, routePaths }) {
-
-  const promiseFn = apiClient.finance.fetchAccountsOverview;
-
-  const { data: overview, error, isLoading, reload } = useAsync({ promiseFn });
+function AccountsOverview({ classes, asyncState, refreshSubject, routePaths }) {
 
   useEffect(() => {
     const subscription = refreshSubject.subscribe({
-      next: () => reload(),
+      next: () => asyncState.reload(),
     });
 
     return () => subscription.unsubscribe();
   });
 
-  if (isLoading) {
+  const overview = asyncState.data;
 
-    return (<div>Loading...</div>);
+  const jointAccounts = overview.accounts.filter((account) => account.type === 'joint_account');
+  const currentAccounts = overview.accounts.filter((account) => account.type === 'current_account');
+  const savingAccounts = overview.accounts.filter((account) => account.type === 'saving_account');
+  const accounts = jointAccounts.concat(currentAccounts).concat(savingAccounts);
+  const credit = Math.round(overview.credit);
+  const debit = Math.round(overview.debit);
+  const balance = credit + debit;
+  const colorCredit = { color: green['A400'] };
+  const colorDebit = { color: red['A400'] };
+  const colorBalance = balance > 0 ? colorCredit : colorDebit;
+  const startPeriod = new Date(overview.startPeriod);
 
-  } else {
-    const jointAccounts = overview.accounts.filter((account) => account.type === 'joint_account');
-    const currentAccounts = overview.accounts.filter((account) => account.type === 'current_account');
-    const savingAccounts = overview.accounts.filter((account) => account.type === 'saving_account');
-    const accounts = jointAccounts.concat(currentAccounts).concat(savingAccounts);
-    const credit = Math.round(overview.credit);
-    const debit = Math.round(overview.debit);
-    const balance = credit + debit;
-    const colorCredit = { color: green['A400'] };
-    const colorDebit = { color: red['A400'] };
-    const colorBalance = balance > 0 ? colorCredit : colorDebit;
-    const startPeriod = new Date(overview.startPeriod);
-
-    return (
-      <div className="accounts">
-        <Grid container spacing={24}>
-          <Grid item key="startdate">
-            <Card>
-              <CardContent>
-                <Typography variant="h6">
-                  Début de la période
-                </Typography>
-                <Typography variant="h3">
-                  {format(startPeriod, 'D MMMM YYYY',  { locale: frLocale })}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item key="balance">
-            <Card>
-              <CardContent>
-                <Typography variant="h6">
-                  Balance
-                </Typography>
-                <Typography style={colorBalance} variant="h3">
-                  {balance} €
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+  return (
+    <div className="accounts">
+      <Grid container spacing={24}>
+        <Grid item key="startdate">
+          <Card>
+            <CardContent>
+              <Typography variant="h6">
+                Début de la période
+              </Typography>
+              <Typography variant="h3">
+                {format(startPeriod, 'D MMMM YYYY',  { locale: frLocale })}
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Compte</TableCell>
-              <TableCell>Solde</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {accounts.map((account) => (
-              <AccountRow
-                key={account.id}
-                startPeriod={overview.startPeriod}
-                account={account}
-                routePaths={routePaths}
-                />
-            ))}
-          </TableBody>
-        </Table>
+        <Grid item key="balance">
+          <Card>
+            <CardContent>
+              <Typography variant="h6">
+                Balance
+              </Typography>
+              <Typography style={colorBalance} variant="h3">
+                {balance} €
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Compte</TableCell>
+            <TableCell>Solde</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {accounts.map((account) => (
+            <AccountRow
+              key={account.id}
+              startPeriod={overview.startPeriod}
+              account={account}
+              routePaths={routePaths}
+              />
+          ))}
+    </TableBody>
+      </Table>
       </div>
-    );
-  }
+  );
 }
 
-export default withRoutes(withRefreshSubject(AccountsOverview));
+const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAccountsOverview();
+
+export default withAsyncComponent(asyncFetch)(withRoutes(withRefreshSubject(AccountsOverview)));

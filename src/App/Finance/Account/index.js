@@ -3,36 +3,27 @@ import { useAsync } from 'react-async';
 import Statements from './Statements';
 import Expenses from './Expenses';
 import { withRefreshSubject } from '../../Header';
-import withAsyncComponent from '../../../components/AsyncComponent.js';
+import withAsyncComponent from '../../../components/AsyncComponent';
 
-function Account({ accountId, startDate, apiClient, refreshSubject }) {
-
-  const promiseFn = useCallback(() => apiClient.finance.fetchAccount(accountId), []);
-
-  const { data, error, isLoading, reload } = useAsync({ promiseFn });
+function Account({ accountId, startDate, asyncState, refreshSubject }) {
 
   useEffect(() => {
     const subscription = refreshSubject.subscribe({
-      next: () => reload(),
+      next: () => asyncState.reload(),
     });
     return () => subscription.unsubscribe();
   });
 
-  if (isLoading) {
+  const { expenses, statements } = asyncState.data;
 
-    return (<div>Loading...</div>);
-
-  } else {
-
-    const { expenses, statements } = data;
-
-    return (
-        <div className="account">
-          <Expenses data={expenses} />
-          <Statements data={statements} />
-        </div>
-    );
-  }
+  return (
+    <div className="account">
+      <Expenses data={expenses} />
+      <Statements data={statements} />
+    </div>
+  );
 }
 
-export default withRefreshSubject(Account);
+const asyncFetch = ({ apiClient, accountId }) => apiClient.finance.fetchAccount(accountId);
+
+export default withAsyncComponent(asyncFetch)(withRefreshSubject(Account));
