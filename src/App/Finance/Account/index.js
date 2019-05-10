@@ -3,6 +3,7 @@ import { useAsync } from 'react-async';
 import Statements from './Statements';
 import Expenses from './Expenses';
 import { withRefreshSubject } from '../../Header';
+import withAsyncComponent from '../../../components/AsyncComponent.js';
 
 function Account({ accountId, startDate, apiClient, refreshSubject }) {
 

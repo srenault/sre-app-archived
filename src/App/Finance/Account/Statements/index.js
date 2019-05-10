@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
 export default function Statements({ data: statements }) {
 
@@ -37,14 +38,16 @@ export default function Statements({ data: statements }) {
 
   return (
     <div className="statements">
-      <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
-      <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+      <Grid container spacing={24}>
+        <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
+        <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+      </Grid>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell>Label</TableCell>
-            <TableCell>Amount</TableCell>
+            <TableCell>Libellé</TableCell>
+            <TableCell>Montant</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

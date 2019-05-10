@@ -51,13 +51,28 @@ function buildRoutePaths() {
       const [route, ...otherRoutes] = routes;
       if (route.length === 2) {
         const [routeKey, routeValue] = route;
+        const path = parent ? `${parent.path}${routeValue.path}` : routeValue.path;
+        const reversePath = (args) => {
+          const params = path.match(/:([^\/]+)/g);
+          return Object.entries(args).reduce((acc, [argKey, argValue]) => {
+            console.log('here');
+            if (params.some((param) => param === `:${argKey}`)) {
+              return acc.replace(`:${argKey}`, argValue);
+            } else {
+              return acc;
+            }
+          }, path)
+        }
+
         const r = parent ? {
           key: routeValue.key,
-          path: `${parent.path}${routeValue.path}`,
+          path,
+          reversePath,
           exact: !!routeValue.exact,
         } : {
           key: routeValue.key,
-          path: routeValue.path,
+          path,
+          reversePath,
           exact: !!routeValue.exact,
         };
 
@@ -125,7 +140,13 @@ const routePaths = buildRoutePaths();
 const routeNavItems = buildNavItems();
 
 export function withRoutes(Component) {
-  return (props) => <Component {...props} routes={routes} routePaths={routePaths} routeNavItems={routeNavItems} />;
+  return (props) => (
+    <Component
+      {...props}
+      routes={routes}
+      routePaths={routePaths}
+      routeNavItems={routeNavItems} />
+  );
 }
 
 export default {
