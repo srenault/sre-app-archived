@@ -64,7 +64,7 @@ function AccountsOverview({ classes, asyncState, refreshSubject, routePaths }) {
 
   return (
     <div className="accounts">
-      <Grid container spacing={24}>
+      <Grid container justify="center" spacing={24}>
         <Grid item key="startdate">
           <Card>
             <CardContent>

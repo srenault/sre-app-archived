@@ -10,8 +10,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { withMenuSubject } from '../Header';
 
-import './Nav.css';
-
 function Nav({ classes, history, routePaths, routeNavItems, menuSubject }) {
   const [open, setOpen] = useState(false);
 

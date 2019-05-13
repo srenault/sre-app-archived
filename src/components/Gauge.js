@@ -44,9 +44,6 @@ export default function Gauge({ label, amount, threshold }) {
           values: thresholdValues,
         }
       },
-      size: {
-        width: 400,
-      }
     });
 
     return () => chart.destroy();

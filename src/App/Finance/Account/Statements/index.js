@@ -6,8 +6,20 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-export default function Statements({ data: statements }) {
+const styles = theme => ({
+  table: {
+    minWidth: 300,
+  },
+  tableCell: {
+    paddingRight: 4,
+    paddingLeft: 5
+  }
+});
+
+function Statements({ classes, data: statements }) {
 
   const [filter, setFilter] = useState({ credit: true, debit: true });
 
@@ -37,26 +49,31 @@ export default function Statements({ data: statements }) {
   const debitButtonStyles = { variant: filter.debit ? 'contained' :  'outlined' };
 
   return (
-    <div className="statements">
-      <Grid container spacing={24}>
-        <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
-        <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+    <div className={classes.root}>
+      <Typography variant="h4" align="center" gutterBottom>Relevé de compte</Typography>
+      <Grid container spacing={24} justify="center">
+        <Grid item>
+          <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
+        </Grid>
+        <Grid item>
+          <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+        </Grid>
       </Grid>
-      <Table>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Libellé</TableCell>
-            <TableCell>Montant</TableCell>
+            <TableCell className={classes.tableCell}>Date</TableCell>
+            <TableCell className={classes.tableCell}>Libellé</TableCell>
+            <TableCell className={classes.tableCell}>Montant</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map(({date, label, amount}, index) => {
             return (
               <TableRow key={index}>
-                <TableCell>{date}</TableCell>
-                <TableCell>{label}</TableCell>
-                <TableCell>{amount}</TableCell>
+                <TableCell className={classes.tableCell}>{date}</TableCell>
+                <TableCell className={classes.tableCell}>{label}</TableCell>
+                <TableCell className={classes.tableCell}>{amount}</TableCell>
               </TableRow>
             );
            })}
@@ -65,3 +82,5 @@ export default function Statements({ data: statements }) {
     </div>
   );
 }
+
+export default withStyles(styles)(Statements);
