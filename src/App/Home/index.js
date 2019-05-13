@@ -6,8 +6,6 @@ import Typography from '@material-ui/core/Typography';
 
 export default function MainHeader() {
   return (
-    <Main>
-      <Typography variant="h5" component="h3">Home</Typography>
-    </Main>
+    <Main></Main>
   );
 }

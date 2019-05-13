@@ -1,5 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fab from '@material-ui/core/Fab';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-export default function Loading() {
-  return <div>Loading...</div>;
+const styles = {
+  root: {
+    'text-align': 'center',
+  },
+  fab: {
+    'background-color': 'white',
+  },
 }
+
+function Loading({ classes }) {
+  return (
+    <div className={classes.root}>
+      <Fab className={classes.fab}>
+        <CircularProgress
+          size="30px"
+          variant="indeterminate" />
+      </Fab>
+    </div>
+  );
+}
+
+export default withStyles(styles)(Loading);

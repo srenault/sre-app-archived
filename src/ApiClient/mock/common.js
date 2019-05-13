@@ -1,4 +1,4 @@
-const LOADING_TIME = 2000;
+const LOADING_TIME = 1500;
 
 export function delay(response) {
   return new Promise((resolve) => {
