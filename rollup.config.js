@@ -5,7 +5,6 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
 import size from 'rollup-plugin-size';
-import reactSvg from "rollup-plugin-react-svg";
 
 const target = process.env.target || 'dev';
 
@@ -28,7 +27,6 @@ export default {
   },
   plugins: [
     size(),
-    reactSvg({}),
     postcss({
       minimize: production,
     }),
