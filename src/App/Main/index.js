@@ -1,13 +1,12 @@
 import React from 'react';
 
 import Paper from '@material-ui/core/Paper';
-import "./Main.css";
+import './Main.css';
 
-export default function Main(props) {
-
+export default function Main({ children }) {
   return (
     <Paper component="main" className="dashboard-main">
-      {props.children}
+      {children}
     </Paper>
   );
 }

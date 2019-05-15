@@ -6,7 +6,7 @@ const COLORS = {
   red: '#FF0000',
   orange: '#F97600',
   yellow: '#F6C600',
-  green: '#60B044'
+  green: '#60B044',
 };
 
 const THRESHOLD_STEP_COLORS = [COLORS.green, COLORS.yellow, COLORS.orange];
@@ -14,12 +14,9 @@ const THRESHOLD_STEP_COLORS = [COLORS.green, COLORS.yellow, COLORS.orange];
 const THRESHOLD_COLORS = THRESHOLD_STEP_COLORS.concat(COLORS.red);
 
 export default function Gauge({ label, amount, threshold }) {
-
   const chartEl = useRef(null);
 
   useEffect(() => {
-
-    const thresholdColors = [];
     const thresholdStep = threshold / (THRESHOLD_STEP_COLORS.length);
     const thresholdValues = THRESHOLD_STEP_COLORS.map((_, i) => (i + 1) * thresholdStep);
 
@@ -42,7 +39,7 @@ export default function Gauge({ label, amount, threshold }) {
         pattern: THRESHOLD_COLORS,
         threshold: {
           values: thresholdValues,
-        }
+        },
       },
     });
 
@@ -50,6 +47,6 @@ export default function Gauge({ label, amount, threshold }) {
   });
 
   return (
-    <div ref={chartEl}></div>
+    <div ref={chartEl} />
   );
 }

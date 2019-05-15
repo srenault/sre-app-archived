@@ -9,18 +9,17 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-const styles = theme => ({
+const styles = () => ({
   table: {
     minWidth: 300,
   },
   tableCell: {
     paddingRight: 4,
-    paddingLeft: 5
-  }
+    paddingLeft: 5,
+  },
 });
 
 function Statements({ classes, data: statements }) {
-
   const [filter, setFilter] = useState({ credit: true, debit: true });
 
   const onToggleCredit = useCallback(() => {
@@ -45,8 +44,8 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const creditButtonStyles = { variant: filter.credit ? 'contained' :  'outlined' };
-  const debitButtonStyles = { variant: filter.debit ? 'contained' :  'outlined' };
+  const creditButtonStyles = { variant: filter.credit ? 'contained' : 'outlined' };
+  const debitButtonStyles = { variant: filter.debit ? 'contained' : 'outlined' };
 
   return (
     <div className={classes.root}>
@@ -68,16 +67,19 @@ function Statements({ classes, data: statements }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(({date, label, amount}, index) => {
+          {rows.map(({
+            date, label, amount, balance,
+          }) => {
+            const id = [date, label, amount, balance].join('#');
             return (
-              <TableRow key={index}>
+              <TableRow key={id}>
                 <TableCell className={classes.tableCell}>{date}</TableCell>
                 <TableCell className={classes.tableCell}>{label}</TableCell>
                 <TableCell className={classes.tableCell}>{amount}</TableCell>
               </TableRow>
             );
-           })}
-         </TableBody>
+          })}
+        </TableBody>
       </Table>
     </div>
   );

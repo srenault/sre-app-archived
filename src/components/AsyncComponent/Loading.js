@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -10,7 +10,7 @@ const styles = {
   fab: {
     'background-color': 'white',
   },
-}
+};
 
 function Loading({ classes }) {
   return (
@@ -18,7 +18,8 @@ function Loading({ classes }) {
       <Fab className={classes.fab}>
         <CircularProgress
           size="30px"
-          variant="indeterminate" />
+          variant="indeterminate"
+        />
       </Fab>
     </div>
   );

@@ -1,4 +1,4 @@
 export default {
   env: '<@env@>',
-  endpoint: '<@endpoint@>'
+  endpoint: '<@endpoint@>',
 };

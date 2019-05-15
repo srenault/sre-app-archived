@@ -1,15 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Subject } from 'rxjs';
 
 import Main from '../Main';
-import Header from './Header';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
-import { withRoutes } from '../Routes';
 
-function mountAccountsOverview(apiClient) {
-  return () => <AccountsOverview apiClient={apiClient} />;
+function mountAccountsOverview(apiClient, routePaths) {
+  return () => <AccountsOverview apiClient={apiClient} routePaths={routePaths} />;
 }
 
 function mountAccount(apiClient) {
@@ -25,17 +22,15 @@ function mountAccount(apiClient) {
   };
 }
 
-function Finance({ apiClient, routePaths }) {
+export default function Finance({ apiClient, routePaths }) {
   return (
     <Main>
       <div className="finance">
         <Switch>
-          <Route path={routePaths.finance.path} exact={routePaths.finance.exact} component={mountAccountsOverview(apiClient)} />
+          <Route path={routePaths.finance.path} exact={routePaths.finance.exact} component={mountAccountsOverview(apiClient, routePaths)} />
           <Route path={routePaths.finance.children.account.path} exact={routePaths.finance.exact} component={mountAccount(apiClient)} />
         </Switch>
       </div>
     </Main>
   );
 }
-
-export default withRoutes(Finance);

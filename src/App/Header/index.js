@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import "./Header.css";
+import './Header.css';
 import withStyles from '@material-ui/core/styles/withStyles';
 import MenuIcon from '@material-ui/icons/Menu';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -14,7 +14,6 @@ const MenuSubject = new Subject();
 const RefreshSubject = new Subject();
 
 function Header({ classes, children, refresh }) {
-
   const onToggleMenu = useCallback(() => MenuSubject.next());
   const onRefresh = useCallback(() => RefreshSubject.next());
 
@@ -42,11 +41,11 @@ function Header({ classes, children, refresh }) {
 }
 
 export function withRefreshSubject(Component) {
-  return (props) => <Component {...props} refreshSubject={RefreshSubject} />;
+  return props => <Component {...props} refreshSubject={RefreshSubject} />;
 }
 
 export function withMenuSubject(Component) {
-  return (props) => <Component {...props} menuSubject={MenuSubject} />;
+  return props => <Component {...props} menuSubject={MenuSubject} />;
 }
 
 const styles = {

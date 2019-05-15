@@ -1,5 +1,4 @@
 export default class FinanceClient {
-
   constructor({ endpoint }) {
     if (!endpoint) throw new Error('Please specify endpoint');
     this.endpoint = endpoint;
@@ -7,11 +6,11 @@ export default class FinanceClient {
 
   async fetchAccountsOverview() {
     const response = await fetch(`${this.endpoint}/accounts`);
-    return await response.json();
+    return response.json();
   }
 
   async fetchAccount(accountId, startDate) {
     const response = await fetch(`${this.endpoint}/accounts/${accountId}?startDate=${startDate}`);
-    return await response.json();
+    return response.json();
   }
 }

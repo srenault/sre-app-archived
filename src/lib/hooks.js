@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAsync } from "react-async";
+import { useAsync } from 'react-async';
 
 export function useAsyncPolling({ promiseFn, delay }) {
   const state = useAsync({ promiseFn });

@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
-import { useAsync } from 'react-async';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Typography from '@material-ui/core/Typography';
 import Statements from './Statements';
 import Expenses from './Expenses';
 import { withRefreshSubject } from '../../Header';
 import withAsyncComponent from '../../../components/AsyncComponent';
-import withStyles from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   divider: {
@@ -14,8 +14,7 @@ const styles = theme => ({
   },
 });
 
-function Account({ classes, accountId, startDate, asyncState, refreshSubject }) {
-
+function Account({ classes, asyncState, refreshSubject }) {
   useEffect(() => {
     const subscription = refreshSubject.subscribe({
       next: () => asyncState.reload(),
@@ -38,3 +37,7 @@ function Account({ classes, accountId, startDate, asyncState, refreshSubject }) 
 const asyncFetch = ({ apiClient, accountId }) => apiClient.finance.fetchAccount(accountId);
 
 export default withStyles(styles)(withAsyncComponent(asyncFetch)(withRefreshSubject(Account)));
+
+Account.propTypes = {
+  classes: PropTypes.object.isRequired,
+};

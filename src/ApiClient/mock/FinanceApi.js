@@ -8,7 +8,7 @@ export default {
     return delay(accounts);
   },
 
-  fetchAccount(accountId) {
+  fetchAccount(/* accountId */) {
     return delay(account);
   },
 };

@@ -6,11 +6,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { withMenuSubject } from '../Header';
 
-function Nav({ classes, history, routePaths, routeNavItems, menuSubject }) {
+function Nav({
+  classes, history, routePaths, routeNavItems, menuSubject,
+}) {
   const [open, setOpen] = useState(false);
 
   const closeMenu = useCallback(() => setOpen(false), []);
@@ -19,11 +19,13 @@ function Nav({ classes, history, routePaths, routeNavItems, menuSubject }) {
 
   const toggleMenu = useCallback(() => setOpen(!open), []);
 
-  const onClickItem = useCallback((item) => {
-    setOpen(false);
-    const path = routePaths[item].path;
-    history.push(path);
-  });
+  const onClickItem = useCallback(item => (
+    () => {
+      setOpen(false);
+      const { path } = routePaths[item];
+      history.push(path);
+    }
+  ), []);
 
   useEffect(() => {
     const subscription = menuSubject.subscribe({
@@ -36,8 +38,8 @@ function Nav({ classes, history, routePaths, routeNavItems, menuSubject }) {
     <SwipeableDrawer open={open} onClose={closeMenu} onOpen={openMenu}>
       <div className={classes.list}>
         <List>
-          {routeNavItems.map(({ path, label, key, Icon }) => (
-            <ListItem onClick={onClickItem.bind(null, key)} button key={key}>
+          {routeNavItems.map(({ label, key, Icon }) => (
+            <ListItem onClick={onClickItem(key)} button key={key}>
               <ListItemIcon><Icon /></ListItemIcon>
               <ListItemText primary={label} />
             </ListItem>
