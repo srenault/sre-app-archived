@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -7,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withMenuSubject } from '../Header';
+import { SubjectPropTypes } from '../../propTypes/rxjs';
 
 function Nav({
   classes, history, routePaths, routeNavItems, menuSubject,
@@ -49,6 +51,10 @@ function Nav({
     </SwipeableDrawer>
   );
 }
+
+Nav.propTypes = {
+  menuSubject: SubjectPropTypes.isRequired,
+};
 
 const styles = {
   list: {

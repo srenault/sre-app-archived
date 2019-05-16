@@ -7,6 +7,8 @@ import Statements from './Statements';
 import Expenses from './Expenses';
 import { withRefreshSubject } from '../../Header';
 import withAsyncComponent from '../../../components/AsyncComponent';
+import { AsyncStatePropTypes } from '../../../propTypes/react-async';
+import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
 const styles = theme => ({
   divider: {
@@ -40,4 +42,6 @@ export default withStyles(styles)(withAsyncComponent(asyncFetch)(withRefreshSubj
 
 Account.propTypes = {
   classes: PropTypes.object.isRequired,
+  asyncState: AsyncStatePropTypes.isRequired,
+  refreshSubject: SubjectPropTypes.isRequired,
 };

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
-
-import './Header.css';
+import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import MenuIcon from '@material-ui/icons/Menu';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -9,6 +8,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { Subject } from 'rxjs';
+
+import './Header.css';
 
 const MenuSubject = new Subject();
 const RefreshSubject = new Subject();
@@ -39,6 +40,14 @@ function Header({ classes, children, refresh }) {
     </div>
   );
 }
+
+Header.propTypes = {
+  refresh: PropTypes.bool,
+};
+
+Header.defaultProps = {
+  refresh: false,
+};
 
 export function withRefreshSubject(Component) {
   return props => <Component {...props} refreshSubject={RefreshSubject} />;

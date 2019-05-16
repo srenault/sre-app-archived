@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import c3 from 'c3';
+
 import 'c3/c3.css';
 
 const COLORS = {
@@ -50,3 +52,9 @@ export default function Gauge({ label, amount, threshold }) {
     <div ref={chartEl} />
   );
 }
+
+Gauge.propTypes = {
+  label: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
+  threshold: PropTypes.number.isRequired,
+};
