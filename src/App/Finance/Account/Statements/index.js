@@ -37,7 +37,11 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const rows = statements.filter((statement) => {
+  const rows = statements.sort((s1, s2) => {
+    const d1 = new Date(s1.date).getTime();
+    const d2 = new Date(s2.date).getTime();
+    return d2 - d1;
+  }).filter((statement) => {
     if (!filter.credit && !filter.debit) {
       return statement;
     } else {
