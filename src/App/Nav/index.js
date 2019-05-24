@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -53,7 +54,13 @@ function Nav({
 }
 
 Nav.propTypes = {
+  classes: PropTypes.object,
   menuSubject: SubjectPropTypes.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
+};
+
+Nav.defaultProps = {
+  classes: {},
 };
 
 const styles = {

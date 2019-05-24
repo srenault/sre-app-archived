@@ -9,8 +9,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { Subject } from 'rxjs';
 
-import './Header.css';
-
 const MenuSubject = new Subject();
 const RefreshSubject = new Subject();
 
@@ -42,10 +40,13 @@ function Header({ classes, children, refresh }) {
 }
 
 Header.propTypes = {
+  classes: PropTypes.object,
   refresh: PropTypes.bool,
+  children: PropTypes.element.isRequired,
 };
 
 Header.defaultProps = {
+  classes: {},
   refresh: false,
 };
 

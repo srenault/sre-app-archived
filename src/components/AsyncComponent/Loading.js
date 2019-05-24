@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -24,5 +25,13 @@ function Loading({ classes }) {
     </div>
   );
 }
+
+Loading.propTypes = {
+  classes: PropTypes.object,
+};
+
+Loading.defaultProps = {
+  classes: {},
+};
 
 export default withStyles(styles)(Loading);

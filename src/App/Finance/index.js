@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-
+import ReactRouterPropTypes from 'react-router-prop-types';
+import { ApiClientPropTypes } from '../../propTypes/models/ApiClient';
 import Main from '../Main';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
@@ -10,7 +11,7 @@ function mountAccountsOverview(apiClient, routePaths) {
 }
 
 function mountAccount(apiClient) {
-  return ({ match }) => {
+  function RouteAccount({ match }) {
     const { id: accountId, startdate: startDate } = match.params;
     return (
       <Account
@@ -19,7 +20,13 @@ function mountAccount(apiClient) {
         apiClient={apiClient}
       />
     );
+  }
+
+  RouteAccount.propTypes = {
+    match: ReactRouterPropTypes.match.isRequired,
   };
+
+  return RouteAccount;
 }
 
 export default function Finance({ apiClient, routePaths }) {
@@ -34,3 +41,7 @@ export default function Finance({ apiClient, routePaths }) {
     </Main>
   );
 }
+
+Finance.propTypes = {
+  apiClient: ApiClientPropTypes.isRequired,
+};

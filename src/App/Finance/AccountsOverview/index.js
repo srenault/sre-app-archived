@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,9 +14,11 @@ import red from '@material-ui/core/colors/red';
 import frLocale from 'date-fns/locale/fr';
 import format from 'date-fns/format';
 
+import PropTypes from 'prop-types';
 import { withRefreshSubject } from '../../Header';
 import withAsyncComponent from '../../../components/AsyncComponent';
-import { AsyncStatePropTypes } from '../../../propTypes/react-async';
+
+import { AsyncStatePropTypes, AsyncStateDefaultProps } from '../../../propTypes/react-async';
 import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
 const AccountRow = withRouter(({
@@ -116,6 +117,8 @@ AccountsOverview.propTypes = {
   refreshSubject: SubjectPropTypes.isRequired,
   routePaths: PropTypes.object.isRequired,
 };
+
+AccountsOverview.defaultProps = AsyncStateDefaultProps;
 
 const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAccountsOverview();
 

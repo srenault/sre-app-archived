@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Gauge from '../../../../components/Gauge';
 
-import './expenses.css';
-
 export default function Expenses({ data: expenses }) {
   return (
     <div className="expenses">

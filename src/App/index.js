@@ -4,7 +4,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { withRoutes } from './Routes';
 import Nav from './Nav';
 
-import './App.css';
+import { ApiClientPropTypes } from '../propTypes/models/ApiClient';
 
 function mountComponent(component, apiClient) {
   return props => (
@@ -36,5 +36,9 @@ const AppRouter = ({
     </main>
   </Router>
 );
+
+AppRouter.propTypes = {
+  apiClient: ApiClientPropTypes.isRequired,
+};
 
 export default withRoutes(AppRouter);

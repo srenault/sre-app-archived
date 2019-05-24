@@ -9,6 +9,9 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 
+import PropTypes from 'prop-types';
+import { StatementPropTypes } from '../../../../propTypes/models/Statement';
+
 const styles = () => ({
   table: {
     minWidth: 300,
@@ -84,5 +87,15 @@ function Statements({ classes, data: statements }) {
     </div>
   );
 }
+
+Statements.propTypes = {
+  classes: PropTypes.object,
+  data: PropTypes.arrayOf(StatementPropTypes),
+};
+
+Statements.defaultProps = {
+  classes: {},
+  data: [],
+};
 
 export default withStyles(styles)(Statements);
