@@ -3,5 +3,4 @@ plugins/
 platforms/
 www/js
 env/prod.js
-src/ApiClient/mock/dump/
 .DS_Store
