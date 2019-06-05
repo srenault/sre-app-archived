@@ -5,7 +5,7 @@
   "description": "My personal app.",
   "main": "index.js",
   "scripts": {
-    "init": "node_modules/cordova/bin/cordova prepare && npm run build",
+    "init": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build",
     "build": "node_modules/rollup/bin/rollup -c && node_modules/cordova/bin/cordova build",
     "watch": "npm-run-all --parallel watch-www watch-src",
     "watch-www": "./cordova-watch-build",
