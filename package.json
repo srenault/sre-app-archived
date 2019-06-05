@@ -1,11 +1,12 @@
 {
-  "name": "sre.dashboard",
-  "displayName": "Dashboard",
+  "name": "sre.app",
+  "displayName": "",
   "version": "1.0.0",
-  "description": "My personal dashboard.",
+  "description": "My personal app.",
   "main": "index.js",
   "scripts": {
-    "build": "node_modules/rollup/bin/rollup -c && cordova build",
+    "init": "node_modules/cordova/bin/cordova prepare && npm run build",
+    "build": "node_modules/rollup/bin/rollup -c && node_modules/cordova/bin/cordova build",
     "watch": "npm-run-all --parallel watch-www watch-src",
     "watch-www": "./cordova-watch-build",
     "watch-src": "node_modules/rollup/bin/rollup -c -w",
