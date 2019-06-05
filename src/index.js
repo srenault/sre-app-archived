@@ -10,7 +10,7 @@ import apiClientMock from './ApiClient/mock';
 document.addEventListener('deviceready', () => {
   const el = document.getElementById('app');
 
-  const apiClient = Config.prod || true ? new ApiClient({ endpoint: Config.endpoint }) : apiClientMock;
+  const apiClient = Config.prod ? new ApiClient({ endpoint: Config.endpoint }) : apiClientMock;
 
   ReactDOM.render(<App apiClient={apiClient} />, el);
 }, false);

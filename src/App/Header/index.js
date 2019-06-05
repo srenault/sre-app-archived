@@ -42,12 +42,13 @@ function Header({ classes, children, refresh }) {
 Header.propTypes = {
   classes: PropTypes.object,
   refresh: PropTypes.bool,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.any,
 };
 
 Header.defaultProps = {
   classes: {},
   refresh: false,
+  children: [],
 };
 
 export function withRefreshSubject(Component) {

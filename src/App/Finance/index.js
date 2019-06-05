@@ -5,6 +5,7 @@ import { ApiClientPropTypes } from '../../propTypes/models/ApiClient';
 import Main from '../Main';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
+import { RoutePathsPropTypes } from '../../propTypes/models/Routes';
 
 function mountAccountsOverview(apiClient, routePaths) {
   return () => <AccountsOverview apiClient={apiClient} routePaths={routePaths} />;
@@ -44,4 +45,5 @@ export default function Finance({ apiClient, routePaths }) {
 
 Finance.propTypes = {
   apiClient: ApiClientPropTypes.isRequired,
+  routePaths: RoutePathsPropTypes.isRequired,
 };

@@ -10,6 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withMenuSubject } from '../Header';
 import { SubjectPropTypes } from '../../propTypes/rxjs';
+import { RoutePathsPropTypes, RouteNavItemsPropTypes } from '../../propTypes/models/Routes';
 
 function Nav({
   classes, history, routePaths, routeNavItems, menuSubject,
@@ -57,6 +58,8 @@ Nav.propTypes = {
   classes: PropTypes.object,
   menuSubject: SubjectPropTypes.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
+  routePaths: RoutePathsPropTypes.isRequired,
+  routeNavItems: RouteNavItemsPropTypes.isRequired,
 };
 
 Nav.defaultProps = {

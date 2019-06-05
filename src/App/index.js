@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-
 import { withRoutes } from './Routes';
 import Nav from './Nav';
-
 import { ApiClientPropTypes } from '../propTypes/models/ApiClient';
+import { RoutesPropTypes, RoutePathsPropTypes, RouteNavItemsPropTypes } from '../propTypes/models/Routes';
 
 function mountComponent(component, apiClient) {
   return props => (
@@ -39,6 +38,9 @@ const AppRouter = ({
 
 AppRouter.propTypes = {
   apiClient: ApiClientPropTypes.isRequired,
+  routePaths: RoutePathsPropTypes.isRequired,
+  routeNavItems: RouteNavItemsPropTypes.isRequired,
+  routes: RoutesPropTypes.isRequired,
 };
 
 export default withRoutes(AppRouter);
