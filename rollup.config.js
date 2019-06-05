@@ -5,6 +5,7 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
 import size from 'rollup-plugin-size';
+import copy from 'rollup-plugin-copy';
 
 const target = process.env.target || 'dev';
 
@@ -52,5 +53,11 @@ export default {
       ...config,
     }),
     production && uglify(),
+    copy({
+      targets: [
+        'src/index.html'
+      ],
+      outputFolder: 'www'
+    })
   ]
 };
