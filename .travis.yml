@@ -1,6 +1,18 @@
 language: android
 
+dist: trusty
+
+android:
+  components:
+    - build-tools-29.0.0
+
+before_install:
+  - yes | sdkmanager "platforms;android-29"
+
 install:
+  - nvm install stable
   - npm ci
+
+script:
   - npm run lint
-  - npm run init
+  - npm run init-ci
