@@ -37,9 +37,10 @@ export default {
     }),
     commonjs({
       namedExports: {
-        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext', 'Fragment'],
-        'node_modules/react-dom/index.js': ['render'],
-        'node_modules/react-is/index.js': ['isValidElementType'],
+        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext', 'Fragment', 'isValidElement', 'cloneElement'],
+        'node_modules/react-dom/index.js': ['render', 'findDOMNode'],
+        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef'],
+        'node_modules/prop-types/index.js': ['element', 'elementType', 'func', 'oneOfType', 'bool'],
       },
     }),
     replace({
