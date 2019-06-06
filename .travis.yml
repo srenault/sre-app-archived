@@ -1,18 +1,27 @@
 language: android
-
 dist: trusty
-
 android:
   components:
-    - build-tools-29.0.0
+  - build-tools-29.0.0
 
 before_install:
   - yes | sdkmanager "platforms;android-29"
+  - nvm install stable
+  - npm install -g greenkeeper-lockfile
 
 install:
-  - nvm install stable
-  - npm ci
+  - npm install
+
+before_script:
+  - greenkeeper-lockfile-update
 
 script:
   - npm run lint
-  - npm run init-ci
+  - npm run build-ci
+
+after_script:
+  - greenkeeper-lockfile-upload
+
+env:
+  global:
+    secure: dDgD5q6xCmLEApyfThDMJr5wOynlTD32p1ahAkyiZfwUphho0Qjld9YukUFdEe5UQTyDRmw12a+zhztVCHK2k/C5daI/MVupqYeH9RZOTiqkSjX58njoDXnxnRLw7C8XG2VmYxbPW77+kZgwY9RVX9djWXEYiPy4EhvYcxGiwYmhalFPZ9mMmHQcds5iBdGg21flYkNwBcPp370tPbj5+GQliGxbJdH/zCUMg3ZTKBD1eUffxlbSCoo5D2a7fxs4mxutq/xLByJNnf5YwPCD9MZ1xR0aORU0DqRXesadcb2p/Ncb7THIgTrwQPi0n4rNoXoyoMHig+B+6Nb+WA9ycqfzLzQPJ/GG2JXVGFy7XoyWIWYXOAAEvPMyQsAtyQnwQrZvMnHWYMOcmf/1giD71+3y4N7B4qlAaNxAAK9rk8WWsfm8szlkDl6zRAmFjUpWuRV/fwhXSZW5ocplKrYAiLf1Q7U30D354ZLrH+6RAkKcuxSLZKL5o++Jn2tWX+OFKAoJom0YVAS+7Qd33XJ5grt/+J9eSYpT1lb/AxOF5xbOZ1WDi5LwFqiGgXwHO3KNqCxP+h/qUKjVV2r3njo3X5JMp2tlLn7QBlG2upbvEmP8BFHvw+KFdjgIiFq/PqAOXkQmaHU449p4A+9JeB8WC+GrZMUO05oh4JY++y6ULPQ=

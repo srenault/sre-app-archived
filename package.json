@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "init": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build",
-    "init-ci": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build browser android",
+    "build-ci": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build browser android",
     "build": "node_modules/rollup/bin/rollup -c && node_modules/cordova/bin/cordova build",
     "watch": "npm-run-all --parallel watch-www watch-src",
     "watch-www": "./cordova-watch-build",
