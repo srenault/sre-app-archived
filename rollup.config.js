@@ -7,11 +7,19 @@ import replace from 'rollup-plugin-replace';
 import size from 'rollup-plugin-size';
 import copy from 'rollup-plugin-copy';
 
-const target = process.env.target || 'dev';
+const target = process.env.target || 'mock';
 
 const production = target === 'prod';
 
-const config = require(`./env/${target}.js`);
+const env = production ? 'production' : 'development';
+
+const config = {
+  prod: false,
+  dev: false,
+  mock: false,
+  endpoint: undefined,
+  ...require(`./env/${target}.js`),
+};
 
 export default {
   input: 'src/index.js',
@@ -45,12 +53,14 @@ export default {
       },
     }),
     replace({
-      'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
+      'process.env.NODE_ENV': JSON.stringify(env),
     }),
     replace({
       include: 'src/Config.js',
       delimiters: ['<@', '@>'],
-      ...config,
+      values: {
+        ...config,
+      }
     }),
     production && uglify(),
     copy({
