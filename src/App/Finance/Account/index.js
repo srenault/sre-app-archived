@@ -12,7 +12,7 @@ import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
 const styles = theme => ({
   divider: {
-    margin: `${theme.spacing.unit * 2}px 0 ${theme.spacing.unit * 4}px 0`,
+    margin: `${theme.spacing(2)}px 0 ${theme.spacing(4)}px 0`,
   },
 });
 

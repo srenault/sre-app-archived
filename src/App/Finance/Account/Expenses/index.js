@@ -6,7 +6,7 @@ import Gauge from '../../../../components/Gauge';
 export default function Expenses({ data: expenses }) {
   return (
     <div className="expenses">
-      <Grid container spacing={24} justify="center">
+      <Grid container spacing={2} justify="center">
         {expenses.map(({
           id, label, amount, threshold,
         }) => (

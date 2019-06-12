@@ -57,7 +57,7 @@ function Statements({ classes, data: statements }) {
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" gutterBottom>Relevé de compte</Typography>
-      <Grid container spacing={24} justify="center">
+      <Grid container spacing={2} justify="center">
         <Grid item>
           <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
         </Grid>
