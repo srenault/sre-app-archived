@@ -32,7 +32,7 @@ export const RoutePathsPropTypes = (() => {
 export const RouteNavItemsPropTypes = PropTypes.arrayOf(PropTypes.shape({
   path: PropTypes.string.isRequired,
   key: PropTypes.string.isRequired,
-  Icon: PropTypes.func.isRequired,
+  Icon: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired,
 }));
 
