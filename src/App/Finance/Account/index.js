@@ -36,7 +36,7 @@ function Account({ classes, asyncState, refreshSubject }) {
   );
 }
 
-const asyncFetch = ({ apiClient, accountId }) => apiClient.finance.fetchAccount(accountId);
+const asyncFetch = ({ apiClient, accountId, startDate }) => apiClient.finance.fetchAccount(accountId, startDate);
 
 export default withStyles(styles)(withAsyncComponent(asyncFetch)(withRefreshSubject(Account)));
 
