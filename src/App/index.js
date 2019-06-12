@@ -19,7 +19,7 @@ const AppRouter = ({
 }) => (
   <Router>
     <Nav routePaths={routePaths} routeNavItems={routeNavItems} />
-    <main className="dashboard">
+    <main>
       <Switch>
         {routes.map(({
           key, path, exact, component,

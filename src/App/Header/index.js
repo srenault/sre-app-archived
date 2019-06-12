@@ -18,7 +18,7 @@ function Header({ classes, children, refresh }) {
 
   return (
     <div className={classes.root}>
-      <AppBar className="dashboard-header" position="fixed">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton onClick={onToggleMenu} color="inherit" aria-label="Menu" className={classes.menuButton}>
             <MenuIcon />
