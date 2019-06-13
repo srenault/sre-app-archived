@@ -34,6 +34,11 @@ export default {
     }
     console.error(message);
   },
+  watch: {
+    chokidar: true,
+    clearScreen: false,
+    include: 'src/**',
+  },
   plugins: [
     size(),
     postcss({
@@ -68,6 +73,6 @@ export default {
         'src/index.html'
       ],
       outputFolder: 'www'
-    })
+    }),
   ]
 };

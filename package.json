@@ -54,6 +54,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.5",
+    "chokidar": "^3.0.1",
     "cordova": "^9.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
