@@ -69,10 +69,10 @@ export default {
     }),
     production && uglify(),
     copy({
-      targets: [
-        'src/index.html'
-      ],
-      outputFolder: 'www'
-    }),
+      targets: {
+        src: 'src/index.html',
+        dest: 'wwww',
+      },
+    })
   ]
 };

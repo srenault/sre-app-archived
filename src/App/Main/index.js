@@ -18,13 +18,14 @@ Main.propTypes = {
 
 Main.defaultProps = {
   children: [],
+  classes: {},
 };
 
 const styles = {
   root: {
     paddingTop: '90px',
     minHeight: 'calc(100vh - 90px)',
-  }
+  },
 };
 
 export default withStyles(styles)(Main);
