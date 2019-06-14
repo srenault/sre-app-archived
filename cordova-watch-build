@@ -5,4 +5,4 @@ GREEN=`tput setaf 2`
 CYAN=`tput setaf 6`
 RESET=`tput sgr0`
 
-watchexec -d 200 -w www/ --exts js 'node_modules/cordova/bin/cordova build browser; echo "'${BOLD}${CYAN}'run '${RESET}'node_modules/cordova/bin/cordova build'${RESET}${GREEN}' [OK]'${RESET}'"'
+watchexec -d 200 -w www/ --exts js 'node_modules/cordova/bin/cordova build browser; echo "'${BOLD}${CYAN}'run '${RESET}'cordova build browser'${RESET}${GREEN}' [OK]'${RESET}'"'

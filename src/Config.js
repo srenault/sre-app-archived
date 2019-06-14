@@ -1,4 +1,6 @@
 export default {
-  env: '<@env@>',
+  prod: '<@prod@>',
+  dev: '<@dev@>',
+  mock: '<@mock@>',
   endpoint: '<@endpoint@>',
 };

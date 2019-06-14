@@ -12,7 +12,7 @@ import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
 const styles = theme => ({
   divider: {
-    margin: `${theme.spacing.unit * 2}px 0 ${theme.spacing.unit * 4}px 0`,
+    margin: `${theme.spacing(2)}px 0 ${theme.spacing(4)}px 0`,
   },
 });
 
@@ -36,7 +36,7 @@ function Account({ classes, asyncState, refreshSubject }) {
   );
 }
 
-const asyncFetch = ({ apiClient, accountId }) => apiClient.finance.fetchAccount(accountId);
+const asyncFetch = ({ apiClient, accountId, startDate }) => apiClient.finance.fetchAccount(accountId, startDate);
 
 export default withStyles(styles)(withAsyncComponent(asyncFetch)(withRefreshSubject(Account)));
 

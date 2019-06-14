@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="sre.dashboard" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Dashboard</name>
-    <description>My personal dashboard</description>
+<widget id="sre.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>sre.app</name>
+    <description>My personal application</description>
     <author email="srenault.contact@gmail.com" href="https://github.com/srenault">
         Sebastien Renault
     </author>

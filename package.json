@@ -11,7 +11,8 @@
     "watch": "npm-run-all --parallel watch-www watch-src",
     "watch-www": "./cordova-watch-build",
     "watch-src": "node_modules/rollup/bin/rollup -c -w",
-    "dev": "npm-run-all --parallel start watch",
+    "dev": "target=dev npm-run-all --parallel start watch",
+    "mock": "npm-run-all --parallel start watch",
     "start": "node_modules/cordova/bin/cordova run browser",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint src/"
@@ -53,6 +54,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.5",
+    "chokidar": "^3.0.1",
     "cordova": "^9.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
