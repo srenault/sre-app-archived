@@ -1,6 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
-import { uglify } from 'rollup-plugin-uglify';
+import { terser } from "rollup-plugin-terser";
 import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
@@ -67,7 +67,7 @@ export default {
         ...config,
       }
     }),
-    production && uglify(),
+    production && terser(),
     copy({
       targets: {
         src: 'src/index.html',
