@@ -21,7 +21,7 @@ const Order = {
 const OrderBy = {
   date: {
     id: 'date',
-    func: (order) => (s1, s2) => {
+    func: order => (s1, s2) => {
       const d1 = new Date(s1.date).getTime();
       const d2 = new Date(s2.date).getTime();
       if (order.direction === Order.ASC) {
@@ -32,7 +32,7 @@ const OrderBy = {
   },
   amount: {
     id: 'amount',
-    func: (order) => (s1, s2) => {
+    func: order => (s1, s2) => {
       if (order.direction === Order.ASC) {
         return s1.amount - s2.amount;
       }
@@ -71,7 +71,7 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const onSelectSort = useCallback((orderById) => () => {
+  const onSelectSort = useCallback(orderById => () => {
     setOrder({
       by: OrderBy[orderById],
       direction: order.direction === Order.ASC ? Order.DESC : Order.ASC,
@@ -109,7 +109,8 @@ function Statements({ classes, data: statements }) {
               <TableSortLabel
                 active={order.by.id === OrderBy.date.id}
                 onClick={onSelectSort(OrderBy.date.id)}
-                direction={order.direction}>
+                direction={order.direction}
+              >
                 Montant
               </TableSortLabel>
             </TableCell>
@@ -118,7 +119,8 @@ function Statements({ classes, data: statements }) {
               <TableSortLabel
                 active={order.by.id === OrderBy.amount.id}
                 onClick={onSelectSort(OrderBy.amount.id)}
-                direction={order.direction}>
+                direction={order.direction}
+              >
                 Montant
               </TableSortLabel>
             </TableCell>
