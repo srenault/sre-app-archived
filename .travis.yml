@@ -27,7 +27,7 @@ deploy:
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   bucket: $AWS_BUCKET_NAME
   local-dir: "$TRAVIS_BUILD_DIR/apk"
-  upload-dir: apk
+  upload-dir: apk/$TRAVIS_BRANCH
   region: us-east-1
   skip_cleanup: true
   on:
