@@ -1,10 +1,13 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import HomeHeader from '../Home/Header';
 import Home from '../Home';
 import FinanceHeader from '../Finance/Header';
 import Finance from '../Finance';
+import ReleasesHeader from '../Releases/Header';
+import Releases from '../Releases';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
@@ -24,7 +27,7 @@ const Routes = {
       Icon: HomeIcon,
       label: 'Home',
     },
-    children: [],
+    children: {},
   },
   finance: {
     key: 'finance',
@@ -45,6 +48,20 @@ const Routes = {
         exact: true,
       },
     },
+  },
+  releases: {
+    key: 'releases',
+    path: '/releases',
+    exact: true,
+    component: {
+      header: () => <ReleasesHeader />,
+      main: props => <Releases {...props} routePaths={ROUTE_PATHS} />,
+    },
+    nav: {
+      Icon: SystemUpdateIcon,
+      label: 'Mises à jour',
+    },
+    children: {},
   },
 };
 
