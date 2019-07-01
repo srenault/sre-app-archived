@@ -1,3 +1,3 @@
 module.exports = {
-  mock: true,
+  env: 'mock',
 };

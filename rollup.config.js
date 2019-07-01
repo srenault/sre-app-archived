@@ -13,14 +13,15 @@ const production = target === 'prod';
 
 const env = production ? 'production' : 'development';
 
-let config;
+let config = {
+  env: null,
+  endpoint: null,
+};
 
-if (production) {
+if (target === 'prod') {
   if (process.env.APP_PROD_ENDPOINT) {
     config = {
-      prod: true,
-      dev: false,
-      mock: false,
+      env: target,
       endpoint: process.env.APP_PROD_ENDPOINT,
     };
   } else {
@@ -29,9 +30,7 @@ if (production) {
   }
 } else {
   config = {
-    prod: false,
-    dev: false,
-    mock: false,
+    env: target,
     endpoint: undefined,
     ...require(`./env/${target}.js`),
   };

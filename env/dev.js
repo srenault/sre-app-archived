@@ -1,4 +1,4 @@
 module.exports = {
-  dev: true,
+  env: 'dev',
   endpoint: "http://localhost:8080/api",
 };
