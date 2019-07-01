@@ -13,13 +13,29 @@ const production = target === 'prod';
 
 const env = production ? 'production' : 'development';
 
-const config = {
-  prod: false,
-  dev: false,
-  mock: false,
-  endpoint: undefined,
-  ...require(`./env/${target}.js`),
-};
+let config;
+
+if (production) {
+  if (process.env.APP_PROD_ENDPOINT) {
+    config = {
+      prod: true,
+      dev: false,
+      mock: false,
+      endpoint: process.env.APP_PROD_ENDPOINT,
+    };
+  } else {
+    console.error('Please specify APP_PROD_ENDPOINT env');
+    process.exit(1);
+  }
+} else {
+  config = {
+    prod: false,
+    dev: false,
+    mock: false,
+    endpoint: undefined,
+    ...require(`./env/${target}.js`),
+  };
+}
 
 export default {
   input: 'src/index.js',
