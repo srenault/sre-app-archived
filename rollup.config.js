@@ -85,10 +85,10 @@ export default {
     }),
     production && terser(),
     copy({
-      targets: {
+      targets: [{
         src: 'src/index.html',
-        dest: 'wwww',
-      },
-    })
+        dest: 'www',
+      }],
+    }),
   ]
 };
