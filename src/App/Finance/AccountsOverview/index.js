@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import { withRefreshSubject } from '../../Header';
 import withAsyncComponent from '../../../components/AsyncComponent';
 
-import { AsyncStatePropTypes, AsyncStateDefaultProps } from '../../../propTypes/react-async';
+import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
 const AccountRow = withRouter(({
@@ -117,8 +117,6 @@ AccountsOverview.propTypes = {
   refreshSubject: SubjectPropTypes.isRequired,
   routePaths: PropTypes.object.isRequired,
 };
-
-AccountsOverview.defaultProps = AsyncStateDefaultProps;
 
 const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAccountsOverview();
 

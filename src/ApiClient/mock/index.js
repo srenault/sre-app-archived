@@ -1,5 +1,7 @@
-import financeApi from './FinanceApi';
+import financeClient from './FinanceClient';
+import releasesClient from './ReleasesClient';
 
 export default {
-  finance: financeApi,
+  finance: financeClient,
+  releases: releasesClient,
 };

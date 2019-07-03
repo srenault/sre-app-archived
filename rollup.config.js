@@ -13,13 +13,28 @@ const production = target === 'prod';
 
 const env = production ? 'production' : 'development';
 
-const config = {
-  prod: false,
-  dev: false,
-  mock: false,
-  endpoint: undefined,
-  ...require(`./env/${target}.js`),
+let config = {
+  env: null,
+  endpoint: null,
 };
+
+if (target === 'prod') {
+  if (process.env.APP_PROD_ENDPOINT) {
+    config = {
+      env: target,
+      endpoint: process.env.APP_PROD_ENDPOINT,
+    };
+  } else {
+    console.error('Please specify APP_PROD_ENDPOINT env');
+    process.exit(1);
+  }
+} else {
+  config = {
+    env: target,
+    endpoint: undefined,
+    ...require(`./env/${target}.js`),
+  };
+}
 
 export default {
   input: 'src/index.js',
@@ -69,10 +84,10 @@ export default {
     }),
     production && terser(),
     copy({
-      targets: {
+      targets: [{
         src: 'src/index.html',
-        dest: 'wwww',
-      },
-    })
+        dest: 'www',
+      }],
+    }),
   ]
 };

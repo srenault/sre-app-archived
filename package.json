@@ -1,13 +1,14 @@
 {
   "name": "sre.app",
-  "displayName": "",
+  "displayName": "sre.app",
   "version": "1.0.0",
   "description": "My personal app.",
   "main": "index.js",
   "scripts": {
     "init": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build",
-    "build-ci": "mkdir www && node_modules/cordova/bin/cordova prepare && npm run build browser android",
+    "build-ci": "mkdir www && node_modules/cordova/bin/cordova prepare && target=prod node_modules/rollup/bin/rollup -c && node_modules/cordova/bin/cordova build android browser",
     "build": "node_modules/rollup/bin/rollup -c && node_modules/cordova/bin/cordova build",
+    "compile": "node_modules/rollup/bin/rollup -c",
     "watch": "npm-run-all --parallel watch-www watch-src",
     "watch-www": "./cordova-watch-build",
     "watch-src": "node_modules/rollup/bin/rollup -c -w",
