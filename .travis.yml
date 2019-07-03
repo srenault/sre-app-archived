@@ -32,4 +32,6 @@ deploy:
   skip_cleanup: true
   on:
     repo: srenault/sre-app
-    all_branches: true
+    all_branches:
+      - master
+      - /^sre\/.*$/
