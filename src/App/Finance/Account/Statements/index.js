@@ -111,7 +111,7 @@ function Statements({ classes, data: statements }) {
                 onClick={onSelectSort(OrderBy.date.id)}
                 direction={order.direction}
               >
-                Montant
+                Date
               </TableSortLabel>
             </TableCell>
             <TableCell className={classes.tableCell}>Libellé</TableCell>
