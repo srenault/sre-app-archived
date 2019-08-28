@@ -21,7 +21,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <HomeHeader />,
-      main: props => <Home {...props} />,
+      main: (props) => <Home {...props} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: HomeIcon,
@@ -35,7 +35,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <FinanceHeader />,
-      main: props => <Finance {...props} routePaths={ROUTE_PATHS} />,
+      main: (props) => <Finance {...props} routePaths={ROUTE_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: AccountBalanceIcon,
@@ -55,7 +55,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <ReleasesHeader />,
-      main: props => <Releases {...props} routePaths={ROUTE_PATHS} />,
+      main: (props) => <Releases {...props} routePaths={ROUTE_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: SystemUpdateIcon,
@@ -72,9 +72,9 @@ ROUTE_PATHS = buildRoutePaths(Routes);
 ROUTE_NAV_ITEMS = buildNavItems(Routes);
 
 export function withRoutes(Component) {
-  return props => (
+  return (props) => (
     <Component
-      {...props}
+      {...props} // eslint-disable-line react/jsx-props-no-spreading
       routes={ROUTES}
       routePaths={ROUTE_PATHS}
       routeNavItems={ROUTE_NAV_ITEMS}

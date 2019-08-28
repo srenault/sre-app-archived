@@ -23,7 +23,7 @@ function Nav({
 
   const toggleMenu = useCallback(() => setOpen(!open), []);
 
-  const onClickItem = useCallback(item => (
+  const onClickItem = useCallback((item) => (
     () => {
       setOpen(false);
       const { path } = routePaths[item];

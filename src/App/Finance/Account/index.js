@@ -10,7 +10,7 @@ import withAsyncComponent from '../../../components/AsyncComponent';
 import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
-const styles = theme => ({
+const styles = (theme) => ({
   divider: {
     margin: `${theme.spacing(2)}px 0 ${theme.spacing(4)}px 0`,
   },

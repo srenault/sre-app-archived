@@ -21,7 +21,7 @@ const Order = {
 const OrderBy = {
   date: {
     id: 'date',
-    func: order => (s1, s2) => {
+    func: (order) => (s1, s2) => {
       const d1 = new Date(s1.date).getTime();
       const d2 = new Date(s2.date).getTime();
       if (order.direction === Order.ASC) {
@@ -32,7 +32,7 @@ const OrderBy = {
   },
   amount: {
     id: 'amount',
-    func: order => (s1, s2) => {
+    func: (order) => (s1, s2) => {
       if (order.direction === Order.ASC) {
         return s1.amount - s2.amount;
       }
@@ -71,7 +71,7 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const onSelectSort = useCallback(orderById => () => {
+  const onSelectSort = useCallback((orderById) => () => {
     setOrder({
       by: OrderBy[orderById],
       direction: order.direction === Order.ASC ? Order.DESC : Order.ASC,
@@ -88,18 +88,18 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const creditButtonStyles = { variant: filter.credit ? 'contained' : 'outlined' };
-  const debitButtonStyles = { variant: filter.debit ? 'contained' : 'outlined' };
+  const creditButtonStyles = filter.credit ? 'contained' : 'outlined';
+  const debitButtonStyles = filter.debit ? 'contained' : 'outlined';
 
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" gutterBottom>Relevé de compte</Typography>
       <Grid container spacing={2} justify="center">
         <Grid item>
-          <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
+          <Button color="primary" variant={creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
         </Grid>
         <Grid item>
-          <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+          <Button color="primary" variant={debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
         </Grid>
       </Grid>
       <Table className={classes.table}>

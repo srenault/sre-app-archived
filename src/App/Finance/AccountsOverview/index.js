@@ -50,17 +50,14 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
 
   const overview = asyncState.data;
 
-  const jointAccounts = overview.accounts.filter(account => account.type === 'joint_account');
-  const currentAccounts = overview.accounts.filter(account => account.type === 'current_account');
-  const savingAccounts = overview.accounts.filter(account => account.type === 'saving_account');
+  const jointAccounts = overview.accounts.filter((account) => account.type === 'joint_account');
+  const currentAccounts = overview.accounts.filter((account) => account.type === 'current_account');
+  const savingAccounts = overview.accounts.filter((account) => account.type === 'saving_account');
   const accounts = jointAccounts.concat(currentAccounts).concat(savingAccounts);
-  const credit = Math.round(overview.credit);
-  const debit = Math.round(overview.debit);
-  const balance = credit + debit;
   const colorCredit = { color: green.A400 };
   const colorDebit = { color: red.A400 };
-  const colorBalance = balance > 0 ? colorCredit : colorDebit;
-  const startPeriod = new Date(overview.startPeriod);
+  const colorBalance = overview.period.balance > 0 ? colorCredit : colorDebit;
+  const startPeriod = new Date(overview.period.startDate);
 
   return (
     <div className="accounts">
@@ -72,7 +69,7 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
                 Début de la période
               </Typography>
               <Typography variant="h3">
-                {format(startPeriod, 'D MMMM YYYY', { locale: frLocale })}
+                {format(startPeriod, 'd MMMM yyyy', { locale: frLocale })}
               </Typography>
             </CardContent>
           </Card>
@@ -84,7 +81,7 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
                 Balance
               </Typography>
               <Typography style={colorBalance} variant="h3">
-                {balance} €
+                {overview.period.balance} €
               </Typography>
             </CardContent>
           </Card>
@@ -98,10 +95,10 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {accounts.map(account => (
+          {accounts.map((account) => (
             <AccountRow
               key={account.id}
-              startPeriod={overview.startPeriod}
+              startPeriod={overview.period.startDate}
               account={account}
               routePaths={routePaths}
             />

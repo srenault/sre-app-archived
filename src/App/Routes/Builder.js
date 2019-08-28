@@ -8,7 +8,7 @@ export function buildRoutePaths(Routes) {
         const reversePath = (args) => {
           const params = path.match(/:([^/]+)/g);
           return Object.entries(args).reduce((routesAcc, [argKey, argValue]) => {
-            if (params.some(param => param === `:${argKey}`)) {
+            if (params.some((param) => param === `:${argKey}`)) {
               return routesAcc.replace(`:${argKey}`, argValue);
             } else {
               return routesAcc;
