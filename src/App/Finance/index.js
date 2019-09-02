@@ -31,12 +31,15 @@ function mountAccount(apiClient) {
 }
 
 export default function Finance({ apiClient, routePaths }) {
+  const accountsOverviewRoute = routePaths.finance.children.accounts;
+  const accountRoute = accountsOverviewRoute.children.account;
+
   return (
     <Main>
       <div className="finance">
         <Switch>
-          <Route path={routePaths.finance.path} exact={routePaths.finance.exact} component={mountAccountsOverview(apiClient, routePaths)} />
-          <Route path={routePaths.finance.children.account.path} exact={routePaths.finance.exact} component={mountAccount(apiClient)} />
+          <Route path={accountsOverviewRoute.path} exact={accountsOverviewRoute.exact} component={mountAccountsOverview(apiClient, routePaths)} />
+          <Route path={accountRoute.path} exact={accountRoute.exact} component={mountAccount(apiClient)} />
         </Switch>
       </div>
     </Main>

@@ -27,7 +27,7 @@ const AccountRow = withRouter(({
   const { displayName, balance } = account;
 
   const onClick = useCallback(() => {
-    const url = routePaths.finance.children.account.reversePath({ id: account.id, startdate: startPeriod });
+    const url = routePaths.finance.children.accounts.children.account.reversePath({ id: account.id, startdate: startPeriod });
     history.push(url);
   }, []);
 
