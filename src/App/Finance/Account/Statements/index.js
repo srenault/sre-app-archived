@@ -128,9 +128,8 @@ function Statements({ classes, data: statements }) {
         </TableHead>
         <TableBody>
           {rows.map(({
-            date, label, amount, balance,
+            id, date, label, amount, balance,
           }) => {
-            const id = [date, label, amount, balance].join('#');
             return (
               <TableRow key={id}>
                 <TableCell className={classes.tableCell}>{date}</TableCell>

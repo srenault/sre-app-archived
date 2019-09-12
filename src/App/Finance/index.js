@@ -5,6 +5,7 @@ import { ApiClientPropTypes } from '../../propTypes/models/ApiClient';
 import Main from '../Main';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
+import Analytics from './Analytics';
 import { RoutePathsPropTypes } from '../../propTypes/models/Routes';
 
 function mountAccountsOverview(apiClient, routePaths) {
@@ -30,9 +31,14 @@ function mountAccount(apiClient) {
   return RouteAccount;
 }
 
+function mountAnalytics(apiClient) {
+  return () => <Analytics apiClient={apiClient} />;
+}
+
 export default function Finance({ apiClient, routePaths }) {
   const accountsOverviewRoute = routePaths.finance.children.accounts;
   const accountRoute = accountsOverviewRoute.children.account;
+  const analyticsRoute = routePaths.finance.children.analytics;
 
   return (
     <Main>
@@ -40,6 +46,7 @@ export default function Finance({ apiClient, routePaths }) {
         <Switch>
           <Route path={accountsOverviewRoute.path} exact={accountsOverviewRoute.exact} component={mountAccountsOverview(apiClient, routePaths)} />
           <Route path={accountRoute.path} exact={accountRoute.exact} component={mountAccount(apiClient)} />
+          <Route path={analyticsRoute.path} exact={analyticsRoute.exact} component={mountAnalytics(apiClient)} />
         </Switch>
       </div>
     </Main>
