@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -87,24 +88,26 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
           </Card>
         </Grid>
       </Grid>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Compte</TableCell>
-            <TableCell>Solde</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {accounts.map((account) => (
-            <AccountRow
-              key={account.id}
-              startPeriod={overview.period.startDate}
-              account={account}
-              routePaths={routePaths}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <Container>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Compte</TableCell>
+              <TableCell>Solde</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {accounts.map((account) => (
+              <AccountRow
+                key={account.id}
+                startPeriod={overview.period.startDate}
+                account={account}
+                routePaths={routePaths}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Container>
     </div>
   );
 }

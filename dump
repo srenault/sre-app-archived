@@ -20,7 +20,7 @@ generate () {
     OUTPUT=$2
 
     echo -n "export default " > $OUTPUT
-    curl -s $REQUEST | ./node_modules/json-to-js/index.js >> $OUTPUT
+    curl -s $REQUEST | ./node_modules/json-to-js/index.js --spaces=0 >> $OUTPUT
     echo -n ";" >> $OUTPUT
 }
 
@@ -43,7 +43,6 @@ ACCOUNT_OUTPUT=$FINANCE_OUTPUT_DIR"/account.js"
 generate $FINANCE_ENDPOINT"/accounts/"$ACCOUNT_ID $ACCOUNT_OUTPUT
 
 ANALYTICS_OUTPUT=$FINANCE_OUTPUT_DIR"/analytics.js"
-echo $FINANCE_ENDPOINT"/analytics"
 generate $FINANCE_ENDPOINT"/analytics" $ANALYTICS_OUTPUT
 
 # RELEASES

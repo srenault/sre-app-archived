@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Statements from './Statements';
 import Expenses from './Expenses';
@@ -31,7 +32,9 @@ function Account({ classes, asyncState, refreshSubject }) {
       <Typography variant="h3" align="center" gutterBottom>{displayName}</Typography>
       <Expenses data={expenses} />
       <Divider className={classes.divider} />
-      <Statements data={statements} />
+      <Container>
+        <Statements data={statements} />
+      </Container>
     </div>
   );
 }

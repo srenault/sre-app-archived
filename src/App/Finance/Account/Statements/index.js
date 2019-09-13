@@ -43,11 +43,10 @@ const OrderBy = {
 
 const styles = () => ({
   table: {
-    minWidth: 300,
+    tableLayout: 'fixed',
   },
   tableCell: {
-    paddingRight: 4,
-    paddingLeft: 5,
+    textAlign: 'center',
   },
 });
 
@@ -105,7 +104,7 @@ function Statements({ classes, data: statements }) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell className={classes.tableCell}>
+            <TableCell style={{width: '20%'}} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.date.id}
                 onClick={onSelectSort(OrderBy.date.id)}
@@ -114,8 +113,8 @@ function Statements({ classes, data: statements }) {
                 Date
               </TableSortLabel>
             </TableCell>
-            <TableCell className={classes.tableCell}>Libellé</TableCell>
-            <TableCell className={classes.tableCell}>
+            <TableCell style={{width: '60%'}} className={classes.tableCell}>Libellé</TableCell>
+            <TableCell style={{width: '20%'}} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.amount.id}
                 onClick={onSelectSort(OrderBy.amount.id)}
@@ -133,7 +132,7 @@ function Statements({ classes, data: statements }) {
             return (
               <TableRow key={id}>
                 <TableCell className={classes.tableCell}>{date}</TableCell>
-                <TableCell className={classes.tableCell}>{label}</TableCell>
+                <TableCell style={{fontSize: '0.7rem'}} className={classes.tableCell}>{label}</TableCell>
                 <TableCell className={classes.tableCell}>{amount}</TableCell>
               </TableRow>
             );
