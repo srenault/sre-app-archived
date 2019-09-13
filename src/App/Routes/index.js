@@ -53,7 +53,7 @@ const Routes = {
             path: '/:id/:startdate',
             exact: true,
           },
-        }
+        },
       },
       analytics: {
         key: 'finance_analytics',
@@ -64,7 +64,7 @@ const Routes = {
           label: 'Analyse des comptes',
         },
         children: {},
-      }
+      },
     },
   },
   releases: {

@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  useEffect, useRef, useState, useCallback,
+} from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,16 +19,12 @@ import frLocale from 'date-fns/locale/fr';
 
 import 'c3/c3.css';
 
+import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import withAsyncComponent from '../../../components/AsyncComponent';
 import { grouped } from '../../../lib/utils';
 
-const COLORS = {
-  red: '#FF0000',
-  green: '#60B044',
-};
-
 const Sort = {
-  DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate)
+  DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate),
 };
 
 function formatPeriodDate(date) {
@@ -34,7 +32,6 @@ function formatPeriodDate(date) {
 }
 
 function Analytics({ asyncState }) {
-
   const chartEl = useRef(null);
 
   const analytics = asyncState.data.result;
@@ -54,7 +51,6 @@ function Analytics({ asyncState }) {
   const onNextPeriod = useCallback(() => setPage(page + 1));
 
   useEffect(() => {
-
     const xLabels = analyticsPeriod.map((period) => period.startDate);
 
     const values = analyticsPeriod.map((period) => period.balance);
@@ -75,15 +71,15 @@ function Analytics({ asyncState }) {
       },
       line: {
         step: {
-          type: 'step-after'
-        }
+          type: 'step-after',
+        },
       },
       legend: {
-        show: false
+        show: false,
       },
       axis: {
         x: {
-          type : 'timeseries',
+          type: 'timeseries',
           tick: {
             format: (x) => format(x, 'd-MM-yy'),
           },
@@ -119,7 +115,7 @@ function Analytics({ asyncState }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {analyticsPeriod.sort(Sort.DESC).map(({startDate, endDate, balance }) => {
+          {analyticsPeriod.sort(Sort.DESC).map(({ startDate, endDate, balance }) => {
             const id = `${startDate}#${endDate}`;
             return (
               <TableRow key={id}>
@@ -134,6 +130,10 @@ function Analytics({ asyncState }) {
     </Container>
   );
 }
+
+Analytics.propTypes = {
+  asyncState: AsyncStatePropTypes.isRequired,
+};
 
 const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAnalytics();
 

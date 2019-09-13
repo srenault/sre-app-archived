@@ -104,7 +104,7 @@ function Statements({ classes, data: statements }) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell style={{width: '20%'}} className={classes.tableCell}>
+            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.date.id}
                 onClick={onSelectSort(OrderBy.date.id)}
@@ -113,8 +113,8 @@ function Statements({ classes, data: statements }) {
                 Date
               </TableSortLabel>
             </TableCell>
-            <TableCell style={{width: '60%'}} className={classes.tableCell}>Libellé</TableCell>
-            <TableCell style={{width: '20%'}} className={classes.tableCell}>
+            <TableCell style={{ width: '60%' }} className={classes.tableCell}>Libellé</TableCell>
+            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.amount.id}
                 onClick={onSelectSort(OrderBy.amount.id)}
@@ -127,16 +127,14 @@ function Statements({ classes, data: statements }) {
         </TableHead>
         <TableBody>
           {rows.map(({
-            id, date, label, amount, balance,
-          }) => {
-            return (
-              <TableRow key={id}>
-                <TableCell className={classes.tableCell}>{date}</TableCell>
-                <TableCell style={{fontSize: '0.7rem'}} className={classes.tableCell}>{label}</TableCell>
-                <TableCell className={classes.tableCell}>{amount}</TableCell>
-              </TableRow>
-            );
-          })}
+            id, date, label, amount,
+          }) => (
+            <TableRow key={id}>
+              <TableCell className={classes.tableCell}>{date}</TableCell>
+              <TableCell style={{ fontSize: '0.7rem' }} className={classes.tableCell}>{label}</TableCell>
+              <TableCell className={classes.tableCell}>{amount}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

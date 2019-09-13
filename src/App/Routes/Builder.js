@@ -29,15 +29,11 @@ export function buildRoutePaths(Routes) {
         const updatedAcc = { ...acc, [routeKey]: r };
 
         if (routeValue.children && Object.keys(routeValue.children).length > 0) {
-
           updatedAcc[routeKey].children = step(Object.entries(routeValue.children), {}, r);
 
           return step(otherRoutes, updatedAcc, parent);
-
         } else {
-
           return step(otherRoutes, updatedAcc, parent);
-
         }
       } else {
         return acc;
