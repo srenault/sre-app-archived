@@ -5,4 +5,4 @@ www/js
 www/index.html
 env/prod.js
 .DS_Store
-src/ApiClient/mock/dump/
+mock/responses
