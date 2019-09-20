@@ -5,3 +5,4 @@ www/js
 www/index.html
 env/prod.js
 .DS_Store
+mock/responses

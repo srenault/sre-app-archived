@@ -21,7 +21,7 @@ const Order = {
 const OrderBy = {
   date: {
     id: 'date',
-    func: order => (s1, s2) => {
+    func: (order) => (s1, s2) => {
       const d1 = new Date(s1.date).getTime();
       const d2 = new Date(s2.date).getTime();
       if (order.direction === Order.ASC) {
@@ -32,7 +32,7 @@ const OrderBy = {
   },
   amount: {
     id: 'amount',
-    func: order => (s1, s2) => {
+    func: (order) => (s1, s2) => {
       if (order.direction === Order.ASC) {
         return s1.amount - s2.amount;
       }
@@ -43,11 +43,10 @@ const OrderBy = {
 
 const styles = () => ({
   table: {
-    minWidth: 300,
+    tableLayout: 'fixed',
   },
   tableCell: {
-    paddingRight: 4,
-    paddingLeft: 5,
+    textAlign: 'center',
   },
 });
 
@@ -71,7 +70,7 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const onSelectSort = useCallback(orderById => () => {
+  const onSelectSort = useCallback((orderById) => () => {
     setOrder({
       by: OrderBy[orderById],
       direction: order.direction === Order.ASC ? Order.DESC : Order.ASC,
@@ -88,24 +87,24 @@ function Statements({ classes, data: statements }) {
     }
   });
 
-  const creditButtonStyles = { variant: filter.credit ? 'contained' : 'outlined' };
-  const debitButtonStyles = { variant: filter.debit ? 'contained' : 'outlined' };
+  const creditButtonStyles = filter.credit ? 'contained' : 'outlined';
+  const debitButtonStyles = filter.debit ? 'contained' : 'outlined';
 
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" gutterBottom>Relevé de compte</Typography>
       <Grid container spacing={2} justify="center">
         <Grid item>
-          <Button color="primary" {...creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
+          <Button color="primary" variant={creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
         </Grid>
         <Grid item>
-          <Button color="primary" {...debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
+          <Button color="primary" variant={debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
         </Grid>
       </Grid>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell className={classes.tableCell}>
+            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.date.id}
                 onClick={onSelectSort(OrderBy.date.id)}
@@ -114,8 +113,8 @@ function Statements({ classes, data: statements }) {
                 Date
               </TableSortLabel>
             </TableCell>
-            <TableCell className={classes.tableCell}>Libellé</TableCell>
-            <TableCell className={classes.tableCell}>
+            <TableCell style={{ width: '60%' }} className={classes.tableCell}>Libellé</TableCell>
+            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.amount.id}
                 onClick={onSelectSort(OrderBy.amount.id)}
@@ -128,17 +127,14 @@ function Statements({ classes, data: statements }) {
         </TableHead>
         <TableBody>
           {rows.map(({
-            date, label, amount, balance,
-          }) => {
-            const id = [date, label, amount, balance].join('#');
-            return (
-              <TableRow key={id}>
-                <TableCell className={classes.tableCell}>{date}</TableCell>
-                <TableCell className={classes.tableCell}>{label}</TableCell>
-                <TableCell className={classes.tableCell}>{amount}</TableCell>
-              </TableRow>
-            );
-          })}
+            id, date, label, amount,
+          }) => (
+            <TableRow key={id}>
+              <TableCell className={classes.tableCell}>{date}</TableCell>
+              <TableCell style={{ fontSize: '0.7rem' }} className={classes.tableCell}>{label}</TableCell>
+              <TableCell className={classes.tableCell}>{amount}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

@@ -52,11 +52,11 @@ Header.defaultProps = {
 };
 
 export function withRefreshSubject(Component) {
-  return props => <Component {...props} refreshSubject={RefreshSubject} />;
+  return (props) => <Component {...props} refreshSubject={RefreshSubject} />; // eslint-disable-line react/jsx-props-no-spreading
 }
 
 export function withMenuSubject(Component) {
-  return props => <Component {...props} menuSubject={MenuSubject} />;
+  return (props) => <Component {...props} menuSubject={MenuSubject} />; // eslint-disable-line react/jsx-props-no-spreading
 }
 
 const styles = {

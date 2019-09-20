@@ -1,6 +1,7 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import HomeHeader from '../Home/Header';
 import Home from '../Home';
@@ -11,8 +12,8 @@ import Releases from '../Releases';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
-let ROUTE_PATHS = {};
-let ROUTE_NAV_ITEMS = [];
+let ROUTES_PATHS = {};
+let ROUTES_NAV_ITEMS = [];
 
 const Routes = {
   home: {
@@ -21,7 +22,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <HomeHeader />,
-      main: props => <Home {...props} />,
+      main: (props) => <Home {...props} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: HomeIcon,
@@ -32,20 +33,41 @@ const Routes = {
   finance: {
     key: 'finance',
     path: '/finance',
-    exact: true,
+    exact: false,
+    ignore: true,
     component: {
-      header: () => <FinanceHeader />,
-      main: props => <Finance {...props} routePaths={ROUTE_PATHS} />,
-    },
-    nav: {
-      Icon: AccountBalanceIcon,
-      label: 'Finance',
+      header: () => <FinanceHeader refresh />,
+      main: (props) => <Finance {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     children: {
-      account: {
-        key: 'finance_account',
-        path: '/accounts/:id/:startdate',
+      accounts: {
+        key: 'finance_accounts',
+        path: '/accounts',
         exact: true,
+        nav: {
+          Icon: AccountBalanceIcon,
+          label: 'Comptes bancaires',
+        },
+        children: {
+          account: {
+            key: 'finance_account',
+            path: '/:id/:startdate',
+            exact: true,
+          },
+        },
+      },
+      analytics: {
+        key: 'finance_analytics',
+        path: '/analytics',
+        exact: true,
+        component: {
+          header: () => <FinanceHeader />,
+        },
+        nav: {
+          Icon: ShowChartIcon,
+          label: 'Analyse des comptes',
+        },
+        children: {},
       },
     },
   },
@@ -55,7 +77,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <ReleasesHeader />,
-      main: props => <Releases {...props} routePaths={ROUTE_PATHS} />,
+      main: (props) => <Releases {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: SystemUpdateIcon,
@@ -67,17 +89,17 @@ const Routes = {
 
 ROUTES = buildRoutes(Routes);
 
-ROUTE_PATHS = buildRoutePaths(Routes);
+ROUTES_PATHS = buildRoutePaths(Routes);
 
-ROUTE_NAV_ITEMS = buildNavItems(Routes);
+ROUTES_NAV_ITEMS = buildNavItems(Routes);
 
 export function withRoutes(Component) {
-  return props => (
+  return (props) => (
     <Component
-      {...props}
+      {...props} // eslint-disable-line react/jsx-props-no-spreading
       routes={ROUTES}
-      routePaths={ROUTE_PATHS}
-      routeNavItems={ROUTE_NAV_ITEMS}
+      routePaths={ROUTES_PATHS}
+      routeNavItems={ROUTES_NAV_ITEMS}
     />
   );
 }

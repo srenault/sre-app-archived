@@ -29,12 +29,18 @@ export const RoutePathsPropTypes = (() => {
   return PropTypes.objectOf(RoutePathPropTypes);
 })();
 
-export const RouteNavItemsPropTypes = PropTypes.arrayOf(PropTypes.shape({
-  path: PropTypes.string.isRequired,
-  key: PropTypes.string.isRequired,
-  Icon: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
-}));
+export const RouteNavItemsPropTypes = (() => {
+  const RouteNavItemObjTypes = PropTypes.shape({
+    path: PropTypes.string.isRequired,
+    key: PropTypes.string.isRequired,
+    Icon: PropTypes.object.isRequired,
+    label: PropTypes.string.isRequired,
+  });
+
+  const RouteNavItemArrTypes = PropTypes.arrayOf(RouteNavItemObjTypes);
+
+  return PropTypes.arrayOf(PropTypes.oneOfType([RouteNavItemObjTypes, RouteNavItemArrTypes]));
+})();
 
 export default {
   RoutesPropTypes,

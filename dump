@@ -19,33 +19,35 @@ generate () {
     REQUEST=$1
     OUTPUT=$2
 
-    echo -n "export default " > $OUTPUT
-    echo -n $(curl -s $REQUEST | ./node_modules/json-to-js/index.js) >> $OUTPUT
-    echo -n ";" >> $OUTPUT
+    curl -s $REQUEST > $OUTPUT
 }
 
 # FINANCE
-
 FINANCE_ENDPOINT=$ENDPOINT"/finance"
-FINANCE_OUTPUT_DIR="src/ApiClient/mock/dump/finance"
+FINANCE_OUTPUT_DIR="mock/responses/finance"
 
 rm -f $FINANCE_OUTPUT_DIR/*
 
-# FINANCE - BALANCES
 if [ ! -d $FINANCE_OUTPUT_DIR ]; then
   mkdir -p $FINANCE_OUTPUT_DIR;
 fi
 
-ACCOUNTS_OUTPUT=$FINANCE_OUTPUT_DIR"/accounts.js"
+ACCOUNTS_OUTPUT=$FINANCE_OUTPUT_DIR"/accounts.json"
 generate $FINANCE_ENDPOINT"/accounts" $ACCOUNTS_OUTPUT
 
-ACCOUNT_OUTPUT=$FINANCE_OUTPUT_DIR"/account.js"
+ACCOUNT_OUTPUT=$FINANCE_OUTPUT_DIR"/account.json"
 generate $FINANCE_ENDPOINT"/accounts/"$ACCOUNT_ID $ACCOUNT_OUTPUT
 
+ANALYTICS_OUTPUT=$FINANCE_OUTPUT_DIR"/analytics.json"
+generate $FINANCE_ENDPOINT"/analytics" $ANALYTICS_OUTPUT
+
 # RELEASES
-
 RELEASES_ENDPOINT=$ENDPOINT"/releases"
-RELEASES_OUTPUT_DIR="src/ApiClient/mock/dump/releases"
+RELEASES_OUTPUT_DIR="mock/responses/releases"
 
-RELEASES_OUTPUT=$RELEASES_OUTPUT_DIR"/index.js"
+if [ ! -d $RELEASES_OUTPUT_DIR ]; then
+  mkdir -p $RELEASES_OUTPUT_DIR;
+fi
+
+RELEASES_OUTPUT=$RELEASES_OUTPUT_DIR"/index.json"
 generate $RELEASES_ENDPOINT $RELEASES_OUTPUT

@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -27,7 +28,7 @@ const AccountRow = withRouter(({
   const { displayName, balance } = account;
 
   const onClick = useCallback(() => {
-    const url = routePaths.finance.children.account.reversePath({ id: account.id, startdate: startPeriod });
+    const url = routePaths.finance.children.accounts.children.account.reversePath({ id: account.id, startdate: startPeriod });
     history.push(url);
   }, []);
 
@@ -50,17 +51,14 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
 
   const overview = asyncState.data;
 
-  const jointAccounts = overview.accounts.filter(account => account.type === 'joint_account');
-  const currentAccounts = overview.accounts.filter(account => account.type === 'current_account');
-  const savingAccounts = overview.accounts.filter(account => account.type === 'saving_account');
+  const jointAccounts = overview.accounts.filter((account) => account.type === 'joint_account');
+  const currentAccounts = overview.accounts.filter((account) => account.type === 'current_account');
+  const savingAccounts = overview.accounts.filter((account) => account.type === 'saving_account');
   const accounts = jointAccounts.concat(currentAccounts).concat(savingAccounts);
-  const credit = Math.round(overview.credit);
-  const debit = Math.round(overview.debit);
-  const balance = credit + debit;
   const colorCredit = { color: green.A400 };
   const colorDebit = { color: red.A400 };
-  const colorBalance = balance > 0 ? colorCredit : colorDebit;
-  const startPeriod = new Date(overview.startPeriod);
+  const colorBalance = overview.period.balance > 0 ? colorCredit : colorDebit;
+  const startPeriod = new Date(overview.period.startDate);
 
   return (
     <div className="accounts">
@@ -72,7 +70,7 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
                 Début de la période
               </Typography>
               <Typography variant="h3">
-                {format(startPeriod, 'D MMMM YYYY', { locale: frLocale })}
+                {format(startPeriod, 'd MMMM yyyy', { locale: frLocale })}
               </Typography>
             </CardContent>
           </Card>
@@ -84,30 +82,32 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
                 Balance
               </Typography>
               <Typography style={colorBalance} variant="h3">
-                {balance} €
+                {overview.period.balance} €
               </Typography>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Compte</TableCell>
-            <TableCell>Solde</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {accounts.map(account => (
-            <AccountRow
-              key={account.id}
-              startPeriod={overview.startPeriod}
-              account={account}
-              routePaths={routePaths}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <Container>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Compte</TableCell>
+              <TableCell>Solde</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {accounts.map((account) => (
+              <AccountRow
+                key={account.id}
+                startPeriod={overview.period.startDate}
+                account={account}
+                routePaths={routePaths}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Container>
     </div>
   );
 }

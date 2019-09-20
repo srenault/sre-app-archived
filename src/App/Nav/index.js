@@ -5,15 +5,14 @@ import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import { withMenuSubject } from '../Header';
 import { SubjectPropTypes } from '../../propTypes/rxjs';
-import { RoutePathsPropTypes, RouteNavItemsPropTypes } from '../../propTypes/models/Routes';
+import { RouteNavItemsPropTypes } from '../../propTypes/models/Routes';
+import SingleNavItem from './SingleNavItem';
+import GroupNavItems from './GroupNavItems';
 
 function Nav({
-  classes, history, routePaths, routeNavItems, menuSubject,
+  classes, history, routeNavItems, menuSubject,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -23,10 +22,9 @@ function Nav({
 
   const toggleMenu = useCallback(() => setOpen(!open), []);
 
-  const onClickItem = useCallback(item => (
+  const onClickItem = useCallback((path) => (
     () => {
       setOpen(false);
-      const { path } = routePaths[item];
       history.push(path);
     }
   ), []);
@@ -38,16 +36,23 @@ function Nav({
     return () => subscription.unsubscribe();
   });
 
+  const NavItem = ({ item }) => {
+    if (Array.isArray(item)) {
+      return <GroupNavItems items={item} onClick={onClickItem} />;
+    } else {
+      const { label, Icon, path } = item;
+      return <SingleNavItem label={label} Icon={Icon} path={path} onClick={onClickItem} />;
+    }
+  };
+
   return (
     <SwipeableDrawer open={open} onClose={closeMenu} onOpen={openMenu}>
       <div className={classes.list}>
         <List>
-          {routeNavItems.map(({ label, key, Icon }) => (
-            <ListItem onClick={onClickItem(key)} button key={key}>
-              <ListItemIcon><Icon /></ListItemIcon>
-              <ListItemText primary={label} />
-            </ListItem>
-          ))}
+          {routeNavItems.map((navItem) => {
+            const key = Array.isArray(navItem) ? navItem.map((n) => n.key).join(';') : navItem.key;
+            return <NavItem item={navItem} key={key} />;
+          })}
         </List>
       </div>
     </SwipeableDrawer>
@@ -58,7 +63,6 @@ Nav.propTypes = {
   classes: PropTypes.object,
   menuSubject: SubjectPropTypes.isRequired,
   history: ReactRouterPropTypes.history.isRequired,
-  routePaths: RoutePathsPropTypes.isRequired,
   routeNavItems: RouteNavItemsPropTypes.isRequired,
 };
 

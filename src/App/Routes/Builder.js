@@ -2,13 +2,16 @@ export function buildRoutePaths(Routes) {
   const step = (routes, acc = {}, parent) => {
     if (routes && routes.length > 0) {
       const [route, ...otherRoutes] = routes;
+
       if (route.length === 2) {
         const [routeKey, routeValue] = route;
+
         const path = parent ? `${parent.path}${routeValue.path}` : routeValue.path;
+
         const reversePath = (args) => {
           const params = path.match(/:([^/]+)/g);
           return Object.entries(args).reduce((routesAcc, [argKey, argValue]) => {
-            if (params.some(param => param === `:${argKey}`)) {
+            if (params.some((param) => param === `:${argKey}`)) {
               return routesAcc.replace(`:${argKey}`, argValue);
             } else {
               return routesAcc;
@@ -16,12 +19,7 @@ export function buildRoutePaths(Routes) {
           }, path);
         };
 
-        const r = parent ? {
-          key: routeValue.key,
-          path,
-          reversePath,
-          exact: !!routeValue.exact,
-        } : {
+        const r = {
           key: routeValue.key,
           path,
           reversePath,
@@ -32,9 +30,9 @@ export function buildRoutePaths(Routes) {
 
         if (routeValue.children && Object.keys(routeValue.children).length > 0) {
           updatedAcc[routeKey].children = step(Object.entries(routeValue.children), {}, r);
-          return step(otherRoutes, updatedAcc);
+          return step(otherRoutes, updatedAcc, parent);
         } else {
-          return step(otherRoutes, updatedAcc);
+          return step(otherRoutes, updatedAcc, parent);
         }
       } else {
         return acc;
@@ -55,19 +53,21 @@ export function buildRoutes(Routes) {
         const r = parent ? {
           key: route.key,
           path: `${parent.path}${route.path}`,
+          nav: route.nav,
           exact: route.exact || false,
           component: {
             ...parent.component,
             ...route.component,
           },
-        } : route;
-
-        const updatedAcc = acc.concat(r);
+        } : { ...route };
 
         if (route.children && Object.keys(route.children).length > 0) {
-          return step(otherRoutes, step(Object.values(route.children), updatedAcc, r));
+          const accStep1 = r.ignore ? acc : acc.concat(r);
+          const accStep2 = accStep1.concat(step(Object.values(route.children), [], r));
+          return step(otherRoutes, accStep2, parent);
         } else {
-          return step(otherRoutes, updatedAcc);
+          const updatedAcc = acc.concat(r);
+          return step(otherRoutes, updatedAcc, parent);
         }
       } else {
         return acc;
@@ -80,9 +80,32 @@ export function buildRoutes(Routes) {
 }
 
 export function buildNavItems(Routes) {
-  return Object.entries(Routes)
-    .filter(([, { nav }]) => !!nav)
-    .map(([, { path, key, nav }]) => ({ path, key, ...nav }));
+  const step = (routes, acc = [], parent) => {
+    if (routes && routes.length > 0) {
+      const [route, ...otherRoutes] = routes;
+      if (route) {
+        const accStep1 = route.nav ? acc.concat({
+          path: parent ? `${parent.path}${route.path}` : route.path,
+          key: route.key,
+          Icon: route.nav.Icon,
+          label: route.nav.label,
+        }) : acc;
+
+        if (route.children && Object.keys(route.children).length > 0) {
+          const accStep2 = step(Object.values(route.children), [], route);
+          const accStep3 = accStep2.length > 0 ? accStep1.concat([accStep2]) : accStep1;
+          return step(otherRoutes, accStep3, parent);
+        } else {
+          return step(otherRoutes, accStep1, parent);
+        }
+      } else {
+        return step(otherRoutes, acc, parent);
+      }
+    } else {
+      return acc;
+    }
+  };
+  return step(Object.values(Routes));
 }
 
 export default {
