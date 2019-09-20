@@ -1,5 +1,5 @@
 export function grouped(array, n) {
-  return array.reduce((acc, el) => {
+  return array.slice().reduce((acc, el) => {
     const [headGroup, ...tailGroups] = acc;
     if (headGroup && headGroup.length < n) {
       const updatedHeadGroup = (headGroup || []).concat(el);
@@ -7,7 +7,7 @@ export function grouped(array, n) {
     } else {
       return [[el]].concat(acc);
     }
-  }, []).reverse();
+  }, []).map((group) => group.reverse()).reverse();
 }
 
 export default {

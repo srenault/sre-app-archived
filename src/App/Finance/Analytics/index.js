@@ -34,9 +34,18 @@ function formatPeriodDate(date) {
 function Analytics({ asyncState }) {
   const chartEl = useRef(null);
 
-  const analytics = asyncState.data.result;
+  const analytics = asyncState.data.result.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
 
-  const analyticsByPage = grouped(analytics, 5).reverse();
+  const analyticsByPage = (() => {
+    const result = grouped(analytics, 5).reverse();
+    const [firstGroup, secondGroup, ...restGroups] = result;
+    if (firstGroup && firstGroup.length === 1 && secondGroup) {
+      const updatedSecondGroup = firstGroup.concat(secondGroup);
+      return [updatedSecondGroup, ...restGroups];
+    } else {
+      return result;
+    }
+  })();
 
   const [page, setPage] = useState(analyticsByPage.length - 1);
 
@@ -94,7 +103,7 @@ function Analytics({ asyncState }) {
     <Container>
       <Grid container justify="center" alignItems="center">
         <Grid item>
-          <IconButton disabled={page <= 1} onClick={onPreviousPeriod}><NavigateBeforeIcon /></IconButton>
+          <IconButton disabled={page < 1} onClick={onPreviousPeriod}><NavigateBeforeIcon /></IconButton>
         </Grid>
         <Grid item>
           <Typography align="center" variant="h5">
