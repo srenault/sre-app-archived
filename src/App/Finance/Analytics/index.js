@@ -36,7 +36,7 @@ function Analytics({ asyncState }) {
 
   const analytics = asyncState.data.result;
 
-  const analyticsByPage = grouped(analytics.reverse(), 5).reverse();
+  const analyticsByPage = grouped(analytics, 5).reverse();
 
   const [page, setPage] = useState(analyticsByPage.length - 1);
 

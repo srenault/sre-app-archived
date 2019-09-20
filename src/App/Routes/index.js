@@ -11,9 +11,9 @@ import ReleasesHeader from '../Releases/Header';
 import Releases from '../Releases';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
-let FLATTEN_ROUTES = {};
-let ROUTE_PATHS = {};
-let ROUTE_NAV_ITEMS = [];
+let ROUTES = {};
+let ROUTES_PATHS = {};
+let ROUTES_NAV_ITEMS = [];
 
 const Routes = {
   home: {
@@ -34,9 +34,10 @@ const Routes = {
     key: 'finance',
     path: '/finance',
     exact: false,
+    ignore: true,
     component: {
-      header: () => <FinanceHeader />,
-      main: (props) => <Finance {...props} routePaths={ROUTE_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
+      header: () => <FinanceHeader refresh />,
+      main: (props) => <Finance {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     children: {
       accounts: {
@@ -59,6 +60,9 @@ const Routes = {
         key: 'finance_analytics',
         path: '/analytics',
         exact: true,
+        component: {
+          header: () => <FinanceHeader />,
+        },
         nav: {
           Icon: ShowChartIcon,
           label: 'Analyse des comptes',
@@ -73,7 +77,7 @@ const Routes = {
     exact: true,
     component: {
       header: () => <ReleasesHeader />,
-      main: (props) => <Releases {...props} routePaths={ROUTE_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
+      main: (props) => <Releases {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     nav: {
       Icon: SystemUpdateIcon,
@@ -83,17 +87,19 @@ const Routes = {
   },
 };
 
-FLATTEN_ROUTES = buildRoutes(Routes);
-ROUTE_PATHS = buildRoutePaths(Routes);
-ROUTE_NAV_ITEMS = buildNavItems(FLATTEN_ROUTES);
+ROUTES = buildRoutes(Routes);
+
+ROUTES_PATHS = buildRoutePaths(Routes);
+
+ROUTES_NAV_ITEMS = buildNavItems(Routes);
 
 export function withRoutes(Component) {
   return (props) => (
     <Component
       {...props} // eslint-disable-line react/jsx-props-no-spreading
-      routes={FLATTEN_ROUTES}
-      routePaths={ROUTE_PATHS}
-      routeNavItems={ROUTE_NAV_ITEMS}
+      routes={ROUTES}
+      routePaths={ROUTES_PATHS}
+      routeNavItems={ROUTES_NAV_ITEMS}
     />
   );
 }
