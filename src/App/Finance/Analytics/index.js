@@ -15,7 +15,6 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import c3 from 'c3';
 import { format } from 'date-fns';
-import frLocale from 'date-fns/locale/fr';
 
 import 'c3/c3.css';
 
@@ -27,8 +26,11 @@ const Sort = {
   DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate),
 };
 
-function formatPeriodDate(date) {
-  return format(date, 'dd-MM-yy', { locale: frLocale });
+function formatDate(date) {
+  if (typeof date === 'string') {
+    return format(new Date(date), 'dd-MM-yy');
+  }
+  return format(date, 'dd-MM-yy');
 }
 
 function Analytics({ asyncState }) {
@@ -90,7 +92,7 @@ function Analytics({ asyncState }) {
         x: {
           type: 'timeseries',
           tick: {
-            format: (x) => format(x, 'd-MM-yy'),
+            format: (x) => formatDate(x),
           },
         },
       },
@@ -101,26 +103,27 @@ function Analytics({ asyncState }) {
 
   return (
     <Container>
-      <Grid container justify="center" alignItems="center">
+      <Typography gutterBottom variant="h3" align="center">Resultat net</Typography>
+      <Grid container justify="center" alignItems="center" spacing={2}>
         <Grid item>
-          <IconButton disabled={page < 1} onClick={onPreviousPeriod}><NavigateBeforeIcon /></IconButton>
+          <IconButton disabled={page < 1} onClick={onPreviousPeriod}><NavigateBeforeIcon fontSize="large" /></IconButton>
         </Grid>
         <Grid item>
           <Typography align="center" variant="h5">
-            {formatPeriodDate(startPeriod)} <ArrowRightIcon style={{ verticalAlign: 'text-top' }} /> {formatPeriodDate(endPeriod)}
+            {formatDate(startPeriod)} <ArrowRightIcon style={{ verticalAlign: 'text-top' }} /> {formatDate(endPeriod)}
           </Typography>
         </Grid>
         <Grid item>
-          <IconButton disabled={page >= analyticsByPage.length - 1} onClick={onNextPeriod}><NavigateNextIcon /></IconButton>
+          <IconButton disabled={page >= analyticsByPage.length - 1} onClick={onNextPeriod}><NavigateNextIcon fontSize="large" /></IconButton>
         </Grid>
       </Grid>
       <div style={{ marginTop: 20, marginBottom: 20 }} ref={chartEl} />
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Start date</TableCell>
-            <TableCell>End date</TableCell>
-            <TableCell>Balance</TableCell>
+            <TableCell>Date de début</TableCell>
+            <TableCell>Date de fin</TableCell>
+            <TableCell>Résultat</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -128,8 +131,8 @@ function Analytics({ asyncState }) {
             const id = `${startDate}#${endDate}`;
             return (
               <TableRow key={id}>
-                <TableCell>{startDate}</TableCell>
-                <TableCell>{endDate}</TableCell>
+                <TableCell>{formatDate(startDate)}</TableCell>
+                <TableCell>{formatDate(endDate)}</TableCell>
                 <TableCell>{balance}</TableCell>
               </TableRow>
             );
