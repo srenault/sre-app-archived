@@ -131,13 +131,13 @@ function Analytics({ asyncState }) {
         </Grid>
       </Grid>
       <div style={{ marginTop: 20, marginBottom: 20 }} ref={chartEl} />
-      <Table>
+      <Table style={{ tableLayout: 'fixed' }}>
         <TableHead>
           <TableRow>
-            <TableCell>Date de début</TableCell>
-            <TableCell>Date de fin</TableCell>
-            <TableCell>Résultat mensuel</TableCell>
-            <TableCell>Résultat gobale</TableCell>
+            <TableCell align="center">Date de début</TableCell>
+            <TableCell align="center">Date de fin</TableCell>
+            <TableCell align="center">Résultat mensuel</TableCell>
+            <TableCell align="center">Résultat gobale</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -147,10 +147,10 @@ function Analytics({ asyncState }) {
             const id = `${startDate}#${endDate}`;
             return (
               <TableRow key={id}>
-                <TableCell>{formatDate(startDate)}</TableCell>
-                <TableCell>{formatDate(endDate)}</TableCell>
-                <TableCell>{balance}</TableCell>
-                <TableCell>{overallBalancesForPeriod[index]}</TableCell>
+                <TableCell align="center">{formatDate(startDate)}</TableCell>
+                <TableCell align="center">{formatDate(endDate)}</TableCell>
+                <TableCell align="center">{balance}</TableCell>
+                <TableCell align="center">{overallBalancesForPeriod[index]}</TableCell>
               </TableRow>
             );
           })}
