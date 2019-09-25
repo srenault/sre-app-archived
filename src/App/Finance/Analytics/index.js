@@ -1,13 +1,13 @@
 import React, {
   useEffect, useRef, useState, useCallback,
 } from 'react';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
@@ -15,11 +15,10 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import c3 from 'c3';
 import { format } from 'date-fns';
-
-import 'c3/c3.css';
-
 import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import withAsyncComponent from '../../../components/AsyncComponent';
+import 'c3/c3.css';
+
 import { grouped } from '../../../lib/utils';
 
 const Sort = {
@@ -36,7 +35,7 @@ function formatDate(date) {
 function Analytics({ asyncState }) {
   const chartEl = useRef(null);
 
-  const analytics = asyncState.data.result.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+  const analytics = asyncState.data.result.sort(Sort.DESC);
 
   const analyticsByPage = (() => {
     const result = grouped(analytics, 5).reverse();
@@ -61,10 +60,21 @@ function Analytics({ asyncState }) {
 
   const onNextPeriod = useCallback(() => setPage(page + 1));
 
+  const overallBalances = analytics.reduce((acc, period) => {
+    const [h] = acc;
+    const balance = h ? h.balance + period.balance : period.balance;
+    return [{ balance, date: period.startDate }, ...acc];
+  }, []).reverse();
+
+  const overallBalancesForPeriod = analyticsPeriod.map((period) => {
+    const { balance } = overallBalances.find((p) => p.date === period.startDate);
+    return balance;
+  }).reverse();
+
   useEffect(() => {
     const xLabels = analyticsPeriod.map((period) => period.startDate);
 
-    const values = analyticsPeriod.map((period) => period.balance);
+    const balances = analyticsPeriod.map((period) => period.balance);
 
     const chart = c3.generate({
       padding: {
@@ -73,10 +83,14 @@ function Analytics({ asyncState }) {
       bindto: chartEl.current,
       data: {
         type: 'area-step',
+        types: {
+          overallbalances: 'line',
+        },
         x: 'x',
         columns: [
           ['x'].concat(xLabels),
-          ['balances'].concat(values),
+          ['balances'].concat(balances),
+          ['overallbalances'].concat(overallBalancesForPeriod),
         ],
         labels: true,
       },
@@ -103,7 +117,6 @@ function Analytics({ asyncState }) {
 
   return (
     <Container>
-      <Typography gutterBottom variant="h3" align="center">Resultat net</Typography>
       <Grid container justify="center" alignItems="center" spacing={2}>
         <Grid item>
           <IconButton disabled={page < 1} onClick={onPreviousPeriod}><NavigateBeforeIcon fontSize="large" /></IconButton>
@@ -123,17 +136,21 @@ function Analytics({ asyncState }) {
           <TableRow>
             <TableCell>Date de début</TableCell>
             <TableCell>Date de fin</TableCell>
-            <TableCell>Résultat</TableCell>
+            <TableCell>Résultat mensuel</TableCell>
+            <TableCell>Résultat gobale</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {analyticsPeriod.sort(Sort.DESC).map(({ startDate, endDate, balance }) => {
+          {analyticsPeriod.sort(Sort.DESC).map(({
+            startDate, endDate, balance,
+          }, index) => {
             const id = `${startDate}#${endDate}`;
             return (
               <TableRow key={id}>
                 <TableCell>{formatDate(startDate)}</TableCell>
                 <TableCell>{formatDate(endDate)}</TableCell>
                 <TableCell>{balance}</TableCell>
+                <TableCell>{overallBalancesForPeriod[index]}</TableCell>
               </TableRow>
             );
           })}
