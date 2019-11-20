@@ -18,6 +18,7 @@ import format from 'date-fns/format';
 import PropTypes from 'prop-types';
 import { withRefreshSubject } from '../../Header';
 import withAsyncComponent from '../../../components/AsyncComponent';
+import withOtpValidation from '../Otp';
 
 import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import { SubjectPropTypes } from '../../../propTypes/rxjs';
@@ -120,4 +121,4 @@ AccountsOverview.propTypes = {
 
 const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAccountsOverview();
 
-export default withAsyncComponent(asyncFetch)(withRefreshSubject(AccountsOverview));
+export default withOtpValidation(asyncFetch)(withRefreshSubject(AccountsOverview));

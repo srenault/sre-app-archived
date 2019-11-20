@@ -17,6 +17,7 @@
         <allow-intent href="market:*" />
     </platform>
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="com.lampa.startapp" spec="^6.1.6" />
     <engine name="browser" spec="6.0.0" />
     <engine name="android" spec="^8.0.0" />
     <engine name="osx" spec="^5.0.0" />
