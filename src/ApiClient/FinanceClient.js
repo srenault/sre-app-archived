@@ -1,3 +1,17 @@
+export class UnknownTransaction extends Error {
+  constructor(transactionId) {
+    super(`Unknown transaction ${transactionId}`);
+    this.transactionId = transactionId;
+  }
+}
+
+export class CancelledTransaction extends Error {
+  constructor(transactionId) {
+    super(`Transaction ${transactionId} has been cancelled`);
+    this.transactionId = transactionId;
+  }
+}
+
 export default class FinanceClient {
   constructor({ endpoint }) {
     if (!endpoint) throw new Error('Please specify endpoint');
@@ -22,33 +36,34 @@ export default class FinanceClient {
   startPollingOtpStatus(transactionId, onPending) {
     let id;
     let cancelPromise;
+    let cancel = () => {};
 
     const p = new Promise((resolve, reject) => {
       cancelPromise = reject;
 
       id = window.setInterval(async () => {
         try {
-          const response = await fetch(`${this.endpoint}/otp/${transactionId}/status`).then(response => response.json());
-          if (response.status === 'pending') {
-            onPending && onPending(response);
-          } else if (response.status === 'validated') {
+          const otpRequest = await fetch(`${this.endpoint}/otp/${transactionId}/status`).then((response) => response.json());
+          if (otpRequest.status === 'pending') {
+            if (onPending) onPending(otpRequest);
+          } else if (otpRequest.status === 'validated') {
             window.clearInterval(id);
-            resolve(response);
-          } else if (response.status === 'unknown') {
+            resolve(otpRequest);
+          } else if (otpRequest.status === 'unknown') {
             cancel();
             window.clearInterval(id);
-            reject({ type: 'unknown_transaction'});
+            reject(new UnknownTransaction(transactionId));
           }
-        } catch(e) {
+        } catch (e) {
           window.clearInterval(id);
-          reject({ type: 'unexpected_error' });
+          reject(e);
         }
       }, 2000);
     });
 
-    const cancel = () => {
-      id && window.clearInterval(id);
-      cancelPromise && cancelPromise({ type: 'cancelled' });
+    cancel = () => {
+      if (id) window.clearInterval(id);
+      if (cancelPromise) cancelPromise(new CancelledTransaction(transactionId));
     };
 
     return [cancel, p];

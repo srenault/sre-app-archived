@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
-import withAsyncComponent from '../../../components/AsyncComponent';
 import PureAsync from '../../../components/AsyncComponent/PureAsync';
 import OtpPending from './OtpPending';
 import OtpStatus from './OtpStatus';
+import { UnknownTransaction, CancelledTransaction } from '../../../ApiClient/FinanceClient';
 
 export default function withOtpValidation(asyncFetch) {
   return (Component) => (props) => {
-
     const { apiClient } = props;
 
     const [otpState, setOtpState] = useState({
-      status: OtpStatus.ERROR,
+      status: OtpStatus.INIT,
       apkId: null,
       transactionId: null,
     });
@@ -33,6 +32,7 @@ export default function withOtpValidation(asyncFetch) {
               transactionId: result.otpRequired.transactionId,
               apkId: result.otpRequired.apkId,
             });
+            return null;
           } else {
             return result;
           }
@@ -45,17 +45,17 @@ export default function withOtpValidation(asyncFetch) {
     useEffect(() => {
       if (otpState.status === OtpStatus.PENDING) {
         const [cancel, p] = apiClient.finance.startPollingOtpStatus(otpState.transactionId);
-        p.then((otpResult) => {
-          updateOtpStatus(OtpStatus.VALIDATED);
-        }).catch((error) => {
-          if (error.type === 'unknown_transaction') {
-            updateOtpStatus(OtpStatus.UNKNOWN);
-          } else if (error.type === 'unexpected_error') {
-            updateOtpStatus(OtpStatus.ERROR);
-          }
-        });
-
+        p.then(() => updateOtpStatus(OtpStatus.VALIDATED))
+          .catch((error) => {
+            if (error instanceof UnknownTransaction) {
+              updateOtpStatus(OtpStatus.UNKNOWN);
+            } else if (!(error instanceof CancelledTransaction)) {
+              updateOtpStatus(OtpStatus.ERROR);
+            }
+          });
         return () => cancel();
+      } else {
+        return () => {};
       }
     }, [otpState]);
 
@@ -72,11 +72,13 @@ export default function withOtpValidation(asyncFetch) {
     if (!asyncState.data && !asyncState.isLoading) {
       return <OtpPending otpState={otpState} onRetryClick={onRetryClick} />;
     } else {
+      /* eslint-disable react/jsx-props-no-spreading */
       return (
         <PureAsync asyncState={asyncState}>
           <Component {...props} asyncState={asyncState} />;
         </PureAsync>
-      ); // eslint-disable-line react/jsx-props-no-spreading
+      );
+      /* eslint-enable react/jsx-props-no-spreading */
     }
   };
 }

@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import OtpStatus from './OtpStatus';
+import { OtpStatePropTypes } from '../../../propTypes/models/Otp';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     'text-align': 'center',
   },
@@ -17,11 +17,10 @@ const useStyles = makeStyles(theme => ({
   },
   openBankAppBtn: {
     margin: theme.spacing(2),
-  }
+  },
 }));
 
-function renderStatus(otpState, onRetryClick) {
-
+function renderStatus(otpState) {
   const classes = useStyles();
 
   if (otpState.status === OtpStatus.PENDING) {
@@ -30,21 +29,20 @@ function renderStatus(otpState, onRetryClick) {
         <CircularProgress
           size="30px"
           variant="indeterminate"
-          />
+        />
       </Fab>
     );
   } else {
-    return <CheckCircleIcon />
+    return <CheckCircleIcon />;
   }
 }
 
 export default function OtpPending({ otpState, onRetryClick }) {
-
   const classes = useStyles();
 
   const onOpenBankAppClick = useCallback(() => {
-    startApp.set({
-      "application": otpState.apkId,
+    window.startApp.set({
+      application: otpState.apkId,
     }).start();
   });
 
@@ -57,16 +55,17 @@ export default function OtpPending({ otpState, onRetryClick }) {
             className={classes.openBankAppBtn}
             onClick={onOpenBankAppClick}
             variant="outlined"
-            color="primary">Confirmation mobile requise</Button>
+            color="primary"
+          >Confirmation mobile requise
+          </Button>
         </div>
         { renderStatus(otpState) }
       </div>
     );
-
   } else {
     return (
       <div className={classes.root}>
-        <Typography paragraph>Une erreur est survenue pendant le processus d'authentification</Typography>
+        <Typography paragraph>Une erreur est survenue pendant le processus d&apos;authentification</Typography>
         <Button onClick={onRetryClick} variant="outlined" color="secondary">REESSAYER</Button>
       </div>
     );
@@ -74,8 +73,5 @@ export default function OtpPending({ otpState, onRetryClick }) {
 }
 
 OtpPending.propTypes = {
-};
-
-OtpPending.defaultProps = {
-  classes: {},
+  otpState: OtpStatePropTypes.isRequired,
 };

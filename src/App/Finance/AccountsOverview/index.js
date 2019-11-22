@@ -17,7 +17,6 @@ import format from 'date-fns/format';
 
 import PropTypes from 'prop-types';
 import { withRefreshSubject } from '../../Header';
-import withAsyncComponent from '../../../components/AsyncComponent';
 import withOtpValidation from '../Otp';
 
 import { AsyncStatePropTypes } from '../../../propTypes/react-async';
