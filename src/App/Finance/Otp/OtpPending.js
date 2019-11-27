@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import OtpStatus from './OtpStatus';
 import { OtpStatePropTypes } from '../../../propTypes/models/Otp';
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   root: {
     'text-align': 'center',
   },
@@ -18,11 +18,9 @@ const useStyles = makeStyles((theme) => ({
   openBankAppBtn: {
     margin: theme.spacing(2),
   },
-}));
+});
 
-function renderStatus(otpState) {
-  const classes = useStyles();
-
+function renderStatus({ classes, otpState }) {
   if (otpState.status === OtpStatus.PENDING) {
     return (
       <Fab className={classes.fab}>
@@ -37,9 +35,7 @@ function renderStatus(otpState) {
   }
 }
 
-export default function OtpPending({ otpState, onRetryClick }) {
-  const classes = useStyles();
-
+function OtpPending({ otpState, onRetryClick, classes }) {
   const onOpenBankAppClick = useCallback(() => {
     window.startApp.set({
       application: otpState.apkId,
@@ -59,7 +55,7 @@ export default function OtpPending({ otpState, onRetryClick }) {
           >Confirmation mobile requise
           </Button>
         </div>
-        { renderStatus(otpState) }
+        { renderStatus({ otpState, classes }) }
       </div>
     );
   } else {
@@ -75,3 +71,5 @@ export default function OtpPending({ otpState, onRetryClick }) {
 OtpPending.propTypes = {
   otpState: OtpStatePropTypes.isRequired,
 };
+
+export default withStyles(styles)(OtpPending);

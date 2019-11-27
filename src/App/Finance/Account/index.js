@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Statements from './Statements';
 import Expenses from './Expenses';
 import { withRefreshSubject } from '../../Header';
-import withAsyncComponent from '../../../components/AsyncComponent';
+import withOtpValidation from '../Otp';
 import { AsyncStatePropTypes } from '../../../propTypes/react-async';
 import { SubjectPropTypes } from '../../../propTypes/rxjs';
 
@@ -41,7 +41,7 @@ function Account({ classes, asyncState, refreshSubject }) {
 
 const asyncFetch = ({ apiClient, accountId, startDate }) => apiClient.finance.fetchAccount(accountId, startDate);
 
-export default withStyles(styles)(withAsyncComponent(asyncFetch)(withRefreshSubject(Account)));
+export default withStyles(styles)(withOtpValidation(asyncFetch)(withRefreshSubject(Account)));
 
 Account.propTypes = {
   classes: PropTypes.object.isRequired,

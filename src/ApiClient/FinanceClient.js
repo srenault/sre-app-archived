@@ -50,7 +50,6 @@ export default class FinanceClient {
             window.clearInterval(id);
             resolve(otpRequest);
           } else if (otpRequest.status === 'unknown') {
-            cancel();
             window.clearInterval(id);
             reject(new UnknownTransaction(transactionId));
           }

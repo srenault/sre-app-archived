@@ -25,7 +25,7 @@ export default function withOtpValidation(asyncFetch) {
 
     const promiseFn = useCallback(() => {
       if (otpState.status === OtpStatus.INIT || otpState.status === OtpStatus.VALIDATED) {
-        return asyncFetch({ apiClient }).then((result) => {
+        return asyncFetch(props).then((result) => {
           if (result.otpRequired) {
             setOtpState({
               status: OtpStatus.PENDING,
