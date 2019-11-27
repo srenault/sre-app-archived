@@ -11,11 +11,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import withAsyncComponent from '../../components/AsyncComponent';
-import { withRefreshSubject } from '../Header';
-import { ReleasePropTypes } from '../../propTypes/models/Release';
-import { AsyncStatePropTypes } from '../../propTypes/react-async';
-import { SubjectPropTypes } from '../../propTypes/rxjs';
+import withAsyncComponent from 'components/AsyncComponent';
+import { withRefreshSubject } from 'App/Header';
+import { ReleasePropTypes } from 'propTypes/models/Release';
+import { AsyncStatePropTypes } from 'propTypes/react-async';
+import { SubjectPropTypes } from 'propTypes/rxjs';
 
 const asyncFetch = ({ apiClient }) => apiClient.releases.list();
 

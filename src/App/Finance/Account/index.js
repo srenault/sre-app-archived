@@ -6,10 +6,10 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Statements from './Statements';
 import Expenses from './Expenses';
-import { withRefreshSubject } from '../../Header';
-import withOtpValidation from '../Otp';
-import { AsyncStatePropTypes } from '../../../propTypes/react-async';
-import { SubjectPropTypes } from '../../../propTypes/rxjs';
+import { withRefreshSubject } from 'App/Header';
+import withOtpValidation from 'App/Finance/Otp';
+import { AsyncStatePropTypes } from 'propTypes/react-async';
+import { SubjectPropTypes } from 'propTypes/rxjs';
 
 const styles = (theme) => ({
   divider: {

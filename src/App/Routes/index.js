@@ -3,12 +3,12 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
-import HomeHeader from '../Home/Header';
-import Home from '../Home';
-import FinanceHeader from '../Finance/Header';
-import Finance from '../Finance';
-import ReleasesHeader from '../Releases/Header';
-import Releases from '../Releases';
+import HomeHeader from 'App/Home/Header';
+import Home from 'App/Home';
+import FinanceHeader from 'App/Finance/Header';
+import Finance from 'App/Finance';
+import ReleasesHeader from 'App/Releases/Header';
+import Releases from 'App/Releases';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};

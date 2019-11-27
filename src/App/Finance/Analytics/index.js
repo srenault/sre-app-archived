@@ -15,11 +15,12 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import c3 from 'c3';
 import { format } from 'date-fns';
-import { AsyncStatePropTypes } from '../../../propTypes/react-async';
-import withAsyncComponent from '../../../components/AsyncComponent';
+import { AsyncStatePropTypes } from 'propTypes/react-async';
+import withAsyncComponent from 'components/AsyncComponent';
+import { grouped } from 'lib/utils';
+
 import 'c3/c3.css';
 
-import { grouped } from '../../../lib/utils';
 
 const Sort = {
   DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate),

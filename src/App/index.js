@@ -2,8 +2,8 @@ import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { withRoutes } from './Routes';
 import Nav from './Nav';
-import { ApiClientPropTypes } from '../propTypes/models/ApiClient';
-import { RoutesPropTypes, RoutePathsPropTypes, RouteNavItemsPropTypes } from '../propTypes/models/Routes';
+import { ApiClientPropTypes } from 'propTypes/models/ApiClient';
+import { RoutesPropTypes, RoutePathsPropTypes, RouteNavItemsPropTypes } from 'propTypes/models/Routes';
 
 function mountComponent(component, apiClient) {
   return (props) => (

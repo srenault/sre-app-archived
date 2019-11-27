@@ -5,9 +5,9 @@ import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
-import { withMenuSubject } from '../Header';
-import { SubjectPropTypes } from '../../propTypes/rxjs';
-import { RouteNavItemsPropTypes } from '../../propTypes/models/Routes';
+import { withMenuSubject } from 'App/Header';
+import { SubjectPropTypes } from 'propTypes/rxjs';
+import { RouteNavItemsPropTypes } from 'propTypes/models/Routes';
 import SingleNavItem from './SingleNavItem';
 import GroupNavItems from './GroupNavItems';
 

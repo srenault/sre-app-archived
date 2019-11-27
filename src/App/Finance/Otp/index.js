@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
-import PureAsync from '../../../components/AsyncComponent/PureAsync';
+import PureAsync from 'components/AsyncComponent/PureAsync';
 import OtpPending from './OtpPending';
 import OtpStatus from './OtpStatus';
-import { UnknownTransaction, CancelledTransaction } from '../../../ApiClient/FinanceClient';
+import { UnknownTransaction, CancelledTransaction } from 'ApiClient/FinanceClient';
 
 export default function withOtpValidation(asyncFetch) {
   return (Component) => (props) => {
