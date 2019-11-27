@@ -24,6 +24,7 @@
     "@material-ui/core": "^4.3.3",
     "@material-ui/icons": "^4.2.1",
     "c3": "^0.7.8",
+    "com.lampa.startapp": "^6.1.6",
     "cordova-android": "^8.0.0",
     "cordova-browser": "6.0.0",
     "cordova-osx": "^5.0.0",
@@ -40,7 +41,8 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "com.lampa.startapp": {}
     },
     "platforms": [
       "browser",
