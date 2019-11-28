@@ -3,10 +3,10 @@ import { Route, Switch } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { ApiClientPropTypes } from 'propTypes/models/ApiClient';
 import Main from 'App/Main';
+import { RoutePathsPropTypes } from 'propTypes/models/Routes';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
 import Analytics from './Analytics';
-import { RoutePathsPropTypes } from 'propTypes/models/Routes';
 
 function mountAccountsOverview(apiClient, routePaths) {
   return () => <AccountsOverview apiClient={apiClient} routePaths={routePaths} />;

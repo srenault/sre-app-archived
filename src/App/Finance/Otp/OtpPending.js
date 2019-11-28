@@ -5,8 +5,8 @@ import Fab from '@material-ui/core/Fab';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import OtpStatus from './OtpStatus';
 import { OtpStatePropTypes } from 'propTypes/models/Otp';
+import OtpStatus from './OtpStatus';
 
 const styles = (theme) => ({
   root: {

@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ApiClientPropTypes } from 'propTypes/models/ApiClient';
 import Main from 'App/Main';
-import ReleasesOverview from './ReleasesOverview';
 import { RoutePathsPropTypes } from 'propTypes/models/Routes';
+import ReleasesOverview from './ReleasesOverview';
 
 function mountReleasesOverview(apiClient, routePaths) {
   return () => <ReleasesOverview apiClient={apiClient} routePaths={routePaths} />;

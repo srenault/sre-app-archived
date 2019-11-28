@@ -7,7 +7,19 @@
     "react/jsx-one-expression-per-line": 0,
     "max-len": 0,
     "react/forbid-prop-types": 0,
-    "max-classes-per-file": 0,
+    "max-classes-per-file": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {
+        "root": [
+          "./src"
+        ],
+        "extensions": [
+          ".js"
+        ]
+      }
+    }
   },
   "env": {
     "browser": true
