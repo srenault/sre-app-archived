@@ -6,6 +6,7 @@ import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
 import size from 'rollup-plugin-size';
 import copy from 'rollup-plugin-copy';
+import includePaths from 'rollup-plugin-includepaths';
 
 const target = process.env.target || 'mock';
 
@@ -89,6 +90,12 @@ export default {
         src: 'src/index.html',
         dest: 'www',
       }],
+    }),
+    includePaths({
+      include: {},
+      paths: ['src'],
+      external: [],
+      extensions: ['.js'],
     }),
   ]
 };

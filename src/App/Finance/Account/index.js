@@ -4,12 +4,12 @@ import Divider from '@material-ui/core/Divider';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Statements from './Statements';
+import { withRefreshSubject } from 'App/Header';
+import withOtpValidation from 'App/Finance/Otp';
+import { AsyncStatePropTypes } from 'propTypes/react-async';
+import { SubjectPropTypes } from 'propTypes/rxjs';
 import Expenses from './Expenses';
-import { withRefreshSubject } from '../../Header';
-import withOtpValidation from '../Otp';
-import { AsyncStatePropTypes } from '../../../propTypes/react-async';
-import { SubjectPropTypes } from '../../../propTypes/rxjs';
+import Statements from './Statements';
 
 const styles = (theme) => ({
   divider: {

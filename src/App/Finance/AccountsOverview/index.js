@@ -16,11 +16,11 @@ import frLocale from 'date-fns/locale/fr';
 import format from 'date-fns/format';
 
 import PropTypes from 'prop-types';
-import { withRefreshSubject } from '../../Header';
-import withOtpValidation from '../Otp';
+import { withRefreshSubject } from 'App/Header';
+import withOtpValidation from 'App/Finance/Otp';
 
-import { AsyncStatePropTypes } from '../../../propTypes/react-async';
-import { SubjectPropTypes } from '../../../propTypes/rxjs';
+import { AsyncStatePropTypes } from 'propTypes/react-async';
+import { SubjectPropTypes } from 'propTypes/rxjs';
 
 const AccountRow = withRouter(({
   startPeriod, account, routePaths, history,

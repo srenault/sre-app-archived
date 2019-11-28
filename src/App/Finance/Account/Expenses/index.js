@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
-import Gauge from '../../../../components/Gauge';
+import Gauge from 'components/Gauge';
 
 export default function Expenses({ data: expenses }) {
   return (
