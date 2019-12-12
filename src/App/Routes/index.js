@@ -51,7 +51,7 @@ const Routes = {
         children: {
           account: {
             key: 'finance_account',
-            path: '/:id/:startdate',
+            path: '/:id',
             exact: true,
           },
         },

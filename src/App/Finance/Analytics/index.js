@@ -90,8 +90,8 @@ function Analytics({ asyncState }) {
         x: 'x',
         columns: [
           ['x'].concat(xLabels),
-          ['balances'].concat(balances),
-          ['overallbalances'].concat(overallBalancesForPeriod),
+          ['Résultat mensuel'].concat(balances),
+          ['Résultat globale'].concat(overallBalancesForPeriod),
         ],
         labels: true,
       },
@@ -138,7 +138,7 @@ function Analytics({ asyncState }) {
             <TableCell align="center">Date de début</TableCell>
             <TableCell align="center">Date de fin</TableCell>
             <TableCell align="center">Résultat mensuel</TableCell>
-            <TableCell align="center">Résultat gobale</TableCell>
+            <TableCell align="center">Résultat gobale {analytics[0] ? `depuis le ${analytics[0].startDate}` : ''}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

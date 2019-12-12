@@ -25,21 +25,23 @@ function Account({ classes, asyncState, refreshSubject }) {
     return () => subscription.unsubscribe();
   });
 
-  const { expenses, statements, displayName } = asyncState.data;
+  const { expenses, account } = asyncState.data;
 
   return (
     <div className="account">
-      <Typography variant="h3" align="center" gutterBottom>{displayName}</Typography>
+      <Typography variant="h3" align="center" gutterBottom>{account.displayName}</Typography>
       <Expenses data={expenses} />
       <Divider className={classes.divider} />
       <Container>
-        <Statements data={statements} />
+        <Statements data={account.statements} />
       </Container>
     </div>
   );
 }
 
-const asyncFetch = ({ apiClient, accountId, startDate }) => apiClient.finance.fetchAccount(accountId, startDate);
+const asyncFetch = ({ apiClient, accountId, periodDate }) => {
+  return apiClient.finance.fetchAccount(accountId, periodDate);
+};
 
 export default withStyles(styles)(withOtpValidation(asyncFetch)(withRefreshSubject(Account)));
 

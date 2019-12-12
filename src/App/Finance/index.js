@@ -13,12 +13,15 @@ function mountAccountsOverview(apiClient, routePaths) {
 }
 
 function mountAccount(apiClient) {
-  function RouteAccount({ match }) {
-    const { id: accountId, startdate: startDate } = match.params;
+  function RouteAccount({ match, location }) {
+    const { id: accountId } = match.params;
+    const qs = new URLSearchParams(location.search);
+    const periodDate = qs.get('periodDate');
+
     return (
       <Account
         accountId={accountId}
-        startDate={startDate}
+        periodDate={periodDate}
         apiClient={apiClient}
       />
     );

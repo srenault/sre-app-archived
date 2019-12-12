@@ -23,8 +23,9 @@ export default class FinanceClient {
     return response.json();
   }
 
-  async fetchAccount(accountId, startDate) {
-    const response = await fetch(`${this.endpoint}/accounts/${accountId}?startDate=${startDate}`);
+  async fetchAccount(accountId, periodDate) {
+    const params = periodDate ? `?periodDate=${periodDate}` : '';
+    const response = await fetch(`${this.endpoint}/accounts/${accountId}${params}`);
     return response.json();
   }
 
