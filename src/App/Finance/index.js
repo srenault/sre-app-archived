@@ -29,6 +29,7 @@ function mountAccount(apiClient) {
 
   RouteAccount.propTypes = {
     match: ReactRouterPropTypes.match.isRequired,
+    location: ReactRouterPropTypes.location.isRequired,
   };
 
   return RouteAccount;

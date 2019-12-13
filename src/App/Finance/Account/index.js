@@ -39,9 +39,7 @@ function Account({ classes, asyncState, refreshSubject }) {
   );
 }
 
-const asyncFetch = ({ apiClient, accountId, periodDate }) => {
-  return apiClient.finance.fetchAccount(accountId, periodDate);
-};
+const asyncFetch = ({ apiClient, accountId, periodDate }) => apiClient.finance.fetchAccount(accountId, periodDate);
 
 export default withStyles(styles)(withOtpValidation(asyncFetch)(withRefreshSubject(Account)));
 

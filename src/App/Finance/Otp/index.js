@@ -69,7 +69,7 @@ export default function withOtpValidation(asyncFetch) {
 
     const asyncState = useAsync({ promiseFn, watch: otpState });
 
-    if (!asyncState.data && !asyncState.isLoading && otpState.status != OtpStatus.INIT) {
+    if (!asyncState.data && !asyncState.isLoading && otpState.status !== OtpStatus.INIT) {
       return <OtpPending otpState={otpState} onRetryClick={onRetryClick} />;
     } else {
       /* eslint-disable react/jsx-props-no-spreading */
