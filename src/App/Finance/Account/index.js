@@ -8,8 +8,8 @@ import { withRefreshSubject } from 'App/Header';
 import withOtpValidation from 'App/Finance/Otp';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import { SubjectPropTypes } from 'propTypes/rxjs';
+import Statements from 'components/Statements';
 import Expenses from './Expenses';
-import Statements from './Statements';
 
 const styles = (theme) => ({
   divider: {
@@ -25,21 +25,21 @@ function Account({ classes, asyncState, refreshSubject }) {
     return () => subscription.unsubscribe();
   });
 
-  const { expenses, statements, displayName } = asyncState.data;
+  const { expenses, account, period } = asyncState.data;
 
   return (
     <div className="account">
-      <Typography variant="h3" align="center" gutterBottom>{displayName}</Typography>
+      <Typography variant="h3" align="center" gutterBottom>{account.displayName}</Typography>
       <Expenses data={expenses} />
       <Divider className={classes.divider} />
       <Container>
-        <Statements data={statements} />
+        <Statements period={period} statements={account.statements} />
       </Container>
     </div>
   );
 }
 
-const asyncFetch = ({ apiClient, accountId, startDate }) => apiClient.finance.fetchAccount(accountId, startDate);
+const asyncFetch = ({ apiClient, accountId, periodDate }) => apiClient.finance.fetchAccount(accountId, periodDate);
 
 export default withStyles(styles)(withOtpValidation(asyncFetch)(withRefreshSubject(Account)));
 

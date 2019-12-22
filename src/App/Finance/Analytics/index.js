@@ -13,9 +13,12 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { withRouter } from 'react-router-dom';
 import c3 from 'c3';
 import { format } from 'date-fns';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
+import { RoutePathsPropTypes } from 'propTypes/models/Routes';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import withAsyncComponent from 'components/AsyncComponent';
 import { grouped } from 'lib/utils';
 
@@ -33,7 +36,7 @@ function formatDate(date) {
   return format(date, 'dd-MM-yy');
 }
 
-function Analytics({ asyncState }) {
+function Analytics({ asyncState, routePaths, history }) {
   const chartEl = useRef(null);
 
   const analytics = asyncState.data.result.sort(Sort.DESC);
@@ -90,8 +93,8 @@ function Analytics({ asyncState }) {
         x: 'x',
         columns: [
           ['x'].concat(xLabels),
-          ['balances'].concat(balances),
-          ['overallbalances'].concat(overallBalancesForPeriod),
+          ['Résultat mensuel'].concat(balances),
+          ['Résultat globale'].concat(overallBalancesForPeriod),
         ],
         labels: true,
       },
@@ -116,6 +119,11 @@ function Analytics({ asyncState }) {
     return () => chart.destroy();
   });
 
+  const onPeriodClick = useCallback(({ periodDate }) => () => {
+    const url = routePaths.finance.children.analytics.children.period.reversePath({ periodDate });
+    history.push(url);
+  }, []);
+
   return (
     <Container>
       <Grid container justify="center" alignItems="center" spacing={2}>
@@ -138,16 +146,16 @@ function Analytics({ asyncState }) {
             <TableCell align="center">Date de début</TableCell>
             <TableCell align="center">Date de fin</TableCell>
             <TableCell align="center">Résultat mensuel</TableCell>
-            <TableCell align="center">Résultat gobale</TableCell>
+            <TableCell align="center">Résultat gobale {analytics[0] ? `depuis le ${analytics[0].startDate}` : ''}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {analyticsPeriod.sort(Sort.DESC).map(({
-            startDate, endDate, balance,
+            startDate, endDate, balance, yearMonth: periodDate,
           }, index) => {
             const id = `${startDate}#${endDate}`;
             return (
-              <TableRow key={id}>
+              <TableRow key={id} onClick={onPeriodClick({ periodDate })}>
                 <TableCell align="center">{formatDate(startDate)}</TableCell>
                 <TableCell align="center">{formatDate(endDate)}</TableCell>
                 <TableCell align="center">{balance}</TableCell>
@@ -163,8 +171,10 @@ function Analytics({ asyncState }) {
 
 Analytics.propTypes = {
   asyncState: AsyncStatePropTypes.isRequired,
+  routePaths: RoutePathsPropTypes.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
 };
 
 const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAnalytics();
 
-export default withAsyncComponent(asyncFetch)(Analytics);
+export default withAsyncComponent(asyncFetch)(withRouter(Analytics));

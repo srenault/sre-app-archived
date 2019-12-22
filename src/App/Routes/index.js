@@ -51,7 +51,7 @@ const Routes = {
         children: {
           account: {
             key: 'finance_account',
-            path: '/:id/:startdate',
+            path: '/:id',
             exact: true,
           },
         },
@@ -67,7 +67,13 @@ const Routes = {
           Icon: ShowChartIcon,
           label: 'Analyse des comptes',
         },
-        children: {},
+        children: {
+          period: {
+            key: 'finance_analytics_period',
+            path: '/period/:periodDate',
+            exact: true,
+          },
+        },
       },
     },
   },
