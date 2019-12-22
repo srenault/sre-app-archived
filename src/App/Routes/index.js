@@ -67,7 +67,13 @@ const Routes = {
           Icon: ShowChartIcon,
           label: 'Analyse des comptes',
         },
-        children: {},
+        children: {
+          period: {
+            key: 'finance_analytics_period',
+            path: '/period/:periodDate',
+            exact: true,
+          },
+        },
       },
     },
   },

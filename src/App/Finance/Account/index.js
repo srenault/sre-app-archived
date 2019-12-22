@@ -8,8 +8,8 @@ import { withRefreshSubject } from 'App/Header';
 import withOtpValidation from 'App/Finance/Otp';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import { SubjectPropTypes } from 'propTypes/rxjs';
+import Statements from 'components/Statements';
 import Expenses from './Expenses';
-import Statements from './Statements';
 
 const styles = (theme) => ({
   divider: {
@@ -25,7 +25,7 @@ function Account({ classes, asyncState, refreshSubject }) {
     return () => subscription.unsubscribe();
   });
 
-  const { expenses, account } = asyncState.data;
+  const { expenses, account, period } = asyncState.data;
 
   return (
     <div className="account">
@@ -33,7 +33,7 @@ function Account({ classes, asyncState, refreshSubject }) {
       <Expenses data={expenses} />
       <Divider className={classes.divider} />
       <Container>
-        <Statements data={account.statements} />
+        <Statements period={period} statements={account.statements} />
       </Container>
     </div>
   );

@@ -34,6 +34,11 @@ export default class FinanceClient {
     return response.json();
   }
 
+  async fetchAnalyticsPeriod(periodDate) {
+    const response = await fetch(`${this.endpoint}/analytics/period/${periodDate}`);
+    return response.json();
+  }
+
   startPollingOtpStatus(transactionId, onPending) {
     let id;
     let cancelPromise;

@@ -7,6 +7,7 @@ import { RoutePathsPropTypes } from 'propTypes/models/Routes';
 import AccountsOverview from './AccountsOverview';
 import Account from './Account';
 import Analytics from './Analytics';
+import AnalyticsPeriod from './Analytics/Period';
 
 function mountAccountsOverview(apiClient, routePaths) {
   return () => <AccountsOverview apiClient={apiClient} routePaths={routePaths} />;
@@ -35,14 +36,28 @@ function mountAccount(apiClient) {
   return RouteAccount;
 }
 
-function mountAnalytics(apiClient) {
-  return () => <Analytics apiClient={apiClient} />;
+function mountAnalytics(apiClient, routePaths) {
+  return () => <Analytics apiClient={apiClient} routePaths={routePaths} />;
+}
+
+function mountAnalyticsPeriod(apiClient) {
+  function RouteAnalyticsPeriod({ match }) {
+    const { periodDate } = match.params;
+    return <AnalyticsPeriod apiClient={apiClient} periodDate={periodDate} />;
+  }
+
+  RouteAnalyticsPeriod.propTypes = {
+    match: ReactRouterPropTypes.match.isRequired,
+  };
+
+  return RouteAnalyticsPeriod;
 }
 
 export default function Finance({ apiClient, routePaths }) {
   const accountsOverviewRoute = routePaths.finance.children.accounts;
   const accountRoute = accountsOverviewRoute.children.account;
   const analyticsRoute = routePaths.finance.children.analytics;
+  const analyticsPeriodRoute = routePaths.finance.children.analytics.children.period;
 
   return (
     <Main>
@@ -50,7 +65,8 @@ export default function Finance({ apiClient, routePaths }) {
         <Switch>
           <Route path={accountsOverviewRoute.path} exact={accountsOverviewRoute.exact} component={mountAccountsOverview(apiClient, routePaths)} />
           <Route path={accountRoute.path} exact={accountRoute.exact} component={mountAccount(apiClient)} />
-          <Route path={analyticsRoute.path} exact={analyticsRoute.exact} component={mountAnalytics(apiClient)} />
+          <Route path={analyticsRoute.path} exact={analyticsRoute.exact} component={mountAnalytics(apiClient, routePaths)} />
+          <Route path={analyticsPeriodRoute.path} exact={analyticsPeriodRoute.exact} component={mountAnalyticsPeriod(apiClient)} />
         </Switch>
       </div>
     </Main>

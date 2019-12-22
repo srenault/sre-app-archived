@@ -9,9 +9,11 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-
+import { format } from 'date-fns';
+import frLocale from 'date-fns/locale/fr';
 import PropTypes from 'prop-types';
 import { StatementPropTypes } from 'propTypes/models/Statement';
+import { PeriodPropTypes } from 'propTypes/models/Period';
 
 const Order = {
   ASC: 'asc',
@@ -42,6 +44,11 @@ const OrderBy = {
 };
 
 const styles = () => ({
+  title: {
+    '&::first-letter': {
+      textTransform: 'capitalize',
+    },
+  },
   table: {
     tableLayout: 'fixed',
   },
@@ -50,7 +57,7 @@ const styles = () => ({
   },
 });
 
-function Statements({ classes, data: statements }) {
+function Statements({ classes, period, statements }) {
   const [filter, setFilter] = useState({ credit: true, debit: true });
 
   const [order, setOrder] = useState({
@@ -90,9 +97,13 @@ function Statements({ classes, data: statements }) {
   const creditButtonStyles = filter.credit ? 'contained' : 'outlined';
   const debitButtonStyles = filter.debit ? 'contained' : 'outlined';
 
+  const title = period.yearMonth
+    ? `Relevé de compte du mois de ${format(new Date(period.yearMonth), 'MMMM yyyy', { locale: frLocale })}`
+    : `Relevé de compte depuis le ${format(new Date(period.startDate), 'dd MMMM yyyy')}`;
+
   return (
     <div className={classes.root}>
-      <Typography variant="h4" align="center" gutterBottom>Relevé de compte</Typography>
+      <Typography variant="h4" align="center" gutterBottom className={classes.title}>{title}</Typography>
       <Grid container spacing={2} justify="center">
         <Grid item>
           <Button color="primary" variant={creditButtonStyles} onClick={onToggleCredit}>Credit</Button>
@@ -143,12 +154,13 @@ function Statements({ classes, data: statements }) {
 
 Statements.propTypes = {
   classes: PropTypes.object,
-  data: PropTypes.arrayOf(StatementPropTypes),
+  statements: PropTypes.arrayOf(StatementPropTypes),
+  period: PeriodPropTypes.isRequired,
 };
 
 Statements.defaultProps = {
   classes: {},
-  data: [],
+  statements: [],
 };
 
 export default withStyles(styles)(Statements);
