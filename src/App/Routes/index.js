@@ -61,7 +61,7 @@ const Routes = {
         path: '/analytics',
         exact: true,
         component: {
-          header: () => <FinanceHeader />,
+          header: () => <FinanceHeader refreshIndex />,
         },
         nav: {
           Icon: ShowChartIcon,
@@ -72,6 +72,9 @@ const Routes = {
             key: 'finance_analytics_period',
             path: '/period/:periodDate',
             exact: true,
+            component: {
+              header: () => <FinanceHeader />,
+            },
           },
         },
       },

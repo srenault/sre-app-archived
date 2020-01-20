@@ -1,4 +1,6 @@
 module.exports = {
   env: 'dev',
-  endpoint: "http://localhost:8080/api",
+  endpoint: "https://sebastien-renault.dev/api",
+  basic_auth_user: 'sre',
+  basic_auth_password: 'aKMZFF5BuOHE6HoYgEjmibYT4',
 };

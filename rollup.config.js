@@ -15,24 +15,38 @@ const production = target === 'prod';
 const env = production ? 'production' : 'development';
 
 let config = {
-  env: null,
-  endpoint: null,
+  env: target,
+  endpoint: '',
+  basic_auth_user: '',
+  basic_auth_password: '',
 };
 
 if (target === 'prod') {
-  if (process.env.APP_PROD_ENDPOINT) {
-    config = {
-      env: target,
-      endpoint: process.env.APP_PROD_ENDPOINT,
-    };
-  } else {
+  if (!process.env.APP_PROD_ENDPOINT) {
     console.error('Please specify APP_PROD_ENDPOINT env');
     process.exit(1);
   }
-} else {
+
+  if (!process.env.APP_PROD_BASICAUTHUSER) {
+    console.error('Please specify APP_PROD_BASICAUTHUSER env');
+    process.exit(1);
+  }
+
+  if (!process.env.APP_PROD_BASICAUTHPASSWORD) {
+    console.error('Please specify APP_PROD_BASICAUTHPASSWORD env');
+    process.exit(1);
+  }
+
   config = {
     env: target,
-    endpoint: undefined,
+    endpoint: process.env.APP_PROD_ENDPOINT,
+    basic_auth_user: process.env.APP_PROD_BASICAUTHUSER,
+    basic_auth_password: process.env.APP_PROD_BASICAUTHPASSWORD,
+  };
+
+} else {
+  config = {
+    ...config,
     ...require(`./env/${target}.js`),
   };
 }
