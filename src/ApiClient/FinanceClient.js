@@ -20,9 +20,7 @@ export default class FinanceClient {
   }
 
   async fetchAccountsOverview() {
-    const response = await this.request({
-      url: `${this.endpoint}/accounts`,
-    });
+    const response = await this.request(`${this.endpoint}/accounts`);
     return response.json();
   }
 
