@@ -1,5 +1,6 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
+import PowerIcon from '@material-ui/icons/Power';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
@@ -9,6 +10,8 @@ import FinanceHeader from 'App/Finance/Header';
 import Finance from 'App/Finance';
 import ReleasesHeader from 'App/Releases/Header';
 import Releases from 'App/Releases';
+import ElectricityHeader from 'App/Energy/Electricity/Header';
+import Energy from 'App/Energy';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
@@ -79,6 +82,36 @@ const Routes = {
         },
       },
     },
+  },
+  energy: {
+    key: 'energy',
+    path: '/energy',
+    exact: false,
+    ignore: true,
+    component: {
+      main: (props) => <Energy {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
+    },
+    children: {
+      electricity: {
+        key: 'energy_electricity',
+        path: '/electricity',
+        exact: true,
+        nav: {
+          Icon: PowerIcon,
+          label: 'Electricité',
+        },
+        component: {
+          header: () => <ElectricityHeader refresh />,
+        },
+        children: {
+          account: {
+            key: 'finance_account',
+            path: '/:id',
+            exact: true,
+          },
+        },
+      }
+    }
   },
   releases: {
     key: 'releases',

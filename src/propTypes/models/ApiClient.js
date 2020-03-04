@@ -9,6 +9,11 @@ const ReleasesClientPropTypes = PropTypes.shape({
   list: PropTypes.func.isRequired,
 });
 
+const EnergyClientPropTypes = PropTypes.shape({
+  fetchElecticityConsumption: PropTypes.func.isRequired,
+  fetchCurrentElectricityLoad: PropTypes.func.isRequired,
+});
+
 export const ApiClientPropTypes = PropTypes.shape({
   finance: FinanceClientPropTypes.isRequired,
   releases: ReleasesClientPropTypes.isRequired,

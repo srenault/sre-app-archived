@@ -41,4 +41,11 @@ app.get('/api/releases', (req, res) => {
   res.send(data);
 });
 
+app.get('/api/energy/electricity/current/load', (req, res) => {
+  const data = fs.readFileSync('responses/energy/electricity/current/load.json', { encoding: 'utf-8' });
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.send(data);
+});
+
 app.listen(port, () => console.log(`Mock server listening on port ${port}!`));
