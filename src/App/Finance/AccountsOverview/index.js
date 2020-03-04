@@ -23,12 +23,12 @@ import { AsyncStatePropTypes } from 'propTypes/react-async';
 import { SubjectPropTypes } from 'propTypes/rxjs';
 
 const AccountRow = withRouter(({
-  startPeriod, account, routePaths, history,
+  account, routePaths, history,
 }) => {
   const { displayName, balance } = account;
 
   const onClick = useCallback(() => {
-    const url = routePaths.finance.children.accounts.children.account.reversePath({ id: account.id, startdate: startPeriod });
+    const url = routePaths.finance.children.accounts.children.account.reversePath({ id: account.id });
     history.push(url);
   }, []);
 
@@ -100,7 +100,6 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
             {accounts.map((account) => (
               <AccountRow
                 key={account.id}
-                startPeriod={overview.period.startDate}
                 account={account}
                 routePaths={routePaths}
               />

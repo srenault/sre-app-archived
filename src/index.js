@@ -9,7 +9,7 @@ import ApiClient from './ApiClient';
 document.addEventListener('deviceready', () => {
   const el = document.getElementById('app');
 
-  const apiClient = new ApiClient({ endpoint: Config.endpoint });
+  const apiClient = new ApiClient({ endpoint: Config.endpoint, basicAuth: Config.basicAuth });
 
   ReactDOM.render(<App apiClient={apiClient} />, el);
 }, false);

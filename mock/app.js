@@ -27,6 +27,13 @@ app.get('/api/finance/analytics', (req, res) => {
   res.send(data);
 });
 
+app.get('/api/finance/analytics/period/:periodDate', (req, res) => {
+  const data = fs.readFileSync('responses/finance/analyticsPeriod.json', { encoding: 'utf-8' });
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.send(data);
+});
+
 app.get('/api/releases', (req, res) => {
   const data = fs.readFileSync('responses/releases/index.json', { encoding: 'utf-8' });
   res.statusCode = 200;

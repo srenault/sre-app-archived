@@ -12,8 +12,15 @@ then
     exit 1;
 fi
 
+if [ -z "$3" ]
+then
+    echo "Please specify analytics period"
+    exit 1;
+fi
+
 ENDPOINT=$1
 ACCOUNT_ID=$2
+PERIOD_DATE=$3
 
 generate () {
     REQUEST=$1
@@ -40,6 +47,9 @@ generate $FINANCE_ENDPOINT"/accounts/"$ACCOUNT_ID $ACCOUNT_OUTPUT
 
 ANALYTICS_OUTPUT=$FINANCE_OUTPUT_DIR"/analytics.json"
 generate $FINANCE_ENDPOINT"/analytics" $ANALYTICS_OUTPUT
+
+ANALYTICSPERIOD_OUTPUT=$FINANCE_OUTPUT_DIR"/analyticsPeriod.json"
+generate $FINANCE_ENDPOINT"/analytics/period/"$PERIOD_DATE $ANALYTICSPERIOD_OUTPUT
 
 # RELEASES
 RELEASES_ENDPOINT=$ENDPOINT"/releases"

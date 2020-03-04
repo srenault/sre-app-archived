@@ -13,23 +13,30 @@ export class CancelledTransaction extends Error {
 }
 
 export default class FinanceClient {
-  constructor({ endpoint }) {
+  constructor({ endpoint, request }) {
     if (!endpoint) throw new Error('Please specify endpoint');
     this.endpoint = endpoint;
+    this.request = request;
   }
 
   async fetchAccountsOverview() {
-    const response = await fetch(`${this.endpoint}/accounts`);
+    const response = await this.request(`${this.endpoint}/accounts`);
     return response.json();
   }
 
-  async fetchAccount(accountId, startDate) {
-    const response = await fetch(`${this.endpoint}/accounts/${accountId}?startDate=${startDate}`);
+  async fetchAccount(accountId, periodDate) {
+    const params = periodDate ? `?periodDate=${periodDate}` : '';
+    const response = await this.request(`${this.endpoint}/accounts/${accountId}${params}`);
     return response.json();
   }
 
   async fetchAnalytics() {
-    const response = await fetch(`${this.endpoint}/analytics`);
+    const response = await this.request(`${this.endpoint}/analytics`);
+    return response.json();
+  }
+
+  async fetchAnalyticsPeriod(periodDate) {
+    const response = await this.request(`${this.endpoint}/analytics/period/${periodDate}`);
     return response.json();
   }
 
@@ -43,7 +50,7 @@ export default class FinanceClient {
 
       id = window.setInterval(async () => {
         try {
-          const otpRequest = await fetch(`${this.endpoint}/otp/${transactionId}/status`).then((response) => response.json());
+          const otpRequest = await this.request(`${this.endpoint}/otp/${transactionId}/status`).then((response) => response.json());
           if (otpRequest.status === 'pending') {
             if (onPending) onPending(otpRequest);
           } else if (otpRequest.status === 'validated') {

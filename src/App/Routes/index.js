@@ -51,7 +51,7 @@ const Routes = {
         children: {
           account: {
             key: 'finance_account',
-            path: '/:id/:startdate',
+            path: '/:id',
             exact: true,
           },
         },
@@ -61,13 +61,22 @@ const Routes = {
         path: '/analytics',
         exact: true,
         component: {
-          header: () => <FinanceHeader />,
+          header: () => <FinanceHeader refreshIndex />,
         },
         nav: {
           Icon: ShowChartIcon,
           label: 'Analyse des comptes',
         },
-        children: {},
+        children: {
+          period: {
+            key: 'finance_analytics_period',
+            path: '/period/:periodDate',
+            exact: true,
+            component: {
+              header: () => <FinanceHeader />,
+            },
+          },
+        },
       },
     },
   },
