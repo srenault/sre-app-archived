@@ -10,8 +10,8 @@ import FinanceHeader from 'App/Finance/Header';
 import Finance from 'App/Finance';
 import ReleasesHeader from 'App/Releases/Header';
 import Releases from 'App/Releases';
-import ElectricityHeader from 'App/Energy/Electricity/Header';
-import Energy from 'App/Energy';
+import ElectricityHeader from 'App/Electricity/Header';
+import Electricity from 'App/Electricity';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
@@ -83,34 +83,51 @@ const Routes = {
       },
     },
   },
-  energy: {
-    key: 'energy',
-    path: '/energy',
+  electricity: {
+    key: 'electricity',
+    path: '/electricity',
     exact: false,
     ignore: true,
     component: {
-      main: (props) => <Energy {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
+      main: (props) => <Electricity {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
     },
     children: {
-      electricity: {
-        key: 'energy_electricity',
-        path: '/electricity',
+      consumption: {
+        key: 'electricity_consumption',
+        path: '/consumption',
         exact: true,
         nav: {
           Icon: PowerIcon,
-          label: 'Electricité',
+          label: 'Consommation élec.',
         },
         component: {
           header: () => <ElectricityHeader refresh />,
         },
-        children: {
-          account: {
-            key: 'finance_account',
-            path: '/:id',
-            exact: true,
-          },
+      },
+      load: {
+        key: 'electricity_load',
+        path: '/load',
+        exact: true,
+        nav: {
+          Icon: PowerIcon,
+          label: 'Charge',
         },
-      }
+        component: {
+          header: () => <ElectricityHeader refresh />,
+        },
+      },
+      meter: {
+        key: 'electricity_meter',
+        path: '/meter',
+        exact: true,
+        nav: {
+          Icon: PowerIcon,
+          label: 'Compteur temps réel',
+        },
+        component: {
+          header: () => <ElectricityHeader refresh />,
+        },
+      },
     }
   },
   releases: {

@@ -83,7 +83,7 @@ export default {
       namedExports: {
         'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext', 'Fragment', 'isValidElement', 'cloneElement'],
         'node_modules/react-dom/index.js': ['render', 'findDOMNode'],
-        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef'],
+        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef', 'isFragment'],
         'node_modules/prop-types/index.js': ['element', 'elementType', 'func', 'oneOfType', 'bool'],
         'node_modules/@material-ui/utils/node_modules/react-is/index.js': ['ForwardRef'],
       },
