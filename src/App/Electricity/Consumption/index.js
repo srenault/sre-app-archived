@@ -1,54 +1,66 @@
-import React, { useEffect, useRef } from 'react';
-import withAsyncComponent from 'components/AsyncComponent';
-import { AsyncStatePropTypes } from 'propTypes/react-async';
+import React, { useEffect, useState, useCallback } from 'react';
 import c3 from 'c3';
 import { format } from 'date-fns';
 import Container from '@material-ui/core/Container';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Period from './Period';
-import Cost from './Cost';
+import Grid from '@material-ui/core/Grid';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import Graphs from './Graphs';
 
-function Consumption({ asyncState }) {
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
-  const handleChange = () => {};
+function DateTimePicker({ id, label, value, onChange }) {
 
   return (
-    <Container>
-      <FormControl>
-        <InputLabel htmlFor="age-native-helper">Age</InputLabel>
-        <NativeSelect
-          value={18}
-          onChange={handleChange('age')}
-          inputProps={{
-            name: 'age',
-            id: 'age-native-helper',
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Grid container justify="space-around">
+        <KeyboardDatePicker
+          margin="normal"
+          id={id}
+          label={label}
+          format="MM/dd/yyyy"
+          value={value}
+          onChange={onChange}
+          KeyboardButtonProps={{
+            'aria-label': label,
           }}
-          >
-          <option value="" />
-          <option value={10}>Ten</option>
-          <option value={20}>Twenty</option>
-          <option value={30}>Thirty</option>
-        </NativeSelect>
-      </FormControl>
-      <Period data={asyncState.data} />
-      <Cost data={asyncState.data} />
-    </Container>
+        />
+      </Grid>
+      </MuiPickersUtilsProvider>
   );
 }
 
-Consumption.propTypes = {
-  asyncState: AsyncStatePropTypes.isRequired,
-};
+export default function Consumption({ apiClient }) {
 
-Consumption.defaultProps = {
-};
+  const [startDate, setStartDate] = useState(null);
 
-const asyncFetch = ({ apiClient }) => {
-  return apiClient.energy.electricity.fetchConsumption();
-};
+  const [endDate, setEndDate] = useState(null);
 
-export default withAsyncComponent(asyncFetch)(Consumption);
+  const onStartDateChange = useCallback((date) => setStartDate(date), []);
+
+  const onEndDateChange = useCallback((date) => setEndDate(date), []);
+
+  return (
+    <Container>
+      <DateTimePicker
+        id={"consumption_date-from"}
+        label="Début"
+        value={startDate}
+        onChange={onStartDateChange} />
+
+      <DateTimePicker
+        id={"consumption_date-to"}
+        label="Fin"
+        value={endDate}
+        onChange={onEndDateChange} />
+
+      <Graphs apiClient={apiClient}
+        startDate={startDate}
+        endDate={endDate} />
+    </Container>
+  );
+}

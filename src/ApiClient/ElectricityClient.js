@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { format } from 'date-fns';
 
 export default class ElectricityClient {
 
@@ -27,9 +28,10 @@ export default class ElectricityClient {
   }
 
   async fetchConsumption(dateFrom, dateTo) {
-    const params = Object.entries({ dateFrom, dateTo }).reduce((acc, [name, value]) => {
-      if (value) {
-        return acc ? `&${acc}&${name}=${value}` : `?${name}=${value}`;
+    const params = Object.entries({ dateFrom, dateTo }).reduce((acc, [name, date]) => {
+      if (date) {
+        const value = format(date, 'yyyy-MM-dd');
+        return acc ? `${acc}&${name}=${value}` : `?${name}=${value}`;
       } else {
         return acc;
       }

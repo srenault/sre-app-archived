@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import c3 from 'c3';
-import Container from '@material-ui/core/Container';
 import { formatTime, buildGraph } from './data';
 
 export default function LastestHours({ data }) {
@@ -31,6 +30,10 @@ export default function LastestHours({ data }) {
         x: {
           type: 'timeseries',
           tick: {
+            fit: true,
+            culling: {
+              max: 4,
+            },
             format: formatTime,
           },
         },
@@ -51,9 +54,9 @@ export default function LastestHours({ data }) {
   });
 
   return (
-    <Container>
-      <div>Lastest {hours} Hours</div>
+    <>
+      <div>Dernières {hours} heures</div>
       <div ref={chartEl} />
-    </Container>
+    </>
   );
 }

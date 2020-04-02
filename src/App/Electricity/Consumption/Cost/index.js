@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import c3 from 'c3';
 import { format } from 'date-fns';
 import frLocale from 'date-fns/locale/fr';
-import Container from '@material-ui/core/Container';
 
 function formatTime(date) {
   return format(date, 'd MMMM', { locale: frLocale });
@@ -49,10 +48,10 @@ export default function Cost({ data }) {
   });
 
   return (
-    <Container>
-      <div>Cost</div>
+    <>
+      <div>Coût</div>
       <div ref={chartEl}></div>
-    </Container>
+    </>
   );
 }
 

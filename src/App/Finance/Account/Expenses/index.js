@@ -11,7 +11,11 @@ export default function Expenses({ data: expenses }) {
           id, label, amount, threshold,
         }) => (
           <Grid item key={id} xs={12} sm={6} md={3} lg={2} xl={1}>
-            <Gauge label={label} amount={amount} threshold={threshold} />
+            <Gauge
+              label={label}
+              value={amount}
+              threshold={threshold}
+              format={(value) => `${value}€`} />
           </Grid>
         ))}
       </Grid>

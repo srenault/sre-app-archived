@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import c3 from 'c3';
-import Container from '@material-ui/core/Container';
 import { formatTime, buildGraph } from './data';
 
 export default function LastHour({ data }) {
@@ -47,9 +46,9 @@ export default function LastHour({ data }) {
   });
 
   return (
-    <Container>
-      <div>Last Hour</div>
+    <>
+      <div>Dernière heure</div>
       <div ref={chartEl} />
-    </Container>
+    </>
   );
 }
