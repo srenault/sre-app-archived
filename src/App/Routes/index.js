@@ -1,8 +1,10 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import PowerIcon from '@material-ui/icons/Power';
+import DataUsageIcon from '@material-ui/icons/DataUsage';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import HomeHeader from 'App/Home/Header';
 import Home from 'App/Home';
@@ -89,7 +91,8 @@ const Routes = {
     exact: false,
     ignore: true,
     component: {
-      main: (props) => <Electricity {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading
+      main: (props) => <Electricity {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading,
+      header: () => <ElectricityHeader refresh />,
     },
     children: {
       consumption: {
@@ -97,11 +100,8 @@ const Routes = {
         path: '/consumption',
         exact: true,
         nav: {
-          Icon: PowerIcon,
+          Icon: DataUsageIcon,
           label: 'Consommation élec.',
-        },
-        component: {
-          header: () => <ElectricityHeader refresh />,
         },
       },
       load: {
@@ -112,20 +112,14 @@ const Routes = {
           Icon: PowerIcon,
           label: 'Charge',
         },
-        component: {
-          header: () => <ElectricityHeader refresh />,
-        },
       },
       meter: {
         key: 'electricity_meter',
         path: '/meter',
         exact: true,
         nav: {
-          Icon: PowerIcon,
+          Icon: NetworkCheckIcon,
           label: 'Compteur temps réel',
-        },
-        component: {
-          header: () => <ElectricityHeader refresh />,
         },
       },
     }

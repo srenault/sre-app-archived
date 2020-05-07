@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Typography from '@material-ui/core/Typography';
 import c3 from 'c3';
 import { formatTime, buildGraph } from './data';
 
@@ -15,6 +16,9 @@ export default function LastestHours({ data }) {
 
   useEffect(() => {
     const chart = c3.generate({
+      padding: {
+        right: 20,
+      },
       bindto: chartEl.current,
       data: {
         type: 'step',
@@ -55,7 +59,10 @@ export default function LastestHours({ data }) {
 
   return (
     <>
-      <div>Dernières {hours} heures</div>
+      <Typography
+        gutterBottom="true"
+        variant="subtitle1">Dernières {hours} heures</Typography>
+
       <div ref={chartEl} />
     </>
   );
