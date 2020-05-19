@@ -1,32 +1,43 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { parseISO, format, differenceInMilliseconds } from 'date-fns';
 import c3 from 'c3';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 
 function formatTime(date) {
   return format(date, 'HH:mm:ss');
 }
 
-export default function CurrentGraph({ asyncState, apiClient }) {
+function limitArray(arr, limit) {
+  const oversize = arr.length - limit;
+  if (oversize > 0) {
+    return arr.splice(oversize);
+  } else {
+    return arr;
+  }
+}
 
-  const chartEl = useRef(null);
+export default function CurrentGraph({ asyncState, apiClient, pause }) {
 
-  let chart = null;
+  const chartEl = useRef();
 
-  let data = [];
+  const chartRef = useRef();
+
+  const dataRef = useRef([]);
 
   useEffect(() => {
     const subscription = apiClient.energy.electricity.stream.subscribe({
       next: (event) => {
-        if (event.type === 'teleinfo_current') {
+        if (event.type === 'teleinfo_current' && !pause) {
           const lastUpdate = parseISO(event.lastUpdate);
 
-          data = data.concat({ value: event.value, lastUpdate });
+          dataRef.current = limitArray(dataRef.current.concat({ value: event.value, lastUpdate }), 20);
 
-          if (chart) {
-            const values = data.map(d => d.value);
-            const dates = data.map(d => d.lastUpdate);
+          if (chartRef.current) {
+            const values = dataRef.current.map(d => d.value);
+            const dates = dataRef.current.map(d => d.lastUpdate);
 
-            chart.load({
+            chartRef.current.load({
               columns: [
                 ['x'].concat(dates),
                 ['current'].concat(values),
@@ -38,10 +49,10 @@ export default function CurrentGraph({ asyncState, apiClient }) {
     });
 
     return () => subscription.unsubscribe();
-  });
+  }, [pause]);
 
   useEffect(() => {
-    chart = c3.generate({
+    chartRef.current = c3.generate({
       padding: {
         right: 20,
       },
@@ -70,10 +81,13 @@ export default function CurrentGraph({ asyncState, apiClient }) {
           },
         },
       },
+      legend: {
+        show: false,
+      },
     });
 
-    return () => chart.destroy();
-  });
+    return () => chartRef.current.destroy();
+  }, []);
 
   return (
     <div ref={chartEl}></div>

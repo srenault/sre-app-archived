@@ -44,6 +44,10 @@ export default function Period({ data }) {
 
   const sum = round(totalValues.reduce((acc, value) => acc + value, 0));
 
+  const sumHP = round(hpValues.reduce((acc, value) => acc + value, 0));
+
+  const sumHC = round(hcValues.reduce((acc, value) => acc + value, 0));
+
   const meanValue = (() => {
     return round(sum / totalValues.length);
   })();
@@ -129,8 +133,12 @@ export default function Period({ data }) {
       <Table className={classes.table}>
         <TableBody>
           <TableRow>
-            <TableCell>Consommation totale</TableCell>
-            <TableCell>{sum} kWh</TableCell>
+            <TableCell>HP Consommation totale</TableCell>
+            <TableCell>{sumHP} kWh</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>HC Consommation totale</TableCell>
+            <TableCell>{sumHC} kWh</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Consommation min.</TableCell>
