@@ -1,7 +1,10 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
+import PowerIcon from '@material-ui/icons/Power';
+import DataUsageIcon from '@material-ui/icons/DataUsage';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import HomeHeader from 'App/Home/Header';
 import Home from 'App/Home';
@@ -9,6 +12,8 @@ import FinanceHeader from 'App/Finance/Header';
 import Finance from 'App/Finance';
 import ReleasesHeader from 'App/Releases/Header';
 import Releases from 'App/Releases';
+import ElectricityHeader from 'App/Electricity/Header';
+import Electricity from 'App/Electricity';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
@@ -79,6 +84,45 @@ const Routes = {
         },
       },
     },
+  },
+  electricity: {
+    key: 'electricity',
+    path: '/electricity',
+    exact: false,
+    ignore: true,
+    component: {
+      main: (props) => <Electricity {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading,
+      header: () => <ElectricityHeader refresh />,
+    },
+    children: {
+      consumption: {
+        key: 'electricity_consumption',
+        path: '/consumption',
+        exact: true,
+        nav: {
+          Icon: DataUsageIcon,
+          label: 'Consommation élec.',
+        },
+      },
+      load: {
+        key: 'electricity_load',
+        path: '/load',
+        exact: true,
+        nav: {
+          Icon: PowerIcon,
+          label: 'Charge',
+        },
+      },
+      meter: {
+        key: 'electricity_meter',
+        path: '/meter',
+        exact: true,
+        nav: {
+          Icon: NetworkCheckIcon,
+          label: 'Compteur temps réel',
+        },
+      },
+    }
   },
   releases: {
     key: 'releases',

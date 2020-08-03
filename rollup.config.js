@@ -81,10 +81,10 @@ export default {
     }),
     commonjs({
       namedExports: {
-        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'createContext', 'Fragment', 'isValidElement', 'cloneElement'],
+        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'useContext', 'useLayoutEffect', 'createContext', 'Fragment', 'isValidElement', 'cloneElement', 'memo', 'forwardRef'],
         'node_modules/react-dom/index.js': ['render', 'findDOMNode'],
-        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef'],
-        'node_modules/prop-types/index.js': ['element', 'elementType', 'func', 'oneOfType', 'bool'],
+        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef', 'isFragment'],
+        'node_modules/prop-types/index.js': ['element', 'elementType', 'func', 'oneOfType', 'bool', 'object', 'string', 'arrayOf', 'node', 'oneOf', 'number', 'any', 'instanceOf'],
         'node_modules/@material-ui/utils/node_modules/react-is/index.js': ['ForwardRef'],
       },
     }),

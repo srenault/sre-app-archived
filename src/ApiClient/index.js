@@ -1,6 +1,7 @@
 import { Base64 } from 'js-base64';
 import FinanceClient from './FinanceClient';
 import ReleasesClient from './ReleasesClient';
+import EnergyClient from './EnergyClient';
 
 function request(basicAuth) {
   return (url, options = {}) => {
@@ -32,6 +33,11 @@ export default class ApiClient {
     const defaultOptions = {
       request: request(basicAuth),
     };
+
+    this.energy = new EnergyClient({
+      endpoint: `${endpoint}/energy`,
+      ...defaultOptions,
+    });
 
     this.finance = new FinanceClient({
       endpoint: `${endpoint}/finance`,
