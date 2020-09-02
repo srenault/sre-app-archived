@@ -1,14 +1,14 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import { terser } from "rollup-plugin-terser";
-import babel from 'rollup-plugin-babel';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import babel from '@rollup/plugin-babel';
+import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
-import replace from 'rollup-plugin-replace';
+import { terser } from "rollup-plugin-terser";
 import size from 'rollup-plugin-size';
 import copy from 'rollup-plugin-copy';
 import includePaths from 'rollup-plugin-includepaths';
 
-const target = process.env.target || 'mock';
+const target = process.env.target || 'dev';
 
 const production = target === 'prod';
 
@@ -71,26 +71,18 @@ export default {
   },
   plugins: [
     size(),
-    postcss({
-      minimize: production,
-    }),
-    resolve(),
+    postcss({ minimize: production }),
     babel({
-      runtimeHelpers: true,
+      babelHelpers: 'runtime',
+      presets: ['@babel/env', '@babel/preset-react'],
+      plugins: ['@babel/transform-runtime'],
       exclude: 'node_modules/**',
     }),
-    commonjs({
-      namedExports: {
-        'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement', 'useState', 'useEffect', 'useReducer', 'useRef', 'useDebugValue', 'useMemo', 'useCallback', 'useContext', 'useLayoutEffect', 'createContext', 'Fragment', 'isValidElement', 'cloneElement', 'memo', 'forwardRef'],
-        'node_modules/react-dom/index.js': ['render', 'findDOMNode'],
-        'node_modules/react-is/index.js': ['isValidElementType', 'ForwardRef', 'isFragment'],
-        'node_modules/prop-types/index.js': ['element', 'elementType', 'func', 'oneOfType', 'bool', 'object', 'string', 'arrayOf', 'node', 'oneOf', 'number', 'any', 'instanceOf'],
-        'node_modules/@material-ui/utils/node_modules/react-is/index.js': ['ForwardRef'],
-      },
+    commonjs(),
+    resolve({
+      dedupe: [ 'react', 'react-dom' ],
     }),
-    replace({
-      'process.env.NODE_ENV': JSON.stringify(env),
-    }),
+    replace({ 'process.env.NODE_ENV': JSON.stringify(env) }),
     replace({
       include: 'src/Config.js',
       delimiters: ['<@', '@>'],

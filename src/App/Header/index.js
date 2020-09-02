@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
-import MenuIcon from '@material-ui/icons/Menu';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import MenuIcon from '@material-ui/icons/esm/Menu';
+import RefreshIcon from '@material-ui/icons/esm/Refresh';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,16 +23,6 @@ function Header({ classes, children, refresh }) {
           <IconButton onClick={onToggleMenu} color="inherit" aria-label="Menu" className={classes.menuButton}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            {children}
-          </Typography>
-          {
-            refresh && (
-              <IconButton onClick={onRefresh} color="inherit" aria-label="Refresh">
-                <RefreshIcon />
-              </IconButton>
-            )
-          }
         </Toolbar>
       </AppBar>
     </div>
