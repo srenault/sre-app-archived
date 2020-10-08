@@ -8,7 +8,13 @@ import size from 'rollup-plugin-size';
 import copy from 'rollup-plugin-copy';
 import includePaths from 'rollup-plugin-includepaths';
 
+const TARGETS = ['dev', 'prod', 'mock'];
+
 const target = process.env.target || 'dev';
+
+if (!TARGETS.includes(target)) {
+  process.exit(1);
+}
 
 const production = target === 'prod';
 

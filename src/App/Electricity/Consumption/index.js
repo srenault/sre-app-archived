@@ -1,81 +1,53 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import c3 from 'c3';
-import { format } from 'date-fns';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import TextField from "@material-ui/core/TextField";
 import Divider from '@material-ui/core/Divider';
-import { isAfter, isBefore } from 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
 import Graphs from './Graphs';
 import { makeStyles } from '@material-ui/core/styles';
-
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns';
+import { LocalizationProvider, DateRangePicker, DateRangeDelimiter } from '@material-ui/pickers';
 
 const useStyles = makeStyles((theme) => ({
+  datePicker: {
+    justifyContent: 'center',
+  },
   divider: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(4),
   },
 }));
 
-function DateTimePicker({ id, label, value, onChange }) {
-  return (
-    <KeyboardDatePicker
-      margin="normal"
-      id={id}
-      label={label}
-      format="MM/dd/yyyy"
-      value={value}
-      onChange={onChange}
-      KeyboardButtonProps={{
-        'aria-label': label,
-      }}
-      />
-  );
-}
-
 export default function Consumption({ apiClient }) {
 
   const classes = useStyles();
 
-  const [startDate, setStartDate] = useState(null);
+  const [dateRange, setDateRange] = useState([null, null]);
 
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, endDate] = dateRange;
 
-  const onStartDateChange = useCallback(date => {
-    if (!endDate || isBefore(date, endDate)) {
-      setStartDate(date);
-    }
+  const onDateRangeChange = useCallback(dateRange => {
+    setDateRange(dateRange);
   }, []);
-
-  const onEndDateChange = useCallback(date => {
-    if (!startDate || isAfter(date, startDate)) {
-      setEndDate(date);
-    }
-  });
 
   return (
     <Container>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify="space-around">
-          <DateTimePicker
-            id={"consumption_date-from"}
-            label="Début"
-            value={startDate}
-            onChange={onStartDateChange} />
-
-          <DateTimePicker
-            id={"consumption_date-to"}
-            label="Fin"
-            value={endDate}
-            onChange={onEndDateChange} />
-        </Grid>
-      </MuiPickersUtilsProvider>
+      <LocalizationProvider dateAdapter={DateFnsAdapter}>
+        <DateRangePicker
+          startText="Début"
+          endText="Fin"
+          value={dateRange}
+          onChange={onDateRangeChange}
+          maxDate={new Date()}
+          className={classes.datePicker}
+          renderInput={(startProps, endProps) => (
+            <>
+              <TextField {...startProps} />
+              <DateRangeDelimiter> to </DateRangeDelimiter>
+              <TextField {...endProps} />
+            </>
+          )}
+      />
+      </LocalizationProvider>
 
       <Divider className={classes.divider} />
 
