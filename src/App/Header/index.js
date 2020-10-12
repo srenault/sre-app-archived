@@ -23,6 +23,16 @@ function Header({ classes, children, refresh }) {
           <IconButton onClick={onToggleMenu} color="inherit" aria-label="Menu" className={classes.menuButton}>
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            {children}
+          </Typography>
+          {
+            refresh && (
+              <IconButton onClick={onRefresh} color="inherit" aria-label="Refresh">
+                <RefreshIcon />
+              </IconButton>
+            )
+          }
         </Toolbar>
       </AppBar>
     </div>

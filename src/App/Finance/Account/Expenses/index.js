@@ -15,7 +15,8 @@ export default function Expenses({ data: expenses }) {
               label={label}
               value={amount}
               threshold={threshold}
-              format={(value) => `${value}€`} />
+              format={(value) => `${value}€`}
+            />
           </Grid>
         ))}
       </Grid>

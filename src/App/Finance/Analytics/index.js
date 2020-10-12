@@ -24,7 +24,6 @@ import { grouped } from 'lib/utils';
 
 import 'c3/c3.css';
 
-
 const Sort = {
   DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate),
 };

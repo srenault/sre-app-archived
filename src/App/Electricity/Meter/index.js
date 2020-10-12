@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import Power from './Power';
 import Current from './Current';
 import CurrentGraph from './CurrentGraph';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   cards: {
@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Meter({ apiClient }) {
-
   const classes = useStyles();
 
   const [currentGraph, setCurrentGraph] = useState({ pause: false, show: false });
@@ -40,7 +39,8 @@ export default function Meter({ apiClient }) {
             apiClient={apiClient}
             onStop={onCurrentStop}
             onStart={onCurrentStart}
-            onPause={onCurrentPause} />
+            onPause={onCurrentPause}
+          />
         </Grid>
       </Grid>
       { currentGraph.show && <CurrentGraph apiClient={apiClient} pause={currentGraph.pause} /> }

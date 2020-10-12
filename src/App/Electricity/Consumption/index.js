@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import Container from '@material-ui/core/Container';
-import TextField from "@material-ui/core/TextField";
+import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import Graphs from './Graphs';
 import { makeStyles } from '@material-ui/core/styles';
 import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns';
 import { LocalizationProvider, DateRangePicker, DateRangeDelimiter } from '@material-ui/pickers';
+import Graphs from './Graphs';
 
 const useStyles = makeStyles((theme) => ({
   datePicker: {
@@ -18,15 +18,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Consumption({ apiClient }) {
-
   const classes = useStyles();
 
   const [dateRange, setDateRange] = useState([null, null]);
 
   const [startDate, endDate] = dateRange;
 
-  const onDateRangeChange = useCallback(dateRange => {
-    setDateRange(dateRange);
+  const onDateRangeChange = useCallback((range) => {
+    setDateRange(range);
   }, []);
 
   return (
@@ -46,14 +45,16 @@ export default function Consumption({ apiClient }) {
               <TextField {...endProps} />
             </>
           )}
-      />
+        />
       </LocalizationProvider>
 
       <Divider className={classes.divider} />
 
-      <Graphs apiClient={apiClient}
+      <Graphs
+        apiClient={apiClient}
         startDate={startDate}
-        endDate={endDate} />
+        endDate={endDate}
+      />
     </Container>
   );
 }

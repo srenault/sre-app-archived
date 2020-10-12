@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Graphs({ asyncState }) {
-
   const classes = useStyles();
 
   return (
@@ -26,12 +25,9 @@ function Graphs({ asyncState }) {
   );
 }
 
-const asyncFetch = ({ apiClient, startDate, endDate }) => {
-  return apiClient.energy.electricity.fetchConsumption(startDate, endDate);
-};
+const asyncFetch = ({ apiClient, startDate, endDate }) => apiClient.energy.electricity.fetchConsumption(startDate, endDate);
 
 export default withAsyncComponent(asyncFetch)(Graphs);
-
 
 Graphs.propTypes = {
   asyncState: AsyncStatePropTypes.isRequired,

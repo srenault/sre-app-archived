@@ -15,7 +15,9 @@ const THRESHOLD_STEP_COLORS = [COLORS.green, COLORS.yellow, COLORS.orange];
 
 const THRESHOLD_COLORS = THRESHOLD_STEP_COLORS.concat(COLORS.red);
 
-export default function Gauge({ label, value, threshold, format }) {
+export default function Gauge({
+  label, value, threshold, format,
+}) {
   const chartEl = useRef(null);
 
   useEffect(() => {

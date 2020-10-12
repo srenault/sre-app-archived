@@ -4,7 +4,6 @@ import c3 from 'c3';
 import { formatTime, buildGraph } from './data';
 
 export default function LastHour({ data }) {
-
   const chartEl = useRef(null);
 
   const { dates, values } = buildGraph(data, { period: { hours: 1 } });
@@ -34,12 +33,12 @@ export default function LastHour({ data }) {
           tick: {
             format: (n) => `${n}%`,
           },
-        }
+        },
       },
       line: {
         step: {
           type: 'step-before',
-        }
+        },
       },
       legend: {
         show: false,
@@ -53,7 +52,9 @@ export default function LastHour({ data }) {
     <>
       <Typography
         gutterBottom="true"
-        variant="subtitle1">Dernière heure</Typography>
+        variant="subtitle1"
+      >Dernière heure
+      </Typography>
 
       <div ref={chartEl} />
     </>

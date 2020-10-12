@@ -2,7 +2,6 @@ import { Subject } from 'rxjs';
 import { format } from 'date-fns';
 
 export default class ElectricityClient {
-
   constructor({ endpoint, request }) {
     if (!endpoint) throw new Error('Please specify endpoint');
     this.endpoint = endpoint;
@@ -35,7 +34,7 @@ export default class ElectricityClient {
       } else {
         return acc;
       }
-    }, "");
+    }, '');
 
     const response = await this.request(`${this.endpoint}/electricity/consumption${params}`);
     return response.json();

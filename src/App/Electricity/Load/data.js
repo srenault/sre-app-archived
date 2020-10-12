@@ -1,4 +1,6 @@
-import { format, isAfter, isBefore, add, sub, startOfDay } from 'date-fns';
+import {
+  format, isAfter, isBefore, add, sub,
+} from 'date-fns';
 
 export function formatTime(date) {
   return format(date, 'HH:mm');
@@ -25,17 +27,12 @@ export function buildGraph(data, { period, groupBy }) {
   }, []).reverse();
 
   if (groupBy) {
+    const stats = values.map(({ date, values: v }) => {
+      const mean = Math.round(v.reduce((a, b) => a + b) / v.length);
 
-    const stats = values.map(({ date, values }) => {
-      const mean = Math.round(values.reduce((a, b) => a + b) / values.length);
+      const min = Math.round(v.reduce((a, b) => (a < b ? a : b)));
 
-      const min = Math.round(values.reduce((a, b) => {
-        return a < b ? a : b;
-      }));
-
-      const max = Math.round(values.reduce((a, b) => {
-        return a > b ? a : b;
-      }));
+      const max = Math.round(v.reduce((a, b) => (a > b ? a : b)));
 
       return {
         date,
@@ -61,16 +58,11 @@ export function buildGraph(data, { period, groupBy }) {
       max,
       mean,
     };
-
   } else {
-
     return {
       dates: values.map(({ date }) => date),
-      values: values.reduce((acc, { values }) => {
-        return acc.concat(values);
-      }, []),
+      values: values.reduce((acc, { values: v }) => acc.concat(v), []),
     };
-
   }
 }
 

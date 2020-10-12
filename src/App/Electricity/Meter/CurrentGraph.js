@@ -1,8 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { parseISO, format, differenceInMilliseconds } from 'date-fns';
+import React, { useRef, useEffect } from 'react';
+import { parseISO, format } from 'date-fns';
 import c3 from 'c3';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 
 function formatTime(date) {
   return format(date, 'HH:mm:ss');
@@ -17,8 +15,7 @@ function limitArray(arr, limit) {
   }
 }
 
-export default function CurrentGraph({ asyncState, apiClient, pause }) {
-
+export default function CurrentGraph({ apiClient, pause }) {
   const chartEl = useRef();
 
   const chartRef = useRef();
@@ -34,18 +31,18 @@ export default function CurrentGraph({ asyncState, apiClient, pause }) {
           dataRef.current = limitArray(dataRef.current.concat({ value: event.value, lastUpdate }), 20);
 
           if (chartRef.current) {
-            const values = dataRef.current.map(d => d.value);
-            const dates = dataRef.current.map(d => d.lastUpdate);
+            const values = dataRef.current.map((d) => d.value);
+            const dates = dataRef.current.map((d) => d.lastUpdate);
 
             chartRef.current.load({
               columns: [
                 ['x'].concat(dates),
                 ['current'].concat(values),
-              ]
+              ],
             });
           }
         }
-      }
+      },
     });
 
     return () => subscription.unsubscribe();
@@ -90,6 +87,6 @@ export default function CurrentGraph({ asyncState, apiClient, pause }) {
   }, []);
 
   return (
-    <div ref={chartEl}></div>
+    <div ref={chartEl} />
   );
 }
