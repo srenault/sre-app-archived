@@ -1,12 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
-import c3 from 'c3';
-import LastHour from './LastHour';
-import LatestHours from './LatestHours';
+import React from 'react';
 import Past from './Past';
 
-export default function Load({ asyncState, apiClient }) {
-
+export default function Load({ apiClient }) {
   return (
-      <Past apiClient={apiClient} />
+    <Past apiClient={apiClient} />
   );
 }

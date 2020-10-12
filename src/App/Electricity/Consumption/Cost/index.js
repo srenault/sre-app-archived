@@ -3,11 +3,9 @@ import c3 from 'c3';
 import { format } from 'date-fns';
 import frLocale from 'date-fns/locale/fr';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -26,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   graph: {
     marginBottom: theme.spacing(2),
-  }
+  },
 }));
 
 export default function Cost({ data }) {
@@ -39,8 +37,8 @@ export default function Cost({ data }) {
   const hcCostValues = data.consumption.map(({ hcCost }) => hcCost);
 
   const totalCostValues = data.consumption
-        .map(({ hcCost, hpCost }) => round(hcCost + hpCost))
-        .filter(cost => cost > 0);
+    .map(({ hcCost, hpCost }) => round(hcCost + hpCost))
+    .filter((cost) => cost > 0);
 
   const meanDailyCost = (() => {
     const sum = totalCostValues.reduce((acc, cost) => acc + cost, 0);
@@ -116,9 +114,11 @@ export default function Cost({ data }) {
       <Typography
         gutterBottom="true"
         align="center"
-        variant="h3">Coût</Typography>
+        variant="h3"
+      >Coût
+      </Typography>
 
-      <div className={classes.graph} ref={chartEl}></div>
+      <div className={classes.graph} ref={chartEl} />
 
       <Table className={classes.table}>
         <TableBody>

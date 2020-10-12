@@ -4,14 +4,15 @@ import c3 from 'c3';
 import { formatTime, buildGraph } from './data';
 
 export default function LastestHours({ data }) {
-
   const chartEl = useRef(null);
 
   const hours = 24;
 
-  const { dates, min, max, mean } = buildGraph(data, {
+  const {
+    dates, min, max, mean,
+  } = buildGraph(data, {
     period: { hours },
-    groupBy: { minutes: 30 }
+    groupBy: { minutes: 30 },
   });
 
   useEffect(() => {
@@ -45,12 +46,12 @@ export default function LastestHours({ data }) {
           tick: {
             format: (n) => `${n}%`,
           },
-        }
+        },
       },
       line: {
         step: {
           type: 'step-before',
-        }
+        },
       },
     });
 
@@ -61,7 +62,9 @@ export default function LastestHours({ data }) {
     <>
       <Typography
         gutterBottom="true"
-        variant="subtitle1">Dernières {hours} heures</Typography>
+        variant="subtitle1"
+      >Dernières {hours} heures
+      </Typography>
 
       <div ref={chartEl} />
     </>

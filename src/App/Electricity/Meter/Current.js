@@ -1,4 +1,6 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,7 +16,9 @@ const STATE = {
   stop: 'stop',
 };
 
-export default function Current({ apiClient, label, kind, onStart, onStop, onPause }) {
+export default function Current({
+  apiClient, onStart, onStop, onPause,
+}) {
   const [current, setCurrent] = useState(null);
 
   const [state, setState] = useState(STATE.stop);
@@ -25,7 +29,7 @@ export default function Current({ apiClient, label, kind, onStart, onStop, onPau
         if (event.type === 'teleinfo_current') {
           setCurrent(event.value);
         }
-      }
+      },
     });
 
     return () => subscription.unsubscribe();

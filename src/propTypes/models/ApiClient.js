@@ -17,6 +17,7 @@ const EnergyClientPropTypes = PropTypes.shape({
 export const ApiClientPropTypes = PropTypes.shape({
   finance: FinanceClientPropTypes.isRequired,
   releases: ReleasesClientPropTypes.isRequired,
+  energy: EnergyClientPropTypes,
 });
 
 export default {

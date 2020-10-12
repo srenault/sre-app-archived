@@ -122,7 +122,7 @@ const Routes = {
           label: 'Compteur temps réel',
         },
       },
-    }
+    },
   },
   releases: {
     key: 'releases',

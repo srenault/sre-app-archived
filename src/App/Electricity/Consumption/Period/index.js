@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -25,11 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
   graph: {
     marginBottom: theme.spacing(2),
-  }
+  },
 }));
 
 export default function Period({ data }) {
-
   const chartEl = useRef(null);
 
   const dates = data.consumption.map(({ date }) => new Date(date));
@@ -39,8 +37,8 @@ export default function Period({ data }) {
   const hpValues = data.consumption.map(({ hp }) => hp);
 
   const totalValues = data.consumption
-        .map(({ hc, hp }) => round(hc + hp))
-        .filter(value => value > 0);
+    .map(({ hc, hp }) => round(hc + hp))
+    .filter((value) => value > 0);
 
   const sum = round(totalValues.reduce((acc, value) => acc + value, 0));
 
@@ -48,9 +46,7 @@ export default function Period({ data }) {
 
   const sumHC = round(hcValues.reduce((acc, value) => acc + value, 0));
 
-  const meanValue = (() => {
-    return round(sum / totalValues.length);
-  })();
+  const meanValue = (() => round(sum / totalValues.length))();
 
   const maxValue = totalValues.reduce((currentMax, value) => (
     value > currentMax ? value : currentMax
@@ -109,12 +105,12 @@ export default function Period({ data }) {
           tick: {
             format: (n) => `${n}kWh`,
           },
-        }
+        },
       },
       line: {
         step: {
           type: 'step-before',
-        }
+        },
       },
     });
 
@@ -126,9 +122,11 @@ export default function Period({ data }) {
       <Typography
         gutterBottom="true"
         align="center"
-        variant="h3">Consommation</Typography>
+        variant="h3"
+      >Consommation
+      </Typography>
 
-      <div className={classes.graph} ref={chartEl}></div>
+      <div className={classes.graph} ref={chartEl} />
 
       <Table className={classes.table}>
         <TableBody>

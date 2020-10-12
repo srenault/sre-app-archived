@@ -1,12 +1,12 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import withAsyncComponent from 'components/AsyncComponent';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
+import { makeStyles } from '@material-ui/core/styles';
 import LastHour from './LastHour';
 import LatestHours from './LatestHours';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -15,8 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Past({ asyncState, apiClient }) {
-
+function Past({ asyncState }) {
   const classes = useStyles();
 
   return (
@@ -24,7 +23,9 @@ function Past({ asyncState, apiClient }) {
       <Typography
         gutterBottom="true"
         align="center"
-        variant="h3">Charge</Typography>
+        variant="h3"
+      >Charge
+      </Typography>
 
       <LastHour data={asyncState.data} />
 
@@ -39,8 +40,6 @@ Past.propTypes = {
   asyncState: AsyncStatePropTypes.isRequired,
 };
 
-const asyncFetch = ({ apiClient }) => {
-  return apiClient.energy.electricity.fetchLatestLoad();
-};
+const asyncFetch = ({ apiClient }) => apiClient.energy.electricity.fetchLatestLoad();
 
 export default withAsyncComponent(asyncFetch)(Past);
