@@ -15,7 +15,7 @@ before_install:
   - echo y | sdkmanager "ndk-bundle"
 install:
   - npm ci
-  - npm run build
+  - npm run build-ci
   - npx cap add android
 before_script:
   - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
