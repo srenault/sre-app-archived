@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { withRouter } from 'react-router-dom';
@@ -36,12 +37,22 @@ function Nav({
     return () => subscription.unsubscribe();
   });
 
-  const NavItem = ({ item }) => {
+  const NavItem = ({ item, index }) => {
     if (Array.isArray(item)) {
-      return <GroupNavItems items={item} onClick={onClickItem} />;
+      return (
+        <>
+          { index !== 0 && <Divider /> }
+          <GroupNavItems items={item} onClick={onClickItem} />
+        </>
+      );
     } else {
       const { label, Icon, path } = item;
-      return <SingleNavItem label={label} Icon={Icon} path={path} onClick={onClickItem} />;
+      return (
+        <>
+          { index !== 0 && <Divider /> }
+          <SingleNavItem label={label} Icon={Icon} path={path} onClick={onClickItem} />
+        </>
+      );
     }
   };
 
@@ -49,9 +60,9 @@ function Nav({
     <SwipeableDrawer open={open} onClose={closeMenu} onOpen={openMenu}>
       <div className={classes.list}>
         <List>
-          {routeNavItems.map((navItem) => {
+          {routeNavItems.map((navItem, index) => {
             const key = Array.isArray(navItem) ? navItem.map((n) => n.key).join(';') : navItem.key;
-            return <NavItem item={navItem} key={key} />;
+            return <NavItem item={navItem} index={index} key={key} />;
           })}
         </List>
       </div>

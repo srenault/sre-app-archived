@@ -8,6 +8,7 @@
     "build": "node_modules/rollup/dist/bin/rollup -c",
     "build-ci": "target=prod node_modules/rollup/dist/bin/rollup -c",
     "dev": "node_modules/rollup/dist/bin/rollup -c -w",
+    "serve": "npx cap serve",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint src/",
     "lintfix": "./node_modules/.bin/eslint src/ --fix"
@@ -26,6 +27,7 @@
     "com.lampa.startapp": "^6.1.6",
     "date-fns": "^2.16.1",
     "js-base64": "^3.5.2",
+    "js-cookie": "^2.2.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

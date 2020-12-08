@@ -6,6 +6,7 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
+import FireplaceIcon from '@material-ui/icons/Fireplace';
 import HomeHeader from 'App/Home/Header';
 import Home from 'App/Home';
 import FinanceHeader from 'App/Finance/Header';
@@ -14,6 +15,8 @@ import ReleasesHeader from 'App/Releases/Header';
 import Releases from 'App/Releases';
 import ElectricityHeader from 'App/Electricity/Header';
 import Electricity from 'App/Electricity';
+import Heaters from 'App/Heaters';
+import HeatersHeader from 'App/Heaters/Header';
 import { buildRoutes, buildRoutePaths, buildNavItems } from './Builder';
 
 let ROUTES = {};
@@ -123,6 +126,19 @@ const Routes = {
         },
       },
     },
+  },
+  heaters: {
+    key: 'heaters',
+    path: '/heaters',
+    exact: true,
+    nav: {
+      Icon: FireplaceIcon,
+      label: 'Chauffages',
+    },
+    component: {
+      header: () => <HeatersHeader refresh />,
+      main: (props) => <Heaters {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading,
+    }
   },
   releases: {
     key: 'releases',
