@@ -138,7 +138,7 @@ const Routes = {
     component: {
       header: () => <HeatersHeader refresh />,
       main: (props) => <Heaters {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading,
-    }
+    },
   },
   releases: {
     key: 'releases',

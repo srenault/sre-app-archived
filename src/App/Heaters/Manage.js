@@ -4,7 +4,6 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import withAsyncComponent from 'components/AsyncComponent';
@@ -15,7 +14,7 @@ function SelectMode({ selected, modes, onChange }) {
   return (
     <Select value={selected} onChange={onChange}>
       {
-        modes.map( ({ id, name }) => (
+        modes.map(({ id, name }) => (
           <MenuItem value={id}>{name}</MenuItem>
         ))
       }
@@ -23,14 +22,14 @@ function SelectMode({ selected, modes, onChange }) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   table: {
     width: '80%',
     margin: 'auto',
   },
 }));
 
-function ManageHeaters({ apiClient, asyncState, refreshSubject }) {
+function ManageHeaters({ apiClient, asyncState }) {
   const { channels, modes } = asyncState.data;
 
   const classes = useStyles();
@@ -56,7 +55,7 @@ function ManageHeaters({ apiClient, asyncState, refreshSubject }) {
                   selected={mode}
                   modes={modes}
                   onChange={(event) => onChange(id, event.target.value)}
-                  />
+                />
               </TableCell>
             </TableRow>
           ))
