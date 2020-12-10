@@ -50,7 +50,7 @@ function ManageHeaters({ apiClient, asyncState }) {
               <TableCell>
                 <Typography>{name}</Typography>
               </TableCell>
-              <TableCell>
+              <TableCell style={{ width: '20%' }}>
                 <SelectMode
                   selected={mode}
                   modes={modes}
