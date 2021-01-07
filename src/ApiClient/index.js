@@ -1,18 +1,20 @@
 import { Base64 } from 'js-base64';
+import Cookies from 'js-cookie';
 import FinanceClient from './FinanceClient';
 import ReleasesClient from './ReleasesClient';
 import EnergyClient from './EnergyClient';
+import HeatersClient from './HeatersClient';
 
-function request(basicAuth) {
+function generateBasicAuthToken(user, password) {
+  return Base64.encode(`${user}:${password}`);
+}
+
+function request(basicAuthToken) {
   return (url, options = {}) => {
-    const { user, password } = basicAuth;
-
     const defaultOptions = (() => {
-      if (user && password) {
+      if (basicAuthToken) {
         const headers = new Headers();
-        const basicAuthValue = Base64.encode(`${user}:${password}`);
-
-        headers.append('Authorization', `Basic ${basicAuthValue}`);
+        headers.append('Authorization', `Basic ${basicAuthToken}`);
         return {
           credentials: 'include',
           headers,
@@ -30,12 +32,25 @@ export default class ApiClient {
   constructor({ endpoint, basicAuth }) {
     if (!endpoint) throw new Error('Please specify endpoint');
 
+    const { user, password } = basicAuth || {};
+    const basicAuthToken = (user && password) && generateBasicAuthToken(user, password);
+
+    if (basicAuthToken) {
+      Cookies.set('token', basicAuthToken);
+    }
+
     const defaultOptions = {
-      request: request(basicAuth),
+      request: request(basicAuthToken),
+      basicAuthToken,
     };
 
     this.energy = new EnergyClient({
       endpoint: `${endpoint}/energy`,
+      ...defaultOptions,
+    });
+
+    this.heaters = new HeatersClient({
+      endpoint: `${endpoint}/heaters`,
       ...defaultOptions,
     });
 

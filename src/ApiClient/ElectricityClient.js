@@ -2,15 +2,18 @@ import { Subject } from 'rxjs';
 import { format } from 'date-fns';
 
 export default class ElectricityClient {
-  constructor({ endpoint, request }) {
+  constructor({ endpoint, request, basicAuthToken }) {
     if (!endpoint) throw new Error('Please specify endpoint');
     this.endpoint = endpoint;
     this.request = request;
+    this.basicAuthToken = basicAuthToken;
     this.stream = this.initEvtSource();
   }
 
   initEvtSource() {
-    const evtSource = new EventSource(`${this.endpoint}/electricity/stream`);
+    const opts = {};
+
+    const evtSource = new EventSource(`${this.endpoint}/electricity/stream`, opts);
 
     const subject = new Subject();
 
