@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import withAsyncComponent from 'components/AsyncComponent';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
+import { withRefreshSubject } from 'App/Header';
 import LastHour from './LastHour';
 import LatestHours from './LatestHours';
 
@@ -15,8 +16,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Past({ asyncState }) {
+function Past({ asyncState, refreshSubject }) {
   const classes = useStyles();
+
+  useEffect(() => {
+    const subscription = refreshSubject.subscribe({
+      next: () => asyncState.reload(),
+    });
+
+    return () => subscription.unsubscribe();
+  });
 
   return (
     <Container>
@@ -42,4 +51,4 @@ Past.propTypes = {
 
 const asyncFetch = ({ apiClient }) => apiClient.energy.electricity.fetchLatestLoad();
 
-export default withAsyncComponent(asyncFetch)(Past);
+export default withAsyncComponent(asyncFetch)(withRefreshSubject(Past));

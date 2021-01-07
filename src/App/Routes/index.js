@@ -95,7 +95,7 @@ const Routes = {
     ignore: true,
     component: {
       main: (props) => <Electricity {...props} routePaths={ROUTES_PATHS} />, // eslint-disable-line react/jsx-props-no-spreading,
-      header: () => <ElectricityHeader refresh />,
+      header: () => <ElectricityHeader />,
     },
     children: {
       consumption: {
@@ -114,6 +114,9 @@ const Routes = {
         nav: {
           Icon: PowerIcon,
           label: 'Charge',
+        },
+        component: {
+          header: () => <ElectricityHeader refresh />,
         },
       },
       meter: {
