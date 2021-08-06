@@ -23,7 +23,6 @@ function request(basicAuthToken) {
         return {};
       }
     })();
-
     return fetch(url, { ...defaultOptions, ...options });
   };
 }
