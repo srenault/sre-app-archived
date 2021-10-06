@@ -5,7 +5,8 @@ import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns';
 import { LocalizationProvider, DateRangePicker, DateRangeDelimiter } from '@material-ui/pickers';
-import Graphs from './Graphs';
+import Body from './Body';
+import withAsyncComponent from 'components/AsyncComponent';
 
 const useStyles = makeStyles((theme) => ({
   datePicker: {
@@ -50,11 +51,7 @@ export default function Consumption({ apiClient }) {
 
       <Divider className={classes.divider} />
 
-      <Graphs
-        apiClient={apiClient}
-        startDate={startDate}
-        endDate={endDate}
-      />
+      <Body startDate={startDate} endDate={endDate} apiClient={apiClient} />
     </Container>
   );
 }

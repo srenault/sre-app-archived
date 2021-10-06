@@ -21,37 +21,37 @@ const useStyles = makeStyles((theme) => ({
   table: {
     width: '80%',
     margin: 'auto',
+    marginBottom: theme.spacing(2),
   },
   graph: {
     marginBottom: theme.spacing(2),
   },
 }));
 
-export default function Cost({ data }) {
+export default function DailyUsage({ dailyUsage }) {
   const chartEl = useRef(null);
 
-  const dates = data.consumption.map(({ date }) => new Date(date));
+  const dates = dailyUsage.map(({ date }) => new Date(date));
 
-  const hpCostValues = data.consumption.map(({ hpCost }) => hpCost);
+  const hcValues = dailyUsage.map(({ hc }) => hc);
 
-  const hcCostValues = data.consumption.map(({ hcCost }) => hcCost);
+  const hpValues = dailyUsage.map(({ hp }) => hp);
 
-  const totalCostValues = data.consumption
-    .map(({ hcCost, hpCost }) => round(hcCost + hpCost))
-    .filter((cost) => cost > 0);
+  const totalValues = dailyUsage
+    .map(({ hc, hp }) => round(hc + hp))
+    .filter((value) => value > 0);
 
-  const meanDailyCost = (() => {
-    const sum = totalCostValues.reduce((acc, cost) => acc + cost, 0);
-    return round(sum / totalCostValues.length);
-  })();
+  const sum = round(totalValues.reduce((acc, value) => acc + value, 0));
 
-  const maxDailyCost = totalCostValues.reduce((currentMax, cost) => (
-    cost > currentMax ? cost : currentMax
+  const meanValue = (() => round(sum / totalValues.length))();
+
+  const maxValue = totalValues.reduce((currentMax, value) => (
+    value > currentMax ? value : currentMax
   ), 0);
 
-  const minDailyCost = totalCostValues.reduce((currentMin, cost) => (
-    cost < currentMin ? cost : currentMin
-  ), maxDailyCost);
+  const minValue = totalValues.reduce((currentMin, value) => (
+    value < currentMin ? value : currentMin
+  ), maxValue);
 
   const classes = useStyles();
 
@@ -73,22 +73,22 @@ export default function Cost({ data }) {
         },
         x: 'x',
         groups: [
-          ['hpCost', 'hcCost'],
+          ['hp', 'hc'],
         ],
         columns: [
           ['x'].concat(dates),
-          ['hpCost'].concat(hpCostValues),
-          ['hcCost'].concat(hcCostValues),
-          ['max'].concat(Array(dates.length).fill(maxDailyCost)),
-          ['mean'].concat(Array(dates.length).fill(meanDailyCost)),
-          ['min'].concat(Array(dates.length).fill(minDailyCost)),
+          ['hp'].concat(hpValues),
+          ['hc'].concat(hcValues),
+          ['max'].concat(Array(dates.length).fill(maxValue)),
+          ['mean'].concat(Array(dates.length).fill(meanValue)),
+          ['min'].concat(Array(dates.length).fill(minValue)),
         ],
         names: {
-          hpCost: 'Coût HP',
-          hcCost: 'Coût HC',
-          max: 'Coût max.',
-          mean: 'Coût moyen',
-          min: 'Coût min.',
+          hp: 'Consommation HP',
+          hc: 'Consommation HC',
+          max: 'Consommation max.',
+          mean: 'Consommation moyenne',
+          min: 'Consommation min.',
         },
       },
       axis: {
@@ -100,8 +100,13 @@ export default function Cost({ data }) {
         },
         y: {
           tick: {
-            format: (n) => `${n}€`,
+            format: (n) => `${n}kWh`,
           },
+        },
+      },
+      line: {
+        step: {
+          type: 'step-before',
         },
       },
     });
@@ -114,8 +119,8 @@ export default function Cost({ data }) {
       <Typography
         gutterBottom="true"
         align="center"
-        variant="h3"
-      >Coût
+        variant="h4"
+      >Consommation journalière
       </Typography>
 
       <div className={classes.graph} ref={chartEl} />
@@ -123,29 +128,19 @@ export default function Cost({ data }) {
       <Table className={classes.table}>
         <TableBody>
           <TableRow>
-            <TableCell>Coût total TTC</TableCell>
-            <TableCell>{data.totalCost}€</TableCell>
+            <TableCell>Consommation min.</TableCell>
+            <TableCell>{minValue} kWh</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Coût min.</TableCell>
-            <TableCell>{minDailyCost}€</TableCell>
+            <TableCell>Consommation moyenne</TableCell>
+            <TableCell>{meanValue} kWh</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Coût moyen</TableCell>
-            <TableCell>{meanDailyCost}€</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Coût max.</TableCell>
-            <TableCell>{maxDailyCost}€</TableCell>
+            <TableCell>Consommation max.</TableCell>
+            <TableCell>{maxValue} kWh</TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </>
   );
 }
-
-Cost.propTypes = {
-};
-
-Cost.defaultProps = {
-};
