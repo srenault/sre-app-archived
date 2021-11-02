@@ -30,8 +30,21 @@ export default class FinanceClient {
     return response.json();
   }
 
-  async fetchAnalytics() {
-    const response = await this.request(`${this.endpoint}/analytics`);
+  async fetchAnalytics(beforePeriod, afterPeriod) {
+    const params = new URLSearchParams();
+
+    if (beforePeriod) {
+      params.append('before', beforePeriod);
+    }
+
+    if (afterPeriod) {
+      params.append('after', afterPeriod);
+    }
+
+    const qs = params.toString();
+
+    const response = await this.request(`${this.endpoint}/analytics${qs ? `?${qs}` : ''}`);
+
     return response.json();
   }
 

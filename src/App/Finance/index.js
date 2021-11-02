@@ -37,7 +37,7 @@ function mountAccount(apiClient) {
 }
 
 function mountAnalytics(apiClient, routePaths) {
-  return () => <Analytics apiClient={apiClient} routePaths={routePaths} />;
+  return ({ location }) => <Analytics apiClient={apiClient} routePaths={routePaths} location={location} />;
 }
 
 function mountAnalyticsPeriod(apiClient) {
