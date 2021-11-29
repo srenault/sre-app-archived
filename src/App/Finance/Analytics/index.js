@@ -15,7 +15,8 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { withRouter } from 'react-router-dom';
 import c3 from 'c3';
-import { format } from 'date-fns';
+import { format, isAfter, isBefore } from 'date-fns';
+import frLocale from 'date-fns/locale/fr';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import { RoutePathsPropTypes } from 'propTypes/models/Routes';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -24,10 +25,6 @@ import { grouped } from 'lib/utils';
 
 import 'c3/c3.css';
 
-const Sort = {
-  DESC: (a, b) => new Date(b.startDate) - new Date(a.startDate),
-};
-
 function formatDate(date) {
   if (typeof date === 'string') {
     return format(new Date(date), 'dd-MM-yy');
@@ -35,49 +32,67 @@ function formatDate(date) {
   return format(date, 'dd-MM-yy');
 }
 
-function Analytics({ asyncState, routePaths, history }) {
+function Analytics({ asyncState, routePaths, history, location }) {
   const chartEl = useRef(null);
 
-  const analytics = asyncState.data.result.sort(Sort.DESC);
+  const {
+    result: periods,
+    hasPreviousPage,
+    hasNextPage,
+  } = asyncState.data;
 
-  const analyticsByPage = (() => {
-    const result = grouped(analytics, 5).reverse();
-    const [firstGroup, secondGroup, ...restGroups] = result;
-    if (firstGroup && firstGroup.length === 1 && secondGroup) {
-      const updatedSecondGroup = firstGroup.concat(secondGroup);
-      return [updatedSecondGroup, ...restGroups];
+  const [previousButtonDisabled, nextButtonDisabled] = (() => {
+    const qs = new URLSearchParams(location.search);
+    const afterParam = qs.get('after');
+    const beforeParam = qs.get('before');
+    const hasFilter =  afterParam || beforeParam;
+    if (beforeParam || !hasFilter) {
+      return [!hasNextPage, !hasPreviousPage];
     } else {
-      return result;
+      return [!hasPreviousPage, !hasNextPage];
     }
   })();
 
-  const [page, setPage] = useState(analyticsByPage.length - 1);
+  const headPeriod = periods[0];
 
-  const analyticsPeriod = analyticsByPage[page];
+  const headPeriodDate = new Date(headPeriod.yearMonth);
 
-  const startPeriod = new Date(analyticsPeriod[0].startDate);
+  const lastPeriod = periods[periods.length - 1];
 
-  const endPeriod = new Date(analyticsPeriod[analyticsPeriod.length - 1].endDate);
+  const lastPeriodDate = new Date(lastPeriod.yearMonth);
 
-  const onPreviousPeriod = useCallback(() => setPage(page - 1));
+  const startPeriod = isBefore(headPeriodDate, lastPeriodDate) ? headPeriod : lastPeriod;
 
-  const onNextPeriod = useCallback(() => setPage(page + 1));
+  const endPeriod = isAfter(headPeriodDate, lastPeriodDate) ? headPeriod : lastPeriod;
 
-  const overallBalances = analytics.reduce((acc, period) => {
+  const onPreviousPeriod = useCallback(() => {
+    history.push({
+      search: `?before=${startPeriod.yearMonth}`,
+    });
+  }, [headPeriod.yearMonth]);
+
+  const onNextPeriod = useCallback(() => {
+    history.push({
+      search: `?after=${endPeriod.yearMonth}`,
+    });
+  }, [headPeriod.yearMonth]);
+
+  const overallResults = periods.reduce((acc, period) => {
     const [h] = acc;
-    const balance = h ? h.balance + period.balance : period.balance;
-    return [{ balance, date: period.startDate }, ...acc];
+    const result = h ? h.result + period.result : period.result;
+    return [{ result, date: period.startDate }, ...acc];
   }, []).reverse();
 
-  const overallBalancesForPeriod = analyticsPeriod.map((period) => {
-    const { balance } = overallBalances.find((p) => p.date === period.startDate);
-    return balance;
-  }).reverse();
+  const overallBalances = periods.map(period => {
+    return Object.values(period.balancesByAccount).reduce((acc, balance) => {
+      return acc + balance;
+    }, 0);
+  });
 
   useEffect(() => {
-    const xLabels = analyticsPeriod.map((period) => period.startDate);
+    const xLabels = periods.map((period) => period.startDate);
 
-    const balances = analyticsPeriod.map((period) => period.balance);
+    const results = periods.map((period) => period.result);
 
     const chart = c3.generate({
       padding: {
@@ -85,22 +100,15 @@ function Analytics({ asyncState, routePaths, history }) {
       },
       bindto: chartEl.current,
       data: {
-        type: 'area-step',
         types: {
-          overallbalances: 'line',
+          balance: 'spline',
         },
         x: 'x',
         columns: [
           ['x'].concat(xLabels),
-          ['Résultat mensuel'].concat(balances),
-          ['Résultat globale'].concat(overallBalancesForPeriod),
+          ['balance'].concat(overallBalances),
         ],
         labels: true,
-      },
-      line: {
-        step: {
-          type: 'step-after',
-        },
       },
       legend: {
         show: false,
@@ -118,47 +126,46 @@ function Analytics({ asyncState, routePaths, history }) {
     return () => chart.destroy();
   });
 
-  const onPeriodClick = useCallback(({ periodDate }) => () => {
-    const url = routePaths.finance.children.analytics.children.period.reversePath({ periodDate });
+  const onPeriodClick = useCallback(({ yearMonth }) => () => {
+    const url = routePaths.finance.children.analytics.children.period.reversePath({ periodDate: yearMonth });
     history.push(url);
   }, []);
 
   return (
     <Container>
-      <Grid container justify="center" alignItems="center" spacing={2}>
+      <Grid container justify="center" alignItems="center">
         <Grid item>
-          <IconButton disabled={page < 1} onClick={onPreviousPeriod}><NavigateBeforeIcon fontSize="large" /></IconButton>
+          <IconButton disabled={previousButtonDisabled} onClick={onPreviousPeriod}><NavigateBeforeIcon fontSize="large" /></IconButton>
         </Grid>
         <Grid item>
-          <Typography align="center" variant="h5">
-            {formatDate(startPeriod)} <ArrowRightIcon style={{ verticalAlign: 'text-top' }} /> {formatDate(endPeriod)}
+          <Typography align="center" variant="h6">
+            {startPeriod.yearMonth} <ArrowRightIcon style={{ verticalAlign: 'middle' }} /> {endPeriod.yearMonth}
           </Typography>
         </Grid>
         <Grid item>
-          <IconButton disabled={page >= analyticsByPage.length - 1} onClick={onNextPeriod}><NavigateNextIcon fontSize="large" /></IconButton>
+          <IconButton disabled={nextButtonDisabled} onClick={onNextPeriod}><NavigateNextIcon fontSize="large" /></IconButton>
         </Grid>
       </Grid>
       <div style={{ marginTop: 20, marginBottom: 20 }} ref={chartEl} />
       <Table style={{ tableLayout: 'fixed' }}>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Date de début</TableCell>
-            <TableCell align="center">Date de fin</TableCell>
+            <TableCell align="center">Période</TableCell>
+            <TableCell align="center">Balance</TableCell>
             <TableCell align="center">Résultat mensuel</TableCell>
-            <TableCell align="center">Résultat gobale {analytics[0] ? `depuis le ${analytics[0].startDate}` : ''}</TableCell>
+            <TableCell align="center">Résultat gobale {periods[0] ? `depuis le ${periods[0].startDate}` : ''}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {analyticsPeriod.sort(Sort.DESC).map(({
-            startDate, endDate, balance, yearMonth: periodDate,
-          }, index) => {
-            const id = `${startDate}#${endDate}`;
+          {periods.map(({ result, yearMonth }, index) => {
+            const balance = overallBalances[index];
+            const overallResult = overallResults[index].result;
             return (
-              <TableRow key={id} onClick={onPeriodClick({ periodDate })}>
-                <TableCell align="center">{formatDate(startDate)}</TableCell>
-                <TableCell align="center">{formatDate(endDate)}</TableCell>
+              <TableRow key={yearMonth} onClick={onPeriodClick({ yearMonth })}>
+                <TableCell align="center">{yearMonth}</TableCell>
                 <TableCell align="center">{balance}</TableCell>
-                <TableCell align="center">{overallBalancesForPeriod[index]}</TableCell>
+                <TableCell align="center">{result}</TableCell>
+                <TableCell align="center">{overallResult}</TableCell>
               </TableRow>
             );
           })}
@@ -174,6 +181,11 @@ Analytics.propTypes = {
   history: ReactRouterPropTypes.history.isRequired,
 };
 
-const asyncFetch = ({ apiClient }) => apiClient.finance.fetchAnalytics();
+const asyncFetch = ({ apiClient, location }) => {
+  const qs = new URLSearchParams(location.search);
+  const beforePeriod = qs.get('before');
+  const afterPeriod = qs.get('after');
+  return apiClient.finance.fetchAnalytics(beforePeriod, afterPeriod);
+};
 
 export default withAsyncComponent(asyncFetch)(withRouter(Analytics));
