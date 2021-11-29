@@ -21,7 +21,17 @@ function round(value) {
 
 function Body({ asyncState }) {
   const { totalCost, totalCostWithTaxes } = asyncState.data;
-  const { dailyUsage, hpTotalUsage, hcTotalUsage } = asyncState.data.consumption;
+  const {
+    dailyUsage,
+    startHcCounter,
+    endHcCounter,
+    startHpCounter,
+    endHpCounter,
+  } = asyncState.data.consumption;
+
+  const hpTotalUsage = endHpCounter - startHpCounter;
+
+  const hcTotalUsage = endHcCounter - startHcCounter;
 
   const classes = useStyles();
 

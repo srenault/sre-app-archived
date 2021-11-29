@@ -11,8 +11,8 @@ function mountLoad(apiClient) {
   return () => <Load apiClient={apiClient} />;
 }
 
-function mountConsumption(apiClient) {
-  return () => <Consumption apiClient={apiClient} />;
+function mountConsumption(apiClient, routePaths) {
+  return (location) => <Consumption apiClient={apiClient} routePaths={routePaths} location={location} />;
 }
 
 function mountMeter(apiClient) {
