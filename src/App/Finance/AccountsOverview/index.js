@@ -57,7 +57,7 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
   const accounts = jointAccounts.concat(currentAccounts).concat(savingAccounts);
   const colorCredit = { color: green.A400 };
   const colorDebit = { color: red.A400 };
-  const colorBalance = overview.period.balance > 0 ? colorCredit : colorDebit;
+  const colorBalance = overview.period.result > 0 ? colorCredit : colorDebit;
   const startPeriod = new Date(overview.period.startDate);
 
   return (
@@ -79,10 +79,10 @@ function AccountsOverview({ asyncState, refreshSubject, routePaths }) {
           <Card>
             <CardContent>
               <Typography variant="h6">
-                Balance
+                Résultat
               </Typography>
               <Typography style={colorBalance} variant="h3">
-                {overview.period.balance} €
+                {overview.period.result} €
               </Typography>
             </CardContent>
           </Card>

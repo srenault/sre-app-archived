@@ -8,7 +8,9 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import withStyles from '@material-ui/core/styles/withStyles';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { format } from 'date-fns';
 import frLocale from 'date-fns/locale/fr';
 import PropTypes from 'prop-types';
@@ -41,6 +43,12 @@ const OrderBy = {
       return s2.amount - s1.amount;
     },
   },
+  accountId: {
+    id: 'accountId',
+    func: (order) => (s1, s2) => {
+      return s1.accountId >= s2.accountId;
+    },
+  },
 };
 
 const styles = () => ({
@@ -55,25 +63,42 @@ const styles = () => ({
   tableCell: {
     textAlign: 'center',
   },
+  tableCellAccountId: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    }
+  }
 });
 
-function Statements({ classes, period, statements }) {
-  const [filter, setFilter] = useState({ credit: true, debit: true });
+function Statements({ classes, period, statements, showAccountId }) {
+  const [filter, setFilter] = useState({
+    credit: true,
+    debit: true,
+    accountId: null,
+  });
 
   const [order, setOrder] = useState({
     by: OrderBy.date,
     direction: Order.DESC,
+    accountId: Order.ASC,
   });
 
   const onToggleCredit = useCallback(() => {
     if (filter.debit) {
-      setFilter({ credit: !filter.credit, debit: filter.debit });
+      setFilter({ ...filter, credit: !filter.credit, debit: filter.debit });
     }
   });
 
   const onToggleDebit = useCallback(() => {
     if (filter.credit) {
-      setFilter({ credit: filter.credit, debit: !filter.debit });
+      setFilter({ ...filter, credit: filter.credit, debit: !filter.debit });
+    }
+  });
+
+  const onToggleAccountId = useCallback(() => {
+    if (filter.accountId) {
+      setFilter({ ...filter, accountId: null });
     }
   });
 
@@ -84,13 +109,19 @@ function Statements({ classes, period, statements }) {
     });
   });
 
+  const onClickAccountId = useCallback((accountId) => () => {
+    setFilter({ ...filter, accountId });
+    console.log(accountId);
+  });
+
   const rows = statements.sort(order.by.func(order)).filter((statement) => {
-    if (!filter.credit && !filter.debit) {
+    if (!filter.credit && !filter.debit && !filter.accountId) {
       return statement;
     } else {
-      const c = filter.credit && statement.amount > 0;
-      const d = filter.debit && statement.amount < 0;
-      return c || d;
+      const isAccountId = filter.accountId ? filter.accountId === statement.accountId : true;
+      const isCredit = filter.credit && statement.amount > 0 && isAccountId;
+      const isDebit = filter.debit && statement.amount < 0 && isAccountId;
+      return isCredit || isDebit;
     }
   });
 
@@ -111,11 +142,20 @@ function Statements({ classes, period, statements }) {
         <Grid item>
           <Button color="primary" variant={debitButtonStyles} onClick={onToggleDebit}>Debit</Button>
         </Grid>
+        {
+          showAccountId && filter.accountId && (
+            <Grid item>
+              <Button color="primary" endIcon={<DeleteIcon/>} variant="outlined" onClick={onToggleAccountId}>
+                {filter.accountId}
+              </Button>
+            </Grid>
+          )
+        }
       </Grid>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
+            <TableCell style={{ width: showAccountId ? '15%' : '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.date.id}
                 onClick={onSelectSort(OrderBy.date.id)}
@@ -124,8 +164,21 @@ function Statements({ classes, period, statements }) {
                 Date
               </TableSortLabel>
             </TableCell>
-            <TableCell style={{ width: '60%' }} className={classes.tableCell}>Libellé</TableCell>
-            <TableCell style={{ width: '20%' }} className={classes.tableCell}>
+            {
+              showAccountId && (
+                <TableCell style={{ width: '15%' }} className={classes.tableCell}>
+                  <TableSortLabel
+                    active={order.by.id === OrderBy.amount.id}
+                    onClick={onSelectSort(OrderBy.accountId.id)}
+                    direction={order.direction}
+                  >
+                    Account
+                  </TableSortLabel>
+                </TableCell>
+              )
+            }
+            <TableCell style={{ width: showAccountId ? '55%' : '60%' }} className={classes.tableCell}>Libellé</TableCell>
+            <TableCell style={{ width: showAccountId ? '15%' : '20%' }} className={classes.tableCell}>
               <TableSortLabel
                 active={order.by.id === OrderBy.amount.id}
                 onClick={onSelectSort(OrderBy.amount.id)}
@@ -138,10 +191,11 @@ function Statements({ classes, period, statements }) {
         </TableHead>
         <TableBody>
           {rows.map(({
-            id, date, label, amount,
+            id, date, label, amount, accountId
           }) => (
             <TableRow key={id}>
               <TableCell className={classes.tableCell}>{date}</TableCell>
+              <TableCell className={classes.tableCell}><a onClick={onClickAccountId(accountId)} className={classes.tableCellAccountId}>{accountId}</a></TableCell>
               <TableCell style={{ fontSize: '0.7rem' }} className={classes.tableCell}>{label}</TableCell>
               <TableCell className={classes.tableCell}>{amount}</TableCell>
             </TableRow>
@@ -150,7 +204,7 @@ function Statements({ classes, period, statements }) {
       </Table>
     </div>
   );
-}
+        }
 
 Statements.propTypes = {
   classes: PropTypes.object,

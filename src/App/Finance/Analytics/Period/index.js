@@ -6,7 +6,7 @@ import Statements from 'components/Statements';
 
 function AnalyticsPeriod({ asyncState }) {
   const { period, statements } = asyncState.data;
-  return <Statements period={period} statements={statements} />;
+  return <Statements period={period} statements={statements} showAccountId />;
 }
 
 const asyncFetch = ({ apiClient, periodDate }) => apiClient.finance.fetchAnalyticsPeriod(periodDate);
