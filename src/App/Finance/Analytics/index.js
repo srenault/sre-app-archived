@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useState, useCallback,
+  useEffect, useRef, useCallback,
 } from 'react';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -16,12 +16,10 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { withRouter } from 'react-router-dom';
 import c3 from 'c3';
 import { format, isAfter, isBefore } from 'date-fns';
-import frLocale from 'date-fns/locale/fr';
 import { AsyncStatePropTypes } from 'propTypes/react-async';
 import { RoutePathsPropTypes } from 'propTypes/models/Routes';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import withAsyncComponent from 'components/AsyncComponent';
-import { grouped } from 'lib/utils';
 
 import 'c3/c3.css';
 
@@ -32,7 +30,9 @@ function formatDate(date) {
   return format(date, 'dd-MM-yy');
 }
 
-function Analytics({ asyncState, routePaths, history, location }) {
+function Analytics({
+  asyncState, routePaths, history, location,
+}) {
   const chartEl = useRef(null);
 
   const {
@@ -41,13 +41,11 @@ function Analytics({ asyncState, routePaths, history, location }) {
     hasNextPage,
   } = asyncState.data;
 
-  const qs = new URLSearchParams(location.search);
-
   const [previousButtonDisabled, nextButtonDisabled] = (() => {
     const qs = new URLSearchParams(location.search);
     const afterParam = qs.get('after');
     const beforeParam = qs.get('before');
-    const hasFilter =  afterParam || beforeParam;
+    const hasFilter = afterParam || beforeParam;
     if (beforeParam || !hasFilter) {
       return [!hasNextPage, !hasPreviousPage];
     } else {
@@ -85,16 +83,10 @@ function Analytics({ asyncState, routePaths, history, location }) {
     return [{ result, date: period.startDate }, ...acc];
   }, []).reverse();
 
-  const overallBalances = periods.map(period => {
-    return Object.values(period.balancesByAccount).reduce((acc, balance) => {
-      return acc + balance;
-    }, 0);
-  });
+  const overallBalances = periods.map((period) => Object.values(period.balancesByAccount).reduce((acc, balance) => acc + balance, 0));
 
   useEffect(() => {
     const xLabels = periods.map((period) => period.startDate);
-
-    const results = periods.map((period) => period.result);
 
     const chart = c3.generate({
       padding: {
@@ -188,6 +180,6 @@ const asyncFetch = ({ apiClient, location }) => {
   const beforePeriod = qs.get('before');
   const afterPeriod = qs.get('after');
   return apiClient.finance.fetchAnalytics(beforePeriod, afterPeriod);
-}
+};
 
 export default withAsyncComponent(asyncFetch)(withRouter(Analytics));
